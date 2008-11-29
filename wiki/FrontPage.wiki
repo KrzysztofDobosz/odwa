@@ -1,3 +1,3 @@
 #summary A wiki for the frontpage (this line will not be visible on the front page)
 
-Open Data Warehouse Analysis
+Open Data Warehouse Analysis (ODWA)
