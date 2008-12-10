@@ -1,7 +1,7 @@
 /**
  * 
  */
-package selection;
+package pl.pwr.odwa.selection;
 /**
  * Klasa reprezentuj¹ca zagnie¿d¿on¹ oœ zapytania {@link UserSelection}
  */

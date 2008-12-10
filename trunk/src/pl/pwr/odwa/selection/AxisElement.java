@@ -1,4 +1,4 @@
-package selection;
+package pl.pwr.odwa.selection;
 
 import java.io.Serializable;
 /**

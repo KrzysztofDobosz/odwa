@@ -1,13 +1,13 @@
-package report;
+package pl.pwr.odwa.client.reports;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Date;
 
-import others.ReportStyle;
+import pl.pwr.odwa.client.visualization.ReportStyle;
+import pl.pwr.odwa.selection.UserSelection;
 
-import selection.UserSelection;
 /**
  * Klasa raportu dynamicnzego rozszerzaj¹ca abstrakcyjn¹ klasê {@link Report}
  * 
