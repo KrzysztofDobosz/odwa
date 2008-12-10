@@ -1,4 +1,4 @@
-package report;
+package pl.pwr.odwa.client.reports;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -6,7 +6,8 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import others.ReportStyle;
+import pl.pwr.odwa.client.visualization.ReportStyle;
+
 
 
 /**

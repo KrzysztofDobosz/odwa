@@ -1,12 +1,13 @@
-package report;
+package pl.pwr.odwa.client.reports;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Date;
 
-import others.DBResult;
-import others.ReportStyle;
+import pl.pwr.odwa.client.visualization.ReportStyle;
+import pl.pwr.odwa.server.engine.DBResult;
+
 
 
 /**
