@@ -1,6 +1,7 @@
 package pl.pwr.odwa.client.visualization;
 
-import pl.pwr.odwa.server.engine.DBResult;
+import pl.pwr.odwa.result.DBResult;
+
 
 
 /**

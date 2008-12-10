@@ -6,7 +6,7 @@ import java.io.ObjectInputStream;
 import java.util.Date;
 
 import pl.pwr.odwa.client.visualization.ReportStyle;
-import pl.pwr.odwa.server.engine.DBResult;
+import pl.pwr.odwa.result.DBResult;
 
 
 

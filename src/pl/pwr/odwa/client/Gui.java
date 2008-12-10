@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import pl.pwr.odwa.client.communication.*;
 import pl.pwr.odwa.client.visualization.*;
+import pl.pwr.odwa.result.DBResult;
 import pl.pwr.odwa.selection.UserSelection;
-import pl.pwr.odwa.server.engine.DBResult;
 import pl.pwr.odwa.server.metadata.MetaDataView;
 import pl.pwr.odwa.server.metadata.MetaDim;
 import pl.pwr.odwa.server.metadata.MetaDimElement;
@@ -20,11 +20,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 
 /**
- * Klasa odpowiadająca za interakcję z użytkownikiem. Klasa nie udostępnia
- * żadnych metod innym modułom. Do komunikacji z pozostałymi modułami używa
+ * Klasa odpowiadajÄ…ca za interakcjÄ™ z uĹĽytkownikiem. Klasa nie udostÄ™pnia
+ * ĹĽadnych metod innym moduĹ‚om. Do komunikacji z pozostaĹ‚ymi moduĹ‚ami uĹĽywa
  * publicznych funkcji instancji klas.
  *
- * @author Łukasz Pintal
+ * @author Ĺ�ukasz Pintal
  * @author Krzysztof Dobosz
  *
  */
@@ -35,17 +35,17 @@ public class Gui implements EntryPoint
     */
    private DBEngineServiceAsync dbService;
    /**
-    * Interface do komunikacji RPC z modułem metadanych.
+    * Interface do komunikacji RPC z moduĹ‚em metadanych.
     */
    private MetaGUIApiServiceAsync metaService;
 
    /**
-    * Instancja klasy odpowiedzialnej za wyświetlanie wyników zapytania do
+    * Instancja klasy odpowiedzialnej za wyĹ›wietlanie wynikĂłw zapytania do
     * hurtowni.
     */
    private Visualization display;
    /**
-    * Aktualny widok metadanych, wybrany przez użytkownika.
+    * Aktualny widok metadanych, wybrany przez uĹĽytkownika.
     */
    private MetaDataView currentView;
    /**
@@ -57,14 +57,14 @@ public class Gui implements EntryPoint
     */
    private DBResult currentDBResult;
    /**
-    * Nazwa użytkownika
+    * Nazwa uĹĽytkownika
     */
    private String userName;
 
    /**
-    * Metoda do komunikacji z silnikiem baz danych. Wywołuje asynchronicznie
-    * metodę DBEngine.executeQuery(UserSelection), a po uzyskaniu wyniku
-    * wywołuje funkcję show(int, DBResult) modułu Visualization.
+    * Metoda do komunikacji z silnikiem baz danych. WywoĹ‚uje asynchronicznie
+    * metodÄ™ DBEngine.executeQuery(UserSelection), a po uzyskaniu wyniku
+    * wywoĹ‚uje funkcjÄ™ show(int, DBResult) moduĹ‚u Visualization.
     */
    void executeQuery()
    {
@@ -83,11 +83,11 @@ public class Gui implements EntryPoint
    }
 
    /**
-    * Metoda do komunikacji z modułem metadanych. Wyświetla otrzymane od serwera
-    * sloty dostępne dla danego użytkownika.
+    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od serwera
+    * sloty dostÄ™pne dla danego uĹĽytkownika.
     *
     * @param userName
-    *           nazwa użytkownika
+    *           nazwa uĹĽytkownika
     */
    void getSlots()
    {
@@ -106,11 +106,11 @@ public class Gui implements EntryPoint
    }
 
    /**
-    * Metoda do komunikacji z modułem metadanych. Wyświetla otrzymane od serwera
-    * widoki danych dostępne dla danego slotu.
+    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od serwera
+    * widoki danych dostÄ™pne dla danego slotu.
     *
     * @param slot
-    *           wybrany przez użytkownika slot
+    *           wybrany przez uĹĽytkownika slot
     */
    void getDataViews(MetaSlot slot)
    {
@@ -130,11 +130,11 @@ public class Gui implements EntryPoint
    }
 
    /**
-    * Metoda do komunikacji z modułem metadanych. Wyświetla otrzymane od serwera
-    * tabelki wymiarów dostępne dla danego widoku danych.
+    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od serwera
+    * tabelki wymiarĂłw dostÄ™pne dla danego widoku danych.
     *
     * @param view
-    *           wybrany przez użytkownika widok danych
+    *           wybrany przez uĹĽytkownika widok danych
     */
    void getDimTables(MetaDataView view)
    {
@@ -154,11 +154,11 @@ public class Gui implements EntryPoint
    }
 
    /**
-    * Metoda do komunikacji z modułem metadanych. Wyświetla otrzymane od serwera
-    * wymiary dostępne dla danej tabelki wymiarów.
+    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od serwera
+    * wymiary dostÄ™pne dla danej tabelki wymiarĂłw.
     *
     * @param table
-    *           tabelka wymiarów
+    *           tabelka wymiarĂłw
     */
    void getDimentions(MetaDimTable table)
    {
@@ -177,11 +177,11 @@ public class Gui implements EntryPoint
    }
 
    /**
-    * Metoda do komunikacji z modułem metadanych. Wyświetla otrzymane od serwera
-    * miary dostępne dla danego widoku danych.
+    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od serwera
+    * miary dostÄ™pne dla danego widoku danych.
     *
     * @param view
-    *           wybrany przez użytkownika widok danych
+    *           wybrany przez uĹĽytkownika widok danych
     */
    void getMeasures(MetaDataView view)
    {
@@ -200,11 +200,11 @@ public class Gui implements EntryPoint
    }
 
    /**
-    * Metoda do komunikacji z modułem metadanych. Wyświetla otrzymane od serwera
-    * hierarchie dostępne dla danego widoku danych.
+    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od serwera
+    * hierarchie dostÄ™pne dla danego widoku danych.
     *
     * @param view
-    *           wybrany przez użytkownika widok danych
+    *           wybrany przez uĹĽytkownika widok danych
     */
    void getHierarchies(MetaDataView view)
    {
@@ -224,11 +224,11 @@ public class Gui implements EntryPoint
    }
 
    /**
-    * Metoda do komunikacji z modułem metadanych. Wyświetla otrzymane od serwera
-    * elementy wymiarów dostępne dla danego widoku danych.
+    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od serwera
+    * elementy wymiarĂłw dostÄ™pne dla danego widoku danych.
     *
     * @param view
-    *           wybrany przez użytkownika widok danych
+    *           wybrany przez uĹĽytkownika widok danych
     */
    void getDimElements(MetaDim dimention)
    {
@@ -250,7 +250,7 @@ public class Gui implements EntryPoint
 
    /**
     * Metoda analogiczna do main(). Jest uruchamiana przy starcie programu.
-    * Wyświetla cały interface użytkownika.
+    * WyĹ›wietla caĹ‚y interface uĹĽytkownika.
     */
    public void onModuleLoad()
    {
