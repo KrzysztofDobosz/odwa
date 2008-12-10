@@ -7,5 +7,5 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface DBEngineServiceAsync
 {
-   void executeQuery(UserSelection userSel, AsyncCallback<DBResult> callback);
+   public void executeQuery(UserSelection userSel, AsyncCallback<DBResult> callback);
 }

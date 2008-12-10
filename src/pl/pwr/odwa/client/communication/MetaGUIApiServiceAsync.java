@@ -8,7 +8,11 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface MetaGUIApiServiceAsync
 {
-   void getSlots(String userName, AsyncCallback<ArrayList<MetaSlot>> callback);
-   void getDataViews(MetaSlot slot, AsyncCallback<ArrayList<MetaDataView>> callback);
-   void getMembers(MetaDim dimention, AsyncCallback<ArrayList<MetaDimElement>> callback);
+   public void getSlots(String userName, AsyncCallback<ArrayList<MetaSlot>> callback);
+   public void getDataViews(MetaSlot slot, AsyncCallback<ArrayList<MetaDataView>> callback);
+   public void getDimTables(MetaDataView view, AsyncCallback<ArrayList<MetaDimTable>> callback);
+   public void getDimentions(MetaDimTable table, AsyncCallback<ArrayList<MetaDim>> callback);
+   public void getMeasures(MetaDataView view, AsyncCallback<ArrayList<MetaMeasure>> callback);
+   public void getHierarchies(MetaDataView view, AsyncCallback<ArrayList<MetaHierarchy>> callback);
+   public void getDimElements(MetaDim dimention, AsyncCallback<ArrayList<MetaDimElement>> callback);
 }

@@ -11,5 +11,5 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 @RemoteServiceRelativePath("DBEngineService")
 public interface DBEngineService extends RemoteService
 {
-   DBResult executeQuery(UserSelection userSel);
+   public DBResult executeQuery(UserSelection userSel);
 }

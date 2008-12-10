@@ -5,9 +5,9 @@
 
 	<!-- Specify the app entry point class.                   -->
 	<entry-point class='pl.pwr.odwa.client.Gui'/>
-  
+
   	<inherits name="com.google.gwt.user.theme.standard.Standard"/>
   	<!-- <inherits name="com.google.gwt.user.theme.chrome.Chrome"/> -->
   	<!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
-  	
+
 </module>

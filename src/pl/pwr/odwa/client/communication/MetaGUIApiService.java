@@ -12,7 +12,11 @@ import com.google.gwt.user.client.rpc.ServiceDefTarget;
 @RemoteServiceRelativePath("MetaGUIApiService")
 public interface MetaGUIApiService extends RemoteService
 {
-   ArrayList<MetaSlot> getSlots(String userName);
-   ArrayList<MetaDataView> getDataViews(MetaSlot slot);
-   ArrayList<MetaDimElement> getMembers(MetaDim dimention);
+   public ArrayList<MetaSlot> getSlots(String userName);
+   public ArrayList<MetaDataView> getDataViews(MetaSlot slot);
+   public ArrayList<MetaDimTable> getDimTables(MetaDataView view);
+   public ArrayList<MetaDim> getDimentions(MetaDimTable table);
+   public ArrayList<MetaMeasure> getMeasures(MetaDataView view);
+   public ArrayList<MetaHierarchy> getHierarchies(MetaDataView view);
+   public ArrayList<MetaDimElement> getDimElements(MetaDim dimention);
 }
