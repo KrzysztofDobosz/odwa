@@ -11,6 +11,31 @@ import java.util.ArrayList;
  */
 public class ReportStyle {
 
+	int reportMode;
+	
+	/**
+	 * Metoda zwraca tryb raportu.
+	 * 
+	 * @return tryb raportu.
+	 * 
+	 */
+	int getReportMode()
+	{
+		return reportMode;
+	}
+	
+	/**
+	 * Metoda ustala tryb raportu.
+	 * 
+	 * @param mode tryb raportu.
+	 * 
+	 */
+	void setReportMode(int mode)
+	{
+		reportMode = mode;
+		System.out.println("Ustawiono nowy tryb raportu");
+	}
+	
 	/**
 	 * Metoda zwraca kolejny wiersz styli.
 	 * 
