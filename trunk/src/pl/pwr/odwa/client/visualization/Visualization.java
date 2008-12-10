@@ -11,28 +11,15 @@ import pl.pwr.odwa.server.engine.DBResult;
  * 
  */
 public class Visualization {
-    
-	/**
-	 * Metoda wyswietla dane w trybie ReportMode ze standardowymi stylami.
-	 * 
-	 * @param reportMode tryb wyœwietlania raportu,
-	 * @param result dane, które maj¹ zostaæ wyœwietlone.
-	 * 
-	 */
-	void show(int reportMode, DBResult result)  
-	{
-		System.out.println("Wyœwietlono raport");
-	}
 	
 	/**
-	 * Metoda wyswietla dane w trybie ReportMode z zadanymi stylami.
+	 * Metoda wyswietla raport z zadanymi stylami.
 	 * 
-	 * @param reportMode tryb wyœwietlania raportu,
 	 * @param result dane, które maj¹ zostaæ wyœwietlone,
 	 * @param style style, zgodnie z którymi maj¹ zostaæ wyœwietlone dane.
 	 * 
 	 */
-	void show(int reportMode, DBResult result, ReportStyle style)
+	void show(DBResult result, ReportStyle style)
 	{
 		System.out.println("Wyœwietlono raport rozszerzony");
 	}
