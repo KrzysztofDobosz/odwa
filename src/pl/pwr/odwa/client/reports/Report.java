@@ -15,6 +15,7 @@ import pl.pwr.odwa.client.visualization.ReportStyle;
  * implementuje interfejs {@link Serializable} w celu umo¿liwienia zapisu i
  * odczytu obiektu do/z pliku
  * 
+ * @author Katarzyna Rzerzicha
  * @author Micha³ Brzeziñski-Spiczak
  */
 public class Report implements Serializable {

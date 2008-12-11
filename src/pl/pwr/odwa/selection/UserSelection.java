@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Klasa komunikacji miêdzymodu³owej przechowuj¹ca abstrakcyjne zapytanie
  * u¿ytkownika analogicznie do jêzyka MDX
  * 
+ * @author Katarzyna Rzerzicha
  * @author Micha³ Brzeziñski-Spiczak
  */
 public class UserSelection implements Serializable {

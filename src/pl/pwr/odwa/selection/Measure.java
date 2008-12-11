@@ -8,6 +8,7 @@ import java.io.Serializable;
  * zagnie¿d¿onych miar, w tym definiowanych przez u¿ytkownika na bazie
  * istniej¹cych)
  * 
+ * @author Katarzyna Rzerzicha
  * @author Micha³ Brzeziñski-Spiczak
  * 
  */
