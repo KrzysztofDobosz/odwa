@@ -11,17 +11,17 @@ import pl.pwr.odwa.result.DBResult;
 
 
 /**
- * Klasa raportu statycznego rozszerzajπca abstrakcyjnπ klasÍ {@link Report}
+ * Klasa raportu statycznego rozszerzajƒÖca abstrakcyjnƒÖ klasƒô {@link Report}
  * 
  * @author Katarzyna Rzerzicha
- * @author Micha≥ BrzeziÒski-Spiczak
+ * @author Micha≈Ç Brzezi≈Ñski-Spiczak
  */
 public class StaticReport extends Report {
 	private static final long serialVersionUID = -4481525925179844309L;
 	private DBResult result;
 
 	/**
-	 * Konstruktor domyúlny
+	 * Konstruktor domy≈õlny
 	 */
 	public StaticReport() {
 	}
@@ -44,11 +44,11 @@ public class StaticReport extends Report {
 	}
 
 	/**
-	 * Odczyt raportu statycznego z pliku o nazwie (úcieøce) podanej jako
+	 * Odczyt raportu statycznego z pliku o nazwie (≈õcie≈ºce) podanej jako
 	 * argument
 	 * 
 	 * @param filepath
-	 *            - nazwa/úcieøka do pliku raportu do odczytu
+	 *            - nazwa/≈õcie≈ºka do pliku raportu do odczytu
 	 */
 	public StaticReport(String filepath) throws ClassNotFoundException,
 			IOException {
@@ -81,7 +81,7 @@ public class StaticReport extends Report {
 	}
 
 	/**
-	 * Ustawia uøyte zapytanie do bazy danych {@link DBResult}
+	 * Ustawia u≈ºyte zapytanie do bazy danych {@link DBResult}
 	 * 
 	 * @param result
 	 *            - zapytanie do bazy danych

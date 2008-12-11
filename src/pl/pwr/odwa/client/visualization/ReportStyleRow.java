@@ -1,18 +1,18 @@
 package pl.pwr.odwa.client.visualization;
 
 /**
- * Klasa zawierajaca style poszczególnych komórek w wierszu.
+ * Klasa zawierajaca style poszczegÃ³lnych komÃ³rek w wierszu.
  * 
- * @author Wojciech Skórski
- * @author Pawe³ Szo³tysek
+ * @author Wojciech SkÃ³rski
+ * @author PaweÅ‚ SzoÅ‚tysek
  * 
  */
 public class ReportStyleRow {
 
 	/**
-	 * Metoda zwraca iloœæ pól w wierszu.
+	 * Metoda zwraca iloÅ›Ä‡ pÃ³l w wierszu.
 	 * 
-	 * @return iloœæ pól.
+	 * @return iloÅ›Ä‡ pÃ³l.
 	 * 
 	 */
 	int getFieldsCount() 

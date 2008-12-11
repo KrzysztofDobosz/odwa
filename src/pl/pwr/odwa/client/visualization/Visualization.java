@@ -7,8 +7,8 @@ import pl.pwr.odwa.result.DBResult;
 /**
  * Klasa odpowiadajaca za wyswietlanie danych uzytkownikowi 
  * 
- * @author Wojciech Skórski
- * @author Pawe³ Szo³tysek
+ * @author Wojciech SkÃ³rski
+ * @author PaweÅ‚ SzoÅ‚tysek
  * 
  */
 public class Visualization {
@@ -16,17 +16,17 @@ public class Visualization {
 	/**
 	 * Metoda wyswietla raport z zadanymi stylami.
 	 * 
-	 * @param result dane, które maj¹ zostaæ wyœwietlone,
-	 * @param style style, zgodnie z którymi maj¹ zostaæ wyœwietlone dane.
+	 * @param result dane, ktÃ³re majÄ… zostaÄ‡ wyÅ›wietlone,
+	 * @param style style, zgodnie z ktÃ³rymi majÄ… zostaÄ‡ wyÅ›wietlone dane.
 	 * 
 	 */
 	void show(DBResult result, ReportStyle style)
 	{
-		System.out.println("Wyœwietlono raport rozszerzony");
+		System.out.println("WyÅ›wietlono raport rozszerzony");
 	}
 	
 	/**
-	 * Metoda zwracaj¹ca obecnie aktywny styl.
+	 * Metoda zwracajÄ…ca obecnie aktywny styl.
 	 * 
 	 * @return obecnie aktywny styl raportu 
 	 * 

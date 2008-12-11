@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Klasa reprezentujπca úcieøkÍ hierarchii wewnπtrz wymiaru
+ * Klasa reprezentujƒÖca ≈õcie≈ºkƒô hierarchii wewnƒÖtrz wymiaru
  * 
  * @author Katarzyna Rzerzicha
- * @author Micha≥ BrzeziÒski-Spiczak
+ * @author Micha≈Ç Brzezi≈Ñski-Spiczak
  * 
  */
 public class Path implements Serializable {
@@ -16,16 +16,16 @@ public class Path implements Serializable {
 	private ArrayList<String> path;
 
 	/**
-	 * Konstruktor domyúlny
+	 * Konstruktor domy≈õlny
 	 */
 	public Path() {
 	}
 
 	/**
-	 * Konstruktor úcieøki poprzez parsowanie Stringa (hierarchi w zapisie MDX -
-	 * NazwaKategorii.NazwaPodKategorii.(...).NazwaCz≥onkaWymiaru)
+	 * Konstruktor ≈õcie≈ºki poprzez parsowanie Stringa (hierarchi w zapisie MDX -
+	 * NazwaKategorii.NazwaPodKategorii.(...).NazwaCz≈ÇonkaWymiaru)
 	 * 
-	 * @param p reprezentacja MDX úcieøki
+	 * @param p reprezentacja MDX ≈õcie≈ºki
 	 */
 	public Path(String p) {
 		String[] temp = p.split(".");
@@ -36,7 +36,7 @@ public class Path implements Serializable {
 	}
 
 	/**
-	 * Dekompozycja úcieøki na kontener {@link ArrayList} StringÛw
+	 * Dekompozycja ≈õcie≈ºki na kontener {@link ArrayList} String√≥w
 	 * @return
 	 */
 	public ArrayList<String> decompose() {

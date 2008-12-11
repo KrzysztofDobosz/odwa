@@ -12,11 +12,11 @@ import pl.pwr.odwa.client.visualization.ReportStyle;
 
 /**
  * Abstrakcyjna klasa raportu (dziedziczone po niej Static- i DynamicReport),
- * implementuje interfejs {@link Serializable} w celu umo¿liwienia zapisu i
+ * implementuje interfejs {@link Serializable} w celu umoÅ¼liwienia zapisu i
  * odczytu obiektu do/z pliku
  * 
  * @author Katarzyna Rzerzicha
- * @author Micha³ Brzeziñski-Spiczak
+ * @author MichaÅ‚ BrzeziÅ„ski-Spiczak
  */
 public class Report implements Serializable {
 	private static final long serialVersionUID = 1726723046281459668L;
@@ -24,7 +24,7 @@ public class Report implements Serializable {
 	ReportStyle format;
 
 	/**
-	 * Metoda zapisuj¹ca raport do pliku o nazwie podanej jako argument
+	 * Metoda zapisujÄ…ca raport do pliku o nazwie podanej jako argument
 	 * 
 	 * @param filepath
 	 *            nazwa pliku do zapisu raportu
@@ -44,7 +44,7 @@ public class Report implements Serializable {
 	}
 
 	/**
-	 * Zwraca u¿yty przez wizualizacjê styl raportu (opcje wyœwietlania -
+	 * Zwraca uÅ¼yty przez wizualizacjÄ™ styl raportu (opcje wyÅ›wietlania -
 	 * {@link ReportStyle})
 	 */
 	public ReportStyle getReportStyle() {
@@ -62,7 +62,7 @@ public class Report implements Serializable {
 	}
 
 	/**
-	 * Zwraca kontener ({@link ArrayList}) opisu raportu zawier¹cy: datê
+	 * Zwraca kontener ({@link ArrayList}) opisu raportu zawierÄ…cy: datÄ™
 	 * utworzenia, autora (...)
 	 * 
 	 */

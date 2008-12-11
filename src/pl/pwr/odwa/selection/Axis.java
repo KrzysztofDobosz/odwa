@@ -3,9 +3,9 @@
  */
 package pl.pwr.odwa.selection;
 /**
- * Klasa reprezentujπca zagnieødøonπ oú zapytania {@link UserSelection}
+ * Klasa reprezentujƒÖca zagnie≈ºd≈ºonƒÖ o≈õ zapytania {@link UserSelection}
  * @author Katarzyna Rzerzicha
- * @author Micha≥ BrzeziÒski-Spiczak
+ * @author Micha≈Ç Brzezi≈Ñski-Spiczak
  */
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -14,42 +14,42 @@ public class Axis implements Serializable {
 	private static final long serialVersionUID = 1490457996717239587L;
 	private ArrayList<AxisElement> axisElements;
 	/**
-	 * Konstruktor domyúlny
+	 * Konstruktor domy≈õlny
 	 */
 	public Axis(){}
 	/**
-	 * Zwraca iloúÊ zagnieødøonych osi {@link AxisElement} (0 dla pojedynczej osi)
-	 * @return iloúÊ zagnieødøonych osi {@link AxisElement}
+	 * Zwraca ilo≈õƒá zagnie≈ºd≈ºonych osi {@link AxisElement} (0 dla pojedynczej osi)
+	 * @return ilo≈õƒá zagnie≈ºd≈ºonych osi {@link AxisElement}
 	 */
 	public int getAxisElementAmount() {
 		return axisElements.size();
 	}
 	/**
-	 * Zwraca i-ty element zagnieødøenia {@link AxisElement}
+	 * Zwraca i-ty element zagnie≈ºd≈ºenia {@link AxisElement}
 	 * @param i - numer osi w kontenerze
-	 * @return axisElement i-ty element osi zagnieødøonej
+	 * @return axisElement i-ty element osi zagnie≈ºd≈ºonej
 	 */
 	public AxisElement getAxisElement(int i) {
 		return axisElements.get(i);
 	}
 	/**
-	 * Dodaje pojedycznπ oú {@link AxisElement} do osi zagnieødøonej
-	 * @param axisElement - pojedyncza oú do dodania {@link AxisElement}
+	 * Dodaje pojedycznƒÖ o≈õ {@link AxisElement} do osi zagnie≈ºd≈ºonej
+	 * @param axisElement - pojedyncza o≈õ do dodania {@link AxisElement}
 	 */
 
 	public void addAxisElement(AxisElement axisElement) {
 		axisElements.add(axisElement);
 	}
 	/**
-	 * Zwraca kontener {@link ArrayList} zagnieødøeÒ osi
-	 * @return axisElements - {@link ArrayList} zagnieødøeÒ osi
+	 * Zwraca kontener {@link ArrayList} zagnie≈ºd≈ºe≈Ñ osi
+	 * @return axisElements - {@link ArrayList} zagnie≈ºd≈ºe≈Ñ osi
 	 */
 	public ArrayList<AxisElement> getAxisElements() {
 		return axisElements;
 	}
 	/**
-	 * Ustawia kontener {@link ArrayList} zagnieødøeÒ osi na podany jako argument
-	 * @param axisElements kontener {@link ArrayList} zagnieødøeÒ osi do ustawienia
+	 * Ustawia kontener {@link ArrayList} zagnie≈ºd≈ºe≈Ñ osi na podany jako argument
+	 * @param axisElements kontener {@link ArrayList} zagnie≈ºd≈ºe≈Ñ osi do ustawienia
 	 */
 	public void setAxisElements(ArrayList<AxisElement> axisElements) {
 		this.axisElements = axisElements;
