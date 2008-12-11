@@ -3,13 +3,13 @@ package pl.pwr.odwa.selection;
 import java.io.Serializable;
 
 /**
- * Klasa reprezentujπca miarÍ definiowanπ poprzez identyfikator measureId
- * (dziedziczenie umoøliwia wykorzystanie bardziej zaawansowanych, rÛwnieø
- * zagnieødøonych miar, w tym definiowanych przez uøytkownika na bazie
- * istniejπcych)
+ * Klasa reprezentujƒÖca miarƒô definiowanƒÖ poprzez identyfikator measureId
+ * (dziedziczenie umo≈ºliwia wykorzystanie bardziej zaawansowanych, r√≥wnie≈º
+ * zagnie≈ºd≈ºonych miar, w tym definiowanych przez u≈ºytkownika na bazie
+ * istniejƒÖcych)
  * 
  * @author Katarzyna Rzerzicha
- * @author Micha≥ BrzeziÒski-Spiczak
+ * @author Micha≈Ç Brzezi≈Ñski-Spiczak
  * 
  */
 public class Measure implements Serializable {
@@ -18,7 +18,7 @@ public class Measure implements Serializable {
 	private int measureId;
 
 	/**
-	 * Konstruktor domyúlny
+	 * Konstruktor domy≈õlny
 	 */
 	public Measure() {
 	}

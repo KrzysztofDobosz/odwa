@@ -9,17 +9,17 @@ import pl.pwr.odwa.client.visualization.ReportStyle;
 import pl.pwr.odwa.selection.UserSelection;
 
 /**
- * Klasa raportu dynamicnzego rozszerzajπca abstrakcyjnπ klasÍ {@link Report}
+ * Klasa raportu dynamicnzego rozszerzajƒÖca abstrakcyjnƒÖ klasƒô {@link Report}
  * 
  * @author Katarzyna Rzerzicha
- * @author Micha≥ BrzeziÒski-Spiczak
+ * @author Micha≈Ç Brzezi≈Ñski-Spiczak
  */
 public class DynamicReport extends Report {
 	private static final long serialVersionUID = -5321517277324547126L;
 	UserSelection selection;
 
 	/**
-	 * Konstruktor domyúlny
+	 * Konstruktor domy≈õlny
 	 */
 	public DynamicReport() {
 	};
@@ -39,11 +39,11 @@ public class DynamicReport extends Report {
 		description.add("Author = " + "");
 	}
 	/**
-	 * Odczyt raportu dynamicznego z pliku o nazwie (úcieøce) podanej jako
+	 * Odczyt raportu dynamicznego z pliku o nazwie (≈õcie≈ºce) podanej jako
 	 * argument
 	 * 
 	 * @param filepath
-	 *            - nazwa/úcieøka do pliku raportu do odczytu
+	 *            - nazwa/≈õcie≈ºka do pliku raportu do odczytu
 	 */
 	public DynamicReport(String filepath) {
 		try {
@@ -64,15 +64,15 @@ public class DynamicReport extends Report {
 		}
 	}
 	/**
-	 * Zwraca zapisane w raporcie zapytanie uøytkownika {@link UserSelection}
+	 * Zwraca zapisane w raporcie zapytanie u≈ºytkownika {@link UserSelection}
 	 */
 	
 	public UserSelection getUserSelection() {
 		return selection;
 	}
 	/**
-	 * Ustawia zapytanie uøytkownika {@link UserSelection}
-	 * @param selection - zapytanie uøytkowinka
+	 * Ustawia zapytanie u≈ºytkownika {@link UserSelection}
+	 * @param selection - zapytanie u≈ºytkowinka
 	 */
 	public void setUserSelection(UserSelection selection){
 		this.selection = selection;

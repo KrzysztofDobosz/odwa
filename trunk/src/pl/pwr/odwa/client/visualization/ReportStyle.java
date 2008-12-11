@@ -3,10 +3,10 @@ package pl.pwr.odwa.client.visualization;
 import java.util.ArrayList;
 
 /**
- * Klasa zawierajaca selekcje styli uzytkownika do kazdej komórki tabeli.
+ * Klasa zawierajaca selekcje styli uzytkownika do kazdej komÃ³rki tabeli.
  * 
- * @author Wojciech Skórski
- * @author Pawe³ Szo³tysek
+ * @author Wojciech SkÃ³rski
+ * @author PaweÅ‚ SzoÅ‚tysek
  * 
  */
 public class ReportStyle {
@@ -49,7 +49,7 @@ public class ReportStyle {
 	} 
 	
 	/**
-	 * Metoda zwraca tablicê styli.
+	 * Metoda zwraca tablicÄ™ styli.
 	 * 
 	 * @return tablica styli.
 	 * 

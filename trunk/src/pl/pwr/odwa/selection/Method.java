@@ -3,13 +3,13 @@ package pl.pwr.odwa.selection;
 import java.io.Serializable;
 
 /**
- * Klasa reprezentujπca metodÍ opisu cz≥onkÛw wymiaru na podstawie innych
- * cz≥onkÛw bπdü elementÛw hierarchii poprzez identyfikator metody (poprzez
- * dziedziczenie umoøliwione jest wprowadzenie bardziej zaawansowanych metod jak
- * rÛwnieø ich z≥oøeÒ).
+ * Klasa reprezentujƒÖca metodƒô opisu cz≈Çonk√≥w wymiaru na podstawie innych
+ * cz≈Çonk√≥w bƒÖd≈∫ element√≥w hierarchii poprzez identyfikator metody (poprzez
+ * dziedziczenie umo≈ºliwione jest wprowadzenie bardziej zaawansowanych metod jak
+ * r√≥wnie≈º ich z≈Ço≈ºe≈Ñ).
  * 
  * @author Katarzyna Rzerzicha
- * @author Micha≥ BrzeziÒski-Spiczak
+ * @author Micha≈Ç Brzezi≈Ñski-Spiczak
  * 
  */
 public class Method implements Serializable {
@@ -17,7 +17,7 @@ public class Method implements Serializable {
 	private static final long serialVersionUID = 5987452597403813853L;
 	private int methodId;
 	/**
-	 * Konstruktor domyúlny
+	 * Konstruktor domy≈õlny
 	 */
 	public Method(){}
 	/**
@@ -28,7 +28,7 @@ public class Method implements Serializable {
 		this.methodId = methodId;
 	}
 	/**
-	 * Ustawia identyfikator metody na wartoúÊ podanπ jako parametr
+	 * Ustawia identyfikator metody na warto≈õƒá podanƒÖ jako parametr
 	 * @param methodId - identyfikator metody do ustawienia
 	 */
 	public void setMethodId(int methodId) {

@@ -2,10 +2,10 @@ package pl.pwr.odwa.selection;
 
 import java.io.Serializable;
 /**
- * Klasa reprezentujπca pojedynczy poziom zagnieødøenia osi w zapytaniu {@link UserSelection}
+ * Klasa reprezentujƒÖca pojedynczy poziom zagnie≈ºd≈ºenia osi w zapytaniu {@link UserSelection}
  * 
  * @author Katarzyna Rzerzicha
- * @author Micha≥ BrzeziÒski-Spiczak
+ * @author Micha≈Ç Brzezi≈Ñski-Spiczak
   */
 
 public class AxisElement implements Serializable {
@@ -13,13 +13,13 @@ public class AxisElement implements Serializable {
 	private DimensionElSet dimensionElSet;
 	private Function function;
 	/**
-	 * Konstruktor domyúlny
+	 * Konstruktor domy≈õlny
 	 */
 	public AxisElement(){}
 	/**
-	 * Konstruktor poziomu zagnieødøenia osi na bazie sk≥adowych (z≥πczenie metod typu set)
-	 * @param dimensionElSet - kontener elementÛw wymiaru ({@link DimensionElSet})
-	 * @param function - funkcja wyboru cz≥onkÛw wymiaru z kontenera ({@link Function})
+	 * Konstruktor poziomu zagnie≈ºd≈ºenia osi na bazie sk≈Çadowych (z≈ÇƒÖczenie metod typu set)
+	 * @param dimensionElSet - kontener element√≥w wymiaru ({@link DimensionElSet})
+	 * @param function - funkcja wyboru cz≈Çonk√≥w wymiaru z kontenera ({@link Function})
 	 */
 	public AxisElement(DimensionElSet dimensionElSet, Function function) {
 		setDimensionElSet(dimensionElSet);
@@ -27,29 +27,29 @@ public class AxisElement implements Serializable {
 	}
 
 	/**
-	 * Ustawia kontener elementÛw wymiaru na podany w argumencie
-	 * @param dimensionElSet - zbiÛr elementÛw wymiaru do ustawienia ({@link DimensionElSet})
+	 * Ustawia kontener element√≥w wymiaru na podany w argumencie
+	 * @param dimensionElSet - zbi√≥r element√≥w wymiaru do ustawienia ({@link DimensionElSet})
 	 */
 	public void setDimensionElSet(DimensionElSet dimensionElSet) {
 		this.dimensionElSet = dimensionElSet;
 	}
 	/**
-	 * Ustawia funkcjÍ wyboru cz≥onkÛw wymiaru z kontenera ({@link Function})
-	 * @param function funkcja wyboru cz≥onkÛw z kontenera ({@link Function})
+	 * Ustawia funkcjƒô wyboru cz≈Çonk√≥w wymiaru z kontenera ({@link Function})
+	 * @param function funkcja wyboru cz≈Çonk√≥w z kontenera ({@link Function})
 	 */
 	public void setFunction(Function function) {
 		this.function = function;
 	}
 	/**
-	 * Zwraca kontener elementÛw wymiaru ({@link DimensionElSet})
-	 * @return kontener elementÛw wymiaru ({@link DimensionElSet}) 
+	 * Zwraca kontener element√≥w wymiaru ({@link DimensionElSet})
+	 * @return kontener element√≥w wymiaru ({@link DimensionElSet}) 
 	 */
 	public DimensionElSet getDimensionElSet() {
 		return dimensionElSet;
 	}
 	/**
-	 * Zwraca funkcjÍ wyboru czlonkÛw z kontenera ({@link Function})
-	 * @return funkcja wyboru czlonkÛw z kontenera ({@link Function})
+	 * Zwraca funkcjƒô wyboru czlonk√≥w z kontenera ({@link Function})
+	 * @return funkcja wyboru czlonk√≥w z kontenera ({@link Function})
 	 * 
 	 */
 	public Function getFunction() {

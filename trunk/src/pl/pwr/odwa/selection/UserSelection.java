@@ -3,11 +3,11 @@ package pl.pwr.odwa.selection;
 import java.io.Serializable;
 
 /**
- * Klasa komunikacji miêdzymodu³owej przechowuj¹ca abstrakcyjne zapytanie
- * u¿ytkownika analogicznie do jêzyka MDX
+ * Klasa komunikacji miÄ™dzymoduÅ‚owej przechowujÄ…ca abstrakcyjne zapytanie
+ * uÅ¼ytkownika analogicznie do jÄ™zyka MDX
  * 
  * @author Katarzyna Rzerzicha
- * @author Micha³ Brzeziñski-Spiczak
+ * @author MichaÅ‚ BrzeziÅ„ski-Spiczak
  */
 public class UserSelection implements Serializable {
 
@@ -19,25 +19,25 @@ public class UserSelection implements Serializable {
 	private DimensionElSet slice;
 
 	/**
-	 * Konstruktor domyœlny
+	 * Konstruktor domyÅ›lny
 	 */
 	public UserSelection() {
 	}
 
 	/**
-	 * Konstruktor UserSelection na bazie jego sk³adowych stanowi¹ca
-	 * z³o¿enie metod typu set
+	 * Konstruktor UserSelection na bazie jego skÅ‚adowych stanowiÄ…ca
+	 * zÅ‚oÅ¼enie metod typu set
 	 * 
 	 * @param dataBaseid
 	 *            - identyfikator bazy danych
 	 * @param measure
-	 *            - u¿yta miara {@link Measure}
+	 *            - uÅ¼yta miara {@link Measure}
 	 * @param column
-	 *            - definicja (1) osi zagnie¿d¿onej {@link Axis}
+	 *            - definicja (1) osi zagnieÅ¼dÅ¼onej {@link Axis}
 	 * @param row
-	 *            - definicja (2) osi zagnie¿d¿onej {@link Axis}
+	 *            - definicja (2) osi zagnieÅ¼dÅ¼onej {@link Axis}
 	 * @param slice
-	 *            - u¿yty slice (plaster, ciêcie) {@link DimensionElSet}
+	 *            - uÅ¼yty slice (plaster, ciÄ™cie) {@link DimensionElSet}
 	 */
 	public UserSelection(int dataBaseid, Measure measure, Axis column, Axis row,
 			DimensionElSet slice) {
@@ -68,8 +68,8 @@ public class UserSelection implements Serializable {
 	}
 
 	/**
-	 * Zwraca wykorzystywan¹ miarê ({@link null} jeœli cz³onkowie wymiaru Miary
-	 * s¹ umieszczeni na osiach)
+	 * Zwraca wykorzystywanÄ… miarÄ™ ({@link null} jeÅ›li czÅ‚onkowie wymiaru Miary
+	 * sÄ… umieszczeni na osiach)
 	 * 
 	 * @return measure - uzyta miara
 	 */
@@ -78,52 +78,52 @@ public class UserSelection implements Serializable {
 	}
 
 	/**
-	 * Ustawia wybran¹ przez u¿ytkownika miarê ({@link null} jeœli cz³onkowie
-	 * wymiaru Miary s¹ umieszczeni na osiach)
+	 * Ustawia wybranÄ… przez uÅ¼ytkownika miarÄ™ ({@link null} jeÅ›li czÅ‚onkowie
+	 * wymiaru Miary sÄ… umieszczeni na osiach)
 	 * 
-	 * @param measure - wybrana przez u¿ytkownika miara
+	 * @param measure - wybrana przez uÅ¼ytkownika miara
 	 */
 	public void setMeasure(Measure measure) {
 		this.measure = measure;
 	}
 	/**
-	 * Zwraca (1) oœ zagnie¿d¿on¹ ({@link Axis})
-	 * @return column - (1) oœ zagnie¿d¿ona
+	 * Zwraca (1) oÅ› zagnieÅ¼dÅ¼onÄ… ({@link Axis})
+	 * @return column - (1) oÅ› zagnieÅ¼dÅ¼ona
 	 */
 	public Axis getColumn() {
 		return column;
 	}
 	/**
-	 * Ustawia (1) oœ zagnie¿d¿on¹ {@link Axis}
+	 * Ustawia (1) oÅ› zagnieÅ¼dÅ¼onÄ… {@link Axis}
 	 * @param column
 	 */
 	public void setColumn(Axis column) {
 		this.column = column;
 	}
 	/**
-	 * Zwraca (2) oœ zagnie¿d¿on¹ ({@link Axis})
-	 * @return row - (2) oœ zagnie¿d¿ona
+	 * Zwraca (2) oÅ› zagnieÅ¼dÅ¼onÄ… ({@link Axis})
+	 * @return row - (2) oÅ› zagnieÅ¼dÅ¼ona
 	 */
 	public Axis getRow() {
 		return row;
 	}
 	/**
-	 * Ustawia (2) oœ zagnie¿d¿on¹ {@link Axis}
+	 * Ustawia (2) oÅ› zagnieÅ¼dÅ¼onÄ… {@link Axis}
 	 * @param row
 	 */
 	public void setRow(Axis row) {
 		this.row = row;
 	}
 	/**
-	 * Zwraca slice (ciêcie, plaster) filtruj¹cy zapytanie u¿ytkownika
-	 * @return slice - ciêcie, plaster filtruj¹cy zapytanie u¿ytkownika
+	 * Zwraca slice (ciÄ™cie, plaster) filtrujÄ…cy zapytanie uÅ¼ytkownika
+	 * @return slice - ciÄ™cie, plaster filtrujÄ…cy zapytanie uÅ¼ytkownika
 	 */
 	public DimensionElSet getSlice() {
 		return slice;
 	}
 	/**
-	 * Ustawia slice (ciêcie, plaster) jako zbiór ({@link DimensionElSet}) elementów wymiarów
-	 * @param slice - ciêcie, plaster do ustawienia
+	 * Ustawia slice (ciÄ™cie, plaster) jako zbiÃ³r ({@link DimensionElSet}) elementÃ³w wymiarÃ³w
+	 * @param slice - ciÄ™cie, plaster do ustawienia
 	 */
 	public void setSlice(DimensionElSet slice) {
 		this.slice = slice;

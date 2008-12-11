@@ -4,11 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Klasa reprezentuj¹ca funkcjê na³o¿on¹ na zbiór elementów wymiaru (np. headX,
+ * Klasa reprezentujÄ…ca funkcjÄ™ naÅ‚oÅ¼onÄ… na zbiÃ³r elementÃ³w wymiaru (np. headX,
  * toppercen, notempty)
  * 
  * @author Katarzyna Rzerzicha
- * @author Micha³ Brzeziñski-Spiczak
+ * @author MichaÅ‚ BrzeziÅ„ski-Spiczak
  * 
  */
 public class Function implements Serializable {
@@ -17,13 +17,13 @@ public class Function implements Serializable {
 	private ArrayList<Object> parameter;
 
 	/**
-	 * Konstruktor domyœlny
+	 * Konstruktor domyÅ›lny
 	 */
 	public Function() {
 	}
 
 	/**
-	 * Konstruktor na bazie identyfikatora funkcji, bez parametrów
+	 * Konstruktor na bazie identyfikatora funkcji, bez parametrÃ³w
 	 * 
 	 * @param id
 	 */
@@ -33,7 +33,7 @@ public class Function implements Serializable {
 	}
 
 	/**
-	 * konstruktor na bazie identyfikatora funkcji oraz listy parametrów
+	 * konstruktor na bazie identyfikatora funkcji oraz listy parametrÃ³w
 	 * 
 	 * @param id
 	 * @param o
@@ -53,7 +53,7 @@ public class Function implements Serializable {
 	}
 
 	/**
-	 * Zwraca listê parametrow funkcji
+	 * Zwraca listÄ™ parametrow funkcji
 	 * 
 	 * @return
 	 */
@@ -72,10 +72,10 @@ public class Function implements Serializable {
 	}
 
 	/**
-	 * Ustawia listê parametrow funkcji
+	 * Ustawia listÄ™ parametrow funkcji
 	 * 
 	 * @param lista
-	 *            parametrów funkcji do ustawienia
+	 *            parametrÃ³w funkcji do ustawienia
 	 */
 	public void setParameter(ArrayList<Object> parameter) {
 		this.parameter = parameter;

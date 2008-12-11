@@ -4,10 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
- * Klasa-kontener elementów wymiaru
+ * Klasa-kontener elementÃ³w wymiaru
  * 
  * @author Katarzyna Rzerzicha
- * @author Micha³ Brzeziñski-Spiczak
+ * @author MichaÅ‚ BrzeziÅ„ski-Spiczak
  * 
  */
 public abstract class DimensionElSet implements Serializable {
@@ -17,42 +17,42 @@ public abstract class DimensionElSet implements Serializable {
 
 	
 	/**
-	 * Konstrktor domyœlny
+	 * Konstrktor domyÅ›lny
 	 */
 	public DimensionElSet() {
 	};
 	/**
-	 * Zwraca iloœæ elementów w kontenerze
+	 * Zwraca iloÅ›Ä‡ elementÃ³w w kontenerze
 	 * @return dimensionEl.size();
 	 */
 	public int getDimensionElAmount() {
 		return dimensionEls.size();
 	}
 	/**
-	 * Zwraca i-ty zbiór elementów wymiaru {@link DimensionEl} w kontenerze
+	 * Zwraca i-ty zbiÃ³r elementÃ³w wymiaru {@link DimensionEl} w kontenerze
 	 * @param i - nr elementu kontenera
-	 * @return dimensionEl - zbiór elementów wymiaru
+	 * @return dimensionEl - zbiÃ³r elementÃ³w wymiaru
 	 */
 	public DimensionEl getDimensionEl(int i) {
 		return dimensionEls.get(i);
 	}
 	/**
-	 * Dodaje do kontenera zbiór elementów wymiaru
-	 * @param dimensionEl - zbiór elementów wymiaru
+	 * Dodaje do kontenera zbiÃ³r elementÃ³w wymiaru
+	 * @param dimensionEl - zbiÃ³r elementÃ³w wymiaru
 	 */
 	public void addDimensionEl(DimensionEl dimensionEl) {
 		this.dimensionEls.add(dimensionEl);
 	}
 	/**
-	 * Zwraca kontener {@link ArrayList} zbiorów elementów wymiaru (wymiarów)
-	 * @return dimensionEls - {@link ArrayList} zbiorów elementów wymiaru (wymiarów)
+	 * Zwraca kontener {@link ArrayList} zbiorÃ³w elementÃ³w wymiaru (wymiarÃ³w)
+	 * @return dimensionEls - {@link ArrayList} zbiorÃ³w elementÃ³w wymiaru (wymiarÃ³w)
 	 */
 	public ArrayList<DimensionEl> getDimensionEls() {
 		return dimensionEls;
 	}
 	/**
-	 * Ustawia kontener {@link ArrayList} zbiorów elementów wymiaru (wymiarów)
-	 * @param dimensionEls kontener {@link ArrayList} zbiorów elementów wymiaru (wymiarów)
+	 * Ustawia kontener {@link ArrayList} zbiorÃ³w elementÃ³w wymiaru (wymiarÃ³w)
+	 * @param dimensionEls kontener {@link ArrayList} zbiorÃ³w elementÃ³w wymiaru (wymiarÃ³w)
 	 */
 	public void setDimensionEls(ArrayList<DimensionEl> dimensionEls) {
 		this.dimensionEls = dimensionEls;
