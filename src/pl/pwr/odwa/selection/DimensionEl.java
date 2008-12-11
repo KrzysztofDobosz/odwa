@@ -3,11 +3,11 @@ package pl.pwr.odwa.selection;
 import java.io.Serializable;
 
 /**
- * Klasa reprezentuj¹ca zbiór cz³onków wymiaru poprzez œcie¿kê hierarchi (
- * {@link Path}) oraz metodê opisu {@link Method}.
- * 
- * @author Micha³ Brzeziñski-Spiczak
- * 
+ * Klasa reprezentujÄ…ca zbiÃ³r czÅ‚onkÃ³w wymiaru poprzez Å›cieÅ¼kÄ™ hierarchi (
+ * {@link Path}) oraz metodÄ™ opisu {@link Method}.
+ *
+ * @author MichaÅ‚ BrzeziÅ„ski-Spiczak
+ *
  */
 public class DimensionEl implements Serializable {
 
@@ -16,40 +16,42 @@ public class DimensionEl implements Serializable {
 	private Method method;
 
 	/**
-	 * Konstruktor domyœlny
+	 * Konstruktor domyÅ›lny
 	 */
 	public DimensionEl() {
 	}
 
 	/**
-	 * Konstruktor zbioru elementów wymiaru poprzez podane sk³adowych, metoda
-	 * stanowi¹ca po³¹czenie metod typu set
-	 * 
-	 * @param path - œcie¿ka hierarchiczna ({@link Path})
+	 * Konstruktor zbioru elementÃ³w wymiaru poprzez podane skÅ‚adowych, metoda
+	 * stanowiÄ…ca poÅ‚Ä…czenie metod typu set
+	 *
+	 * @param path - Å›cieÅ¼ka hierarchiczna ({@link Path})
 	 * @param method - metoda opisu ({@link Method})
 	 */
 	public DimensionEl(Path path, Method method) {
 		setPath(path);
 		setMethod(method);
 	}
+
 	/**
-	 * Zwraca œcie¿kê hierarchiczn¹ ({@link Path})
-	 * @return path - œcie¿ka hierarchiczna ({@link Path})
+	 * Zwraca Å›cieÅ¼kÄ™ hierarchicznÄ… ({@link Path})
+	 * @return path - Å›cieÅ¼ka hierarchiczna ({@link Path})
 	 */
 	public Path getPath() {
 		return path;
 	}
 
 	/**
-	 * Ustawia œcie¿kê hierchiczn¹ na podan¹ jako argument
-	 * @param path - œciezka hierarchiczna ({@link Path})
-	 *           
+	 * Ustawia Å›cieÅ¼kÄ™ hierchicznÄ… na podanÄ… jako argument
+	 * @param path - Å›ciezka hierarchiczna ({@link Path})
+	 *
 	 */
 	public void setPath(Path path) {
 		this.path = path;
 	}
+
 	/**
-	 * Zwraca metodê opisu( {@link Method})
+	 * Zwraca metodÄ™ opisu( {@link Method})
 	 * @return - metoda opisu ({@link Method})
 	 */
 	public Method getMethod() {
@@ -57,11 +59,11 @@ public class DimensionEl implements Serializable {
 	}
 
 	/**
-	 * Ustawia metodê opisu ({@link Method})
+	 * Ustawia metodÄ™ opisu ({@link Method})
 	 * @param method - metoda opisu ({@link Method})
 	 */
 	public void setMethod(Method method) {
 		this.method = method;
 	}
-
 }
+
