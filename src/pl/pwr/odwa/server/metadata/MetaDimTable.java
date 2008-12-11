@@ -1,5 +1,7 @@
 package pl.pwr.odwa.server.metadata;
 
+import java.util.ArrayList;
+
 /** Klasa reprezentuje tabelę wymiarów.
  *
  * Tabelą wymiarów nazywamy tabelę relacyjnej bazy danych,
