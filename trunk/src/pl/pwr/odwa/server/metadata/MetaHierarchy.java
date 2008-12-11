@@ -1,5 +1,7 @@
 package pl.pwr.odwa.server.metadata;
 
+import java.util.ArrayList;
+
 /** Klasa definiuje hierarchię wymiarów.
  *
  *  Hierarchią wymiarów nazywamy uporządkowany zbiór wymiarów
@@ -33,8 +35,8 @@ package pl.pwr.odwa.server.metadata;
 public class MetaHierarchy extends MetaElement {
     protected ArrayList<MetaDim> m_members;
 
-    protected ArrayList<MetaDim> getMembers() {
-        return m_members;
+    protected void setMembers(ArrayList<MetaDim> memb) {
+        m_members = memb;
     }
 
     /** Zwraca listę wymiarów hierarchii.

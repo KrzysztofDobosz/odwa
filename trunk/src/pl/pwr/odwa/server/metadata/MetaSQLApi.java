@@ -1,6 +1,6 @@
 package pl.pwr.odwa.server.metadata;
 
-import pl.pwr.odwa.server.engine.DBStructure;
+import pl.pwr.odwa.server.structure.DBStructure;
 
 /** Klasa definiuje interfejs Metadane <-> SQL.
  *
