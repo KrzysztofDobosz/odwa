@@ -11,6 +11,7 @@ import pl.pwr.odwa.selection.UserSelection;
 /**
  * Klasa raportu dynamicnzego rozszerzaj¹ca abstrakcyjn¹ klasê {@link Report}
  * 
+ * @author Katarzyna Rzerzicha
  * @author Micha³ Brzeziñski-Spiczak
  */
 public class DynamicReport extends Report {
@@ -44,7 +45,7 @@ public class DynamicReport extends Report {
 	 * @param filepath
 	 *            - nazwa/œcie¿ka do pliku raportu do odczytu
 	 */
-	public void read(String filepath) {
+	public DynamicReport(String filepath) {
 		try {
 			FileInputStream file = new FileInputStream(filepath);
 			ObjectInputStream objectstream = new ObjectInputStream(file);

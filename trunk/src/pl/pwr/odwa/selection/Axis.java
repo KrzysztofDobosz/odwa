@@ -4,6 +4,8 @@
 package pl.pwr.odwa.selection;
 /**
  * Klasa reprezentuj¹ca zagnie¿d¿on¹ oœ zapytania {@link UserSelection}
+ * @author Katarzyna Rzerzicha
+ * @author Micha³ Brzeziñski-Spiczak
  */
 import java.io.Serializable;
 import java.util.ArrayList;

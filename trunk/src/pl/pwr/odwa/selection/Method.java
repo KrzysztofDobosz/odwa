@@ -8,6 +8,7 @@ import java.io.Serializable;
  * dziedziczenie umo¿liwione jest wprowadzenie bardziej zaawansowanych metod jak
  * równie¿ ich z³o¿eñ).
  * 
+ * @author Katarzyna Rzerzicha
  * @author Micha³ Brzeziñski-Spiczak
  * 
  */

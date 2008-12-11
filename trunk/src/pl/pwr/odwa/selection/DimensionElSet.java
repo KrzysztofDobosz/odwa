@@ -6,6 +6,7 @@ import java.util.ArrayList;
 /**
  * Klasa-kontener elementów wymiaru
  * 
+ * @author Katarzyna Rzerzicha
  * @author Micha³ Brzeziñski-Spiczak
  * 
  */

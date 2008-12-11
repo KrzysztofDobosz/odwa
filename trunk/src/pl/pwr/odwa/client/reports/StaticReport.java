@@ -13,6 +13,7 @@ import pl.pwr.odwa.result.DBResult;
 /**
  * Klasa raportu statycznego rozszerzaj¹ca abstrakcyjn¹ klasê {@link Report}
  * 
+ * @author Katarzyna Rzerzicha
  * @author Micha³ Brzeziñski-Spiczak
  */
 public class StaticReport extends Report {
@@ -49,7 +50,7 @@ public class StaticReport extends Report {
 	 * @param filepath
 	 *            - nazwa/œcie¿ka do pliku raportu do odczytu
 	 */
-	public void read(String filepath) throws ClassNotFoundException,
+	public StaticReport(String filepath) throws ClassNotFoundException,
 			IOException {
 		try {
 			FileInputStream fileInputStream = new FileInputStream(filepath);

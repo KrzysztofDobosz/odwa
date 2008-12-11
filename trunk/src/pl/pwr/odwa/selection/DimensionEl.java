@@ -6,6 +6,7 @@ import java.io.Serializable;
  * Klasa reprezentująca zbiór członków wymiaru poprzez ścieżkę hierarchi (
  * {@link Path}) oraz metodę opisu {@link Method}.
  *
+ * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
  *
  */

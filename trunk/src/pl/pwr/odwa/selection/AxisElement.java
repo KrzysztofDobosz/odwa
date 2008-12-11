@@ -3,9 +3,10 @@ package pl.pwr.odwa.selection;
 import java.io.Serializable;
 /**
  * Klasa reprezentuj¹ca pojedynczy poziom zagnie¿d¿enia osi w zapytaniu {@link UserSelection}
+ * 
+ * @author Katarzyna Rzerzicha
  * @author Micha³ Brzeziñski-Spiczak
- *
- */
+  */
 
 public class AxisElement implements Serializable {
 	private static final long serialVersionUID = 5157213403910585037L;

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 /**
  * Klasa reprezentuj¹ca œcie¿kê hierarchii wewn¹trz wymiaru
  * 
+ * @author Katarzyna Rzerzicha
  * @author Micha³ Brzeziñski-Spiczak
  * 
  */
