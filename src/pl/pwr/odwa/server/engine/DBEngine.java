@@ -1,13 +1,16 @@
 package pl.pwr.odwa.server.engine;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import pl.pwr.odwa.result.DBResult;
 import pl.pwr.odwa.selection.UserSelection;
-import pl.pwr.odwa.server.structure.DBStructure;
+import pl.pwr.odwa.server.structure.*;
 
 /**
  * 
@@ -18,26 +21,27 @@ public class DBEngine
 	Connection conn;
 
 	/**
-	 * Laczy ze wskazana baza danych, dla zadanego uzytkownika z podanym haslem
+	 * Connects to Database under given URL, as a given user with given password
 	 * 
-	 * @param url adres bazy
-	 * @param user nazwa uzytkownika
-	 * @param password haslo
+	 * @param url database adress
+	 * @param user user login
+	 * @param password
 	 */
 	void connect(String url, String user, String password)
 	{
 		try
 		{
+			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(url, user, password);
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
 
 	/**
-	 * Ko�czy polaczenie z baza danych
+	 * Ends connection with database
 	 */
 	void disconnect()
 	{
@@ -52,10 +56,10 @@ public class DBEngine
 	}
 
 	/**
-	 * Wykonuje zapytanie do bay danych
+	 * Executes Query in Database
 	 * 
-	 * @param Query Zapytanie u�ytkownika
-	 * @return Wynik zapytania u�ytkownika
+	 * @param Query User Query
+	 * @return Result of User Query
 	 */
 	DBResult executeQuery(UserSelection Query)
 	{
@@ -63,12 +67,136 @@ public class DBEngine
 	}
 
 	/**
-	 * Zwraca wszystkie dost�pne bazy danych
+	 * Returns all available databases. First use connect for getting
+	 * connections. Returns only databases visible for logged user.
 	 * 
-	 * @return lista dostepnych baz danych pod danym adresem
+	 * @return list of structures of all databases visible for logged user. See
+	 *         {@link DBStructure}
 	 */
-	ArrayList<DBStructure> getDatabases(String url)
+	ArrayList<DBStructure> getDatabases()
 	{
+		try
+		{
+			DatabaseMetaData meta = conn.getMetaData();
+			ResultSet catalogs = meta.getCatalogs();
+
+			ArrayList<DBStructure> result = new ArrayList<DBStructure>();
+
+			// adding databases
+			while (catalogs.next())
+			{
+				String catName = catalogs.getString(1);
+				ResultSet tables = meta.getTables(catName, null, null, null);
+
+				ArrayList<DBTable> dbTables = new ArrayList<DBTable>();
+
+				// adding tables
+				while (tables.next())
+				{
+					String tabName = tables.getString(3);
+					ResultSet fields = meta.getColumns(catName, null, tabName, null);
+
+					ArrayList<DBField> dbFields = new ArrayList<DBField>();
+
+					// preparing list of primary keys in table
+					ResultSet primaryKeys = meta.getPrimaryKeys(catName, null,
+							tabName);
+					ArrayList<String> primKeys = new ArrayList<String>();
+
+					while (primaryKeys.next())
+					{
+						primKeys.add(primaryKeys.getString(4));
+					}
+
+					// creating foreign keys list
+					ResultSet foreignKeys = meta.getImportedKeys(catName, null,
+							tabName);
+					ArrayList<String> foreKeys = new ArrayList<String>();
+					ArrayList<ForeKeyCont> foreKeysDesc = new ArrayList<ForeKeyCont>();
+
+					while (foreignKeys.next())
+					{
+						foreKeys.add(foreignKeys.getString(8));
+						foreKeysDesc.add(new ForeKeyCont(foreignKeys.getString(8),
+								foreignKeys.getString(3), foreignKeys.getString(4)));
+					}
+
+					// adding fields
+					while (fields.next())
+					{
+						String fieldName = fields.getString(4);
+						String foreTable = null;
+						String foreColumn = null;
+
+						if (foreKeys.contains(fieldName))
+						{
+							int i = foreKeys.indexOf(fieldName);
+							ForeKeyCont cont = foreKeysDesc.get(i);
+							foreTable = cont.getForeTableName();
+							foreColumn = cont.getForeColumnName();
+						}
+
+						DBField field = new DBField(fieldName, primKeys
+								.contains(fieldName), foreKeys.contains(fieldName),
+								foreTable, foreColumn, fields.getString(6), fields
+										.getString(13), fields.getBoolean(11));
+
+						dbFields.add(field);
+					}
+
+					DBTable table = new DBTable(tabName, dbFields);
+					dbTables.add(table);
+				}
+
+				DBStructure struct = new DBStructure(catName, dbTables);
+				result.add(struct);
+			}
+			return result;
+		}
+		catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+
 		return null;
+	}
+}
+
+/**
+ * Container for Foreign Key Data, usage only in getStructure()
+ */
+class ForeKeyCont
+{
+	private String name;
+	private String foreTableName;
+	private String foreColumnName;
+
+	/**
+	 * Creates new ForeKeyKont
+	 * 
+	 * @param n Foreign Key name
+	 * @param t Referd table name
+	 * @param c Refered column name
+	 */
+	public ForeKeyCont(String n, String t, String c)
+	{
+		name = n;
+		foreTableName = t;
+		foreColumnName = c;
+	}
+
+	public String getName()
+	{
+		return name;
+	}
+
+	public String getForeTableName()
+	{
+		return foreTableName;
+	}
+
+	public String getForeColumnName()
+	{
+		return foreColumnName;
 	}
 }
