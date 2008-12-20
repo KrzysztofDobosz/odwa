@@ -1,27 +1,58 @@
 package pl.pwr.odwa.server.structure;
 
+import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 
 /**
- * Klasa reprezentujaca struktore pojedynczej tabeli w bazie danych
- *
+ * Class representing a single table in database, contains description of each
+ * column as {@link DBField}. Use getFields() to get fields description.
+ * 
  */
 public class DBTable
 {
 	private String name;
+	private ArrayList<DBField> fields;
+
 	/**
-	 * Podaje nazwe tabeli
-	 * @return nazwa
+	 * Creates empty DBTable for table of given name
+	 * 
+	 * @param n
 	 */
-	String getName( )
+	public DBTable(String n)
+	{
+		name = n;
+		fields = new ArrayList<DBField>();
+	}
+
+	/**
+	 * Creates DBTable for table of given name with given fields
+	 * 
+	 * @param n table name
+	 * @param field fields list
+	 */
+	public DBTable(String n, ArrayList<DBField> field)
+	{
+		name = n;
+		fields = new ArrayList<DBField>();
+	}
+
+	/**
+	 * Returns table name
+	 * 
+	 * @return table name
+	 */
+	String getName()
 	{
 		return name;
 	}
+
 	/**
-	 * Podaje wszystkie pola zawarte w tabeli
-	 * @return lista kolumn zawarych w tabeli
+	 * Returns list of all columns in table, with detailed description (see
+	 * {@link DBField})
+	 * 
+	 * @return list of columns in table
 	 */
-	ArrayList<DBField> getFields( )
+	ArrayList<DBField> getFields()
 	{
 		return null;
 	}
