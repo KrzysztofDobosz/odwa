@@ -1,11 +1,12 @@
 package pl.pwr.odwa.server.structure;
 
-import pl.pwr.odwa.dbtypes.DBFieldDataType;
 
 import java.util.ArrayList;
 
+import pl.pwr.odwa.dbtypes.DBFieldDataType;
+
 /**
- * Klasa reprezentuje strukture pojedynczego pola w tabeli
+ * Class represents single field in database table
  * 
  */
 public class DBField
