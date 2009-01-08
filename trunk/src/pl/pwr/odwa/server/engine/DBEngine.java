@@ -1,20 +1,22 @@
 package pl.pwr.odwa.server.engine;
-
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import pl.pwr.odwa.result.DBResult;
 import pl.pwr.odwa.selection.UserSelection;
-import pl.pwr.odwa.server.structure.*;
+import pl.pwr.odwa.server.structure.DBField;
+import pl.pwr.odwa.server.structure.DBStructure;
+import pl.pwr.odwa.server.structure.DBTable;
 
 /**
- * 
- * 
+ *
+ *
  */
 public class DBEngine
 {
@@ -23,18 +25,20 @@ public class DBEngine
 	/**
 	 * Connects to Database under given URL, as a given user with given password
 	 * 
-	 * @param url database adress
-	 * @param user user login
+	 * @param url
+	 *            database adress
+	 * @param user
+	 *            user login
 	 * @param password
 	 */
-	void connect(String url, String user, String password)
+	public void connect(String url, String user, String password)
 	{
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver");
+			System.out.println(DriverManager.getDrivers());
 			conn = DriverManager.getConnection(url, user, password);
-		}
-		catch (Exception e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -43,13 +47,12 @@ public class DBEngine
 	/**
 	 * Ends connection with database
 	 */
-	void disconnect()
+	public void disconnect()
 	{
 		try
 		{
 			conn.close();
-		}
-		catch (SQLException e)
+		} catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
@@ -58,11 +61,115 @@ public class DBEngine
 	/**
 	 * Executes Query in Database
 	 * 
-	 * @param Query User Query
+	 * testowane dla sumy sprzedaży w podziale na kraje dla płci w roku
+	 * 2008(filtr)
+	 * 
+	 * @param Query
+	 *            User Query
 	 * @return Result of User Query
 	 */
-	DBResult executeQuery(UserSelection Query)
+	public DBResult executeQuery(UserSelection Query)
 	{
+		String selectClause = "SELECT ";
+		String fromClause = "FROM ";
+		String whereClause = "WHERE ";
+		String groupByClause = "GROUP BY ";
+
+		// getting fact Table name
+		String factTable = "factinternetsales";
+
+		ArrayList<String> addedDimTables = new ArrayList<String>();
+
+		// ***************axis dimensions checking
+		ArrayList<String> dimIdFieldList = new ArrayList<String>(); // list
+		// of field names and ids similarly to axisElemList
+		dimIdFieldList.add("CustomerKey");
+		dimIdFieldList.add("SalesTerritoryKey");
+
+		ArrayList<String> factDimIdFieldList = new ArrayList<String>(); // list
+		// of field names and ids in the fact table as the above
+		factDimIdFieldList.add("CustomerKey");
+		factDimIdFieldList.add("SalesTerritoryKey");
+
+		ArrayList<String> dimElemName = new ArrayList<String>(); // list
+		// of dimension elements' names expected by user
+		dimElemName.add("Gender");
+		dimElemName.add("SalesTerritoryCountry");
+		ArrayList<String> axisDimList = new ArrayList<String>(); // obtained
+		// from userSelection and translated to dimension names
+		axisDimList.add("dimcustomer");
+		axisDimList.add("dimsalesterritory");
+
+		// Create MySQL query
+		SQLQuery query = new MySQLQuery();
+		query.addToFromClause(factTable); //add fact table to from fields...
+		
+		for (int i = 0; i < axisDimList.size(); i++)
+		{
+			String elem;
+			if (!addedDimTables.contains(elem = axisDimList.get(i)))
+			{
+				addedDimTables.add(elem);
+				query.addToFromClause(elem, SQLJoinOperator.INNER_JOIN,
+						elem + "." + dimIdFieldList.get(i), factTable + "."
+								+ factDimIdFieldList.get(i));
+
+			}
+			query.addResField( elem + "." + dimElemName.get(i));
+			query.addToGroupByClause( elem + "."
+					+ dimElemName.get(i));
+		}
+
+		String measure = "SUM(factinternetsales.SalesAmount)";// metadata module
+		query.addResField(measure);
+
+		// *************constraints check
+		ArrayList<String> boundDimIdFieldList = new ArrayList<String>(); // list
+		// field names and dimension id corresponding to
+		// axisElemList
+		boundDimIdFieldList.add("TimeKey");
+		ArrayList<String> boundFactDimIdFieldList = new ArrayList<String>();
+		// list of field names and dimension ids in the fact tabel as the above
+		boundFactDimIdFieldList.add("OrderDateKey");
+		ArrayList<String> boundDimElemName = new ArrayList<String>(); // list
+		// dimension element names expected by user
+		boundDimElemName.add("CalendarYear");
+		ArrayList<String> boundDimList = new ArrayList<String>(); // obtained
+		// from userSelection and translated to dimension table names
+		boundDimList.add("dimtime");
+		ArrayList<String> boundDimValuesList = new ArrayList<String>();
+		boundDimValuesList.add("2003");
+
+		for (int i = 0; i < boundDimList.size(); i++)
+		{
+			String elem;
+			if (!addedDimTables.contains(elem = boundDimList.get(i)))
+			{
+				addedDimTables.add(elem);
+				query.addToFromClause(elem, SQLJoinOperator.INNER_JOIN, elem
+						+ "." + boundDimIdFieldList.get(i), factTable + "."
+						+ boundFactDimIdFieldList.get(i));
+			}
+			query.addToWhereClause(elem + "." + boundDimElemName.get(i)
+					+ "='" + boundDimValuesList.get(i) + "'", SQLLogicOperator.AND);
+		}
+		
+
+		
+
+		
+
+		try
+		{
+			Statement db = conn.createStatement(); // ResultSet result =
+			ResultSet result = db.executeQuery(query.getQuery());
+			DBResult res = new DBResult(result, query.getQuery());
+			return res;
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+
 		return null;
 	}
 
@@ -73,7 +180,7 @@ public class DBEngine
 	 * @return list of structures of all databases visible for logged user. See
 	 *         {@link DBStructure}
 	 */
-	ArrayList<DBStructure> getDatabases()
+	public ArrayList<DBStructure> getDatabases()
 	{
 		try
 		{
@@ -94,7 +201,8 @@ public class DBEngine
 				while (tables.next())
 				{
 					String tabName = tables.getString(3);
-					ResultSet fields = meta.getColumns(catName, null, tabName, null);
+					ResultSet fields = meta.getColumns(catName, null, tabName,
+							null);
 
 					ArrayList<DBField> dbFields = new ArrayList<DBField>();
 
@@ -117,8 +225,9 @@ public class DBEngine
 					while (foreignKeys.next())
 					{
 						foreKeys.add(foreignKeys.getString(8));
-						foreKeysDesc.add(new ForeKeyCont(foreignKeys.getString(8),
-								foreignKeys.getString(3), foreignKeys.getString(4)));
+						foreKeysDesc.add(new ForeKeyCont(foreignKeys
+								.getString(8), foreignKeys.getString(3),
+								foreignKeys.getString(4)));
 					}
 
 					// adding fields
@@ -137,9 +246,10 @@ public class DBEngine
 						}
 
 						DBField field = new DBField(fieldName, primKeys
-								.contains(fieldName), foreKeys.contains(fieldName),
-								foreTable, foreColumn, fields.getString(6), fields
-										.getString(13), fields.getBoolean(11));
+								.contains(fieldName), foreKeys
+								.contains(fieldName), foreTable, foreColumn,
+								fields.getString(6), fields.getString(13),
+								fields.getBoolean(11));
 
 						dbFields.add(field);
 					}
@@ -152,8 +262,7 @@ public class DBEngine
 				result.add(struct);
 			}
 			return result;
-		}
-		catch (SQLException e)
+		} catch (SQLException e)
 		{
 			e.printStackTrace();
 		}
@@ -168,15 +277,20 @@ public class DBEngine
 class ForeKeyCont
 {
 	private String name;
+
 	private String foreTableName;
+
 	private String foreColumnName;
 
 	/**
 	 * Creates new ForeKeyKont
 	 * 
-	 * @param n Foreign Key name
-	 * @param t Referd table name
-	 * @param c Refered column name
+	 * @param n
+	 *            Foreign Key name
+	 * @param t
+	 *            Referd table name
+	 * @param c
+	 *            Refered column name
 	 */
 	public ForeKeyCont(String n, String t, String c)
 	{

@@ -1,6 +1,5 @@
 package pl.pwr.odwa.server.structure;
 
-import java.io.ObjectInputStream.GetField;
 import java.util.ArrayList;
 
 /**
