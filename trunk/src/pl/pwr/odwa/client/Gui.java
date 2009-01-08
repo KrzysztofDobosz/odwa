@@ -6,13 +6,7 @@ import pl.pwr.odwa.client.communication.*;
 import pl.pwr.odwa.client.visualization.*;
 import pl.pwr.odwa.result.DBResult;
 import pl.pwr.odwa.selection.UserSelection;
-import pl.pwr.odwa.server.metadata.MetaDataView;
-import pl.pwr.odwa.server.metadata.MetaDim;
-import pl.pwr.odwa.server.metadata.MetaDimElement;
-import pl.pwr.odwa.server.metadata.MetaDimTable;
-import pl.pwr.odwa.server.metadata.MetaHierarchy;
-import pl.pwr.odwa.server.metadata.MetaMeasure;
-import pl.pwr.odwa.server.metadata.MetaSlot;
+import pl.pwr.odwa.server.metadata.*;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -38,6 +32,8 @@ public class Gui implements EntryPoint
     * Interface do komunikacji RPC z moduĹ‚em metadanych.
     */
    private MetaGUIApiServiceAsync metaService;
+
+   private MetaGUIApi metaApi = new MetaGUIApi();
 
    /**
     * Instancja klasy odpowiedzialnej za wyĹ›wietlanie wynikĂłw zapytania do
@@ -66,7 +62,7 @@ public class Gui implements EntryPoint
     * metodÄ™ DBEngine.executeQuery(UserSelection), a po uzyskaniu wyniku
     * wywoĹ‚uje funkcjÄ™ show(int, DBResult) moduĹ‚u Visualization.
     */
-   void executeQuery()
+   public void executeQuery()
    {
       dbService.executeQuery(currentSelection, new AsyncCallback<DBResult>()
       {
@@ -89,9 +85,12 @@ public class Gui implements EntryPoint
     * @param userName
     *           nazwa uĹĽytkownika
     */
-   void getSlots()
+   public void getSlots()
    {
-      metaService.getSlots(userName, new AsyncCallback<ArrayList<MetaSlot>>()
+      System.out.println("Gui: getSlots() executed");
+      metaApi.getSlots("");
+      getDataViews(new MetaSlot());
+      /*metaService.getSlots(userName, new AsyncCallback<ArrayList<MetaSlot>>()
       {
          public void onFailure(Throwable caught)
          {
@@ -102,7 +101,7 @@ public class Gui implements EntryPoint
          {
             System.out.println("Gui: Getting slots succeed.");
          }
-      });
+      });*/
    }
 
    /**
@@ -112,9 +111,14 @@ public class Gui implements EntryPoint
     * @param slot
     *           wybrany przez uĹĽytkownika slot
     */
-   void getDataViews(MetaSlot slot)
+   public void getDataViews(MetaSlot slot)
    {
-      metaService.getDataViews(slot,
+      System.out.println("Gui: getDataView() executed");
+      metaApi.getDataViews(slot);
+      getDimTables(new MetaDataView());
+      getMeasures(new MetaDataView());
+      getHierarchies(new MetaDataView());
+      /*metaService.getDataViews(slot,
             new AsyncCallback<ArrayList<MetaDataView>>()
             {
                public void onFailure(Throwable caught)
@@ -126,7 +130,7 @@ public class Gui implements EntryPoint
                {
                   System.out.println("Gui: Getting data views succeed.");
                }
-            });
+            });*/
    }
 
    /**
@@ -136,9 +140,12 @@ public class Gui implements EntryPoint
     * @param view
     *           wybrany przez uĹĽytkownika widok danych
     */
-   void getDimTables(MetaDataView view)
+   public void getDimTables(MetaDataView view)
    {
-      metaService.getDimTables(view,
+      System.out.println("Gui: getDimTables() executed");
+      metaApi.getDimTables(view);
+      getDimentions(new MetaDimTable());
+      /*metaService.getDimTables(view,
             new AsyncCallback<ArrayList<MetaDimTable>>()
             {
                public void onFailure(Throwable caught)
@@ -150,7 +157,7 @@ public class Gui implements EntryPoint
                {
                   System.out.println("Gui: Getting dimention tables succeed.");
                }
-            });
+            });*/
    }
 
    /**
@@ -160,9 +167,12 @@ public class Gui implements EntryPoint
     * @param table
     *           tabelka wymiarĂłw
     */
-   void getDimentions(MetaDimTable table)
+   public void getDimentions(MetaDimTable table)
    {
-      metaService.getDimentions(table, new AsyncCallback<ArrayList<MetaDim>>()
+      System.out.println("Gui: getDimentions() executed");
+      metaApi.getDimentions(table);
+      getDimElements(new MetaDim());
+      /*metaService.getDimentions(table, new AsyncCallback<ArrayList<MetaDim>>()
       {
          public void onFailure(Throwable caught)
          {
@@ -173,7 +183,7 @@ public class Gui implements EntryPoint
          {
             System.out.println("Gui: Getting dimentions succeed.");
          }
-      });
+      });*/
    }
 
    /**
@@ -183,9 +193,11 @@ public class Gui implements EntryPoint
     * @param view
     *           wybrany przez uĹĽytkownika widok danych
     */
-   void getMeasures(MetaDataView view)
+   public void getMeasures(MetaDataView view)
    {
-      metaService.getMeasures(view, new AsyncCallback<ArrayList<MetaMeasure>>()
+      System.out.println("Gui: getMeasures() executed");
+      metaApi.getMeasures(view);
+      /*metaService.getMeasures(view, new AsyncCallback<ArrayList<MetaMeasure>>()
       {
          public void onFailure(Throwable caught)
          {
@@ -196,7 +208,7 @@ public class Gui implements EntryPoint
          {
             System.out.println("Gui: Getting measures succeed.");
          }
-      });
+      });*/
    }
 
    /**
@@ -206,9 +218,11 @@ public class Gui implements EntryPoint
     * @param view
     *           wybrany przez uĹĽytkownika widok danych
     */
-   void getHierarchies(MetaDataView view)
+   public void getHierarchies(MetaDataView view)
    {
-      metaService.getHierarchies(view,
+      System.out.println("Gui: getHierarchies() executed");
+      metaApi.getHierarchies(view);
+      /*metaService.getHierarchies(view,
             new AsyncCallback<ArrayList<MetaHierarchy>>()
             {
                public void onFailure(Throwable caught)
@@ -220,7 +234,7 @@ public class Gui implements EntryPoint
                {
                   System.out.println("Gui: Getting hierarchies succeed.");
                }
-            });
+            });*/
    }
 
    /**
@@ -230,9 +244,11 @@ public class Gui implements EntryPoint
     * @param view
     *           wybrany przez uĹĽytkownika widok danych
     */
-   void getDimElements(MetaDim dimention)
+   public void getDimElements(MetaDim dimention)
    {
-      metaService.getDimElements(dimention,
+      System.out.println("Gui: getDimElements() executed");
+      metaApi.getDimElements(dimention);
+      /*metaService.getDimElements(dimention,
             new AsyncCallback<ArrayList<MetaDimElement>>()
             {
                public void onFailure(Throwable caught)
@@ -245,7 +261,7 @@ public class Gui implements EntryPoint
                   System.out
                         .println("Gui: Getting dimention elements succeed.");
                }
-            });
+            });*/
    }
 
    /**

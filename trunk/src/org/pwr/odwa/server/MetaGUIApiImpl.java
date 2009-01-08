@@ -1,20 +1,21 @@
 package org.pwr.odwa.server;
 
-import org.pwr.odwa.common.MetaGUIApi;
+import org.pwr.odwa.common.metadata.MetaGUIApi;
 
-import org.pwr.odwa.common.MetaID;
-import org.pwr.odwa.common.MetaSlot;
-import org.pwr.odwa.common.MetaDataView;
-import org.pwr.odwa.common.MetaDimTable;
-import org.pwr.odwa.common.MetaDim;
-import org.pwr.odwa.common.MetaDimElement;
-import org.pwr.odwa.common.MetaHierarchy;
-import org.pwr.odwa.common.MetaMeasure;
+import org.pwr.odwa.common.metadata.MetaID;
+import org.pwr.odwa.common.metadata.MetaSlot;
+import org.pwr.odwa.common.metadata.MetaDataView;
+import org.pwr.odwa.common.metadata.MetaDimTable;
+import org.pwr.odwa.common.metadata.MetaDim;
+import org.pwr.odwa.common.metadata.MetaDimElement;
+import org.pwr.odwa.common.metadata.MetaHierarchy;
+import org.pwr.odwa.common.metadata.MetaMeasure;
 
 import java.util.ArrayList;
 
 public class MetaGUIApiImpl implements MetaGUIApi {
     public Object[] getSlots() {
+       System.out.println("ODWAServer: MetaGUIApi: getSlots executed");
         try {
             ArrayList<MetaSlot> list = new ArrayList<MetaSlot>();
 
@@ -44,6 +45,7 @@ public class MetaGUIApiImpl implements MetaGUIApi {
     }
 
     public Object[] getDataViews(MetaID slot) {
+       System.out.println("ODWAServer: MetaGUIApi: getDataViews executed");
         try {
             ArrayList<MetaDataView> list = new ArrayList<MetaDataView>();
 
@@ -55,6 +57,7 @@ public class MetaGUIApiImpl implements MetaGUIApi {
     }
 
     public Object[] getDimTables(MetaID view) {
+       System.out.println("ODWAServer: MetaGUIApi: getDimTables executed");
         try {
             ArrayList<MetaDimTable> list = new ArrayList<MetaDimTable>();
 
@@ -66,6 +69,7 @@ public class MetaGUIApiImpl implements MetaGUIApi {
     }
 
     public Object[] getDimentions(MetaID table) {
+       System.out.println("ODWAServer: MetaGUIApi: getDimentions executed");
         try {
             ArrayList<MetaDim> list = new ArrayList<MetaDim>();
 
@@ -77,6 +81,7 @@ public class MetaGUIApiImpl implements MetaGUIApi {
     }
 
     public Object[] getDimElements(MetaID dim) {
+       System.out.println("ODWAServer: MetaGUIApi: getDimElements executed");
         try {
             ArrayList<MetaDimElement> list = new ArrayList<MetaDimElement>();
 
@@ -88,6 +93,7 @@ public class MetaGUIApiImpl implements MetaGUIApi {
     }
 
     public Object[] getHierarchies(MetaID view) {
+       System.out.println("ODWAServer: MetaGUIApi: getHierarchies executed");
         try {
             ArrayList<MetaHierarchy> list = new ArrayList<MetaHierarchy>();
 
@@ -99,6 +105,7 @@ public class MetaGUIApiImpl implements MetaGUIApi {
     }
 
     public Object[] getMeasures(MetaID view) {
+       System.out.println("ODWAServer: MetaGUIApi: getMeasures executed");
         try {
             ArrayList<MetaMeasure> list = new ArrayList<MetaMeasure>();
 

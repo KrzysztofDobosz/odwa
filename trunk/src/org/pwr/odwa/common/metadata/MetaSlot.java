@@ -1,4 +1,4 @@
-package org.pwr.odwa.common;
+package org.pwr.odwa.common.metadata;
 
 /** Najwyższa jednostaka allokacji w bazie metadanych.
  *

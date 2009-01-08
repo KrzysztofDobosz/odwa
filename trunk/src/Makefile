@@ -1,24 +1,32 @@
 
 PREFIX=org/pwr/odwa
 
-DIRS=$(PREFIX)/common \
+DIRS=$(PREFIX)/common/selection \
+     $(PREFIX)/common/dbtypes \
+     $(PREFIX)/common/result \
+     $(PREFIX)/common/metadata \
+     $(PREFIX)/client/visualization \
+     $(PREFIX)/client/reports \
+     $(PREFIX)/client \
+     $(PREFIX)/server/structure \
+     $(PREFIX)/server/engine \
      $(PREFIX)/server \
-     $(PREFIX)/client
+     
 
 JAVA=java
 JAVAC=javac
 
 JFLAGS=-Xlint:unchecked
 
-LIBPREFIX=/usr/share
+LIBPREFIX=/usr/share/java
 
 CLASSES=.
-CLASSES+=:$(LIBPREFIX)/xmlrpc-3/lib/xmlrpc-common.jar
-CLASSES+=:$(LIBPREFIX)/xmlrpc-3/lib/xmlrpc-server.jar
-CLASSES+=:$(LIBPREFIX)/xmlrpc-3/lib/xmlrpc-client.jar
-CLASSES+=:$(LIBPREFIX)/commons-codec/lib/commons-codec.jar
-CLASSES+=:$(LIBPREFIX)/commons-logging/lib/commons-logging.jar
-CLASSES+=:$(LIBPREFIX)/ws-commons-util/lib/ws-commons-util.jar
+CLASSES+=:$(LIBPREFIX)/xmlrpc-common-3.1.jar
+CLASSES+=:$(LIBPREFIX)/xmlrpc-server-3.1.jar
+CLASSES+=:$(LIBPREFIX)/xmlrpc-client-3.1.jar
+CLASSES+=:$(LIBPREFIX)/commons-codec.jar
+CLASSES+=:$(LIBPREFIX)/commons-logging.jar
+CLASSES+=:$(LIBPREFIX)/ws-commons-util.jar
 
 JCLASS=$(shell echo $(CLASSES) | sed 's/ :/:/g')
 
@@ -44,6 +52,23 @@ clean:
 run-server:
 	@$(JAVA) -classpath $(JCLASS) $(PREFIX)/server/ODWAServer; true
 
+internal-metadata-receival:
+	@$(JAVA) -classpath $(JCLASS) $(PREFIX)/server/InternalMetadataReceival; true
+
 run-client:
 	@$(JAVA) -classpath $(JCLASS) $(PREFIX)/client/ODWAClient; true
 
+metadata-processing:
+	@$(JAVA) -classpath $(JCLASS) $(PREFIX)/client/MetadataProcessing; true
+
+query-execution:
+	@$(JAVA) -classpath $(JCLASS) $(PREFIX)/client/QueryExecution; true
+
+report-saving:
+	@$(JAVA) -classpath $(JCLASS) $(PREFIX)/client/ReportSaving; true
+
+static-report-load:
+	@$(JAVA) -classpath $(JCLASS) $(PREFIX)/client/StaticReportLoadAndView; true
+
+dynamic-report-load:
+	@$(JAVA) -classpath $(JCLASS) $(PREFIX)/client/DynamicReportLoadAndView; true

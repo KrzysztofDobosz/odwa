@@ -1,6 +1,8 @@
 package org.pwr.odwa.server;
 
-import org.pwr.odwa.common.MetaGUIApi;
+import org.pwr.odwa.common.dbtypes.DBEngineApi;
+import org.pwr.odwa.common.metadata.MetaGUIApi;
+import org.pwr.odwa.server.engine.DBEngineApiImpl;
 
 import org.apache.xmlrpc.server.XmlRpcServer;
 import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
@@ -19,6 +21,7 @@ public class ODWAServer {
 
             PropertyHandlerMapping phm = new PropertyHandlerMapping();
             phm.addHandler(MetaGUIApi.class.getName(), MetaGUIApiImpl.class);
+            phm.addHandler(DBEngineApi.class.getName(), DBEngineApiImpl.class);
 
             XmlRpcServer xmlRpcServer = server.getXmlRpcServer();
             xmlRpcServer.setHandlerMapping(phm);
@@ -35,4 +38,3 @@ public class ODWAServer {
         }
     }
 }
-

@@ -1,5 +1,7 @@
 package pl.pwr.odwa.server.metadata;
 
+import java.util.ArrayList;
+
 /** Najwyższa jednostaka allokacji w bazie metadanych.
  *
  *  Slotem bazy metadanych nazwymy najwyższą jednostkę
@@ -27,5 +29,16 @@ package pl.pwr.odwa.server.metadata;
  */
 public class MetaSlot extends MetaElement {
 
+   private ArrayList<MetaDataView> m_views = new ArrayList<MetaDataView>();
+
+   protected void setDataViews(ArrayList<MetaDataView> views) {
+       m_views = views;
+   }
+
+   /** Zwraca listę wymiarów danej tabeli wymiarów */
+   public ArrayList<MetaDataView> getDataViews() {
+      System.out.println("MetaSlot: getDataView() executed.");
+      return m_views;
+   }
 }
 

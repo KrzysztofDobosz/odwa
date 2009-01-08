@@ -1,4 +1,4 @@
-package org.pwr.odwa.common;
+package org.pwr.odwa.common.metadata;
 
 /** Klasa reprezentuje miarę widoku danych.
  *
