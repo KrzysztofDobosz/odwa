@@ -1,5 +1,7 @@
 
-SOURCES=MetaGUIApiImpl.java \
+SOURCES=MetaSQLApi.java \
+        MetaGUIApiImpl.java \
+        InternalMetadataReceival.java \
         ODWAServer.java
 
 all: $(SOURCES:.java=.class)

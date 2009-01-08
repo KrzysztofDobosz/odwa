@@ -1,5 +1,7 @@
 package pl.pwr.odwa.server.metadata;
 
+import java.util.ArrayList;
+
 /** Klasa definiuje wymiar widoku danych.
  *
  * @author Mateusz Paprocki
@@ -24,6 +26,12 @@ public class MetaDim extends MetaElement {
      */
     public MetaDimTable getTable() {
         return m_table;
+    }
+
+    public ArrayList<MetaDimElement> getDimElements()
+    {
+       System.out.println("MetaDim: getDimElements() executed");
+       return null;
     }
 }
 

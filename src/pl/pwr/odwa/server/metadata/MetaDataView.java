@@ -1,5 +1,7 @@
 package pl.pwr.odwa.server.metadata;
 
+import java.util.ArrayList;
+
 /** Klasa reprezentuje widok danych.
  *
  *  Widokiem danych (ustalonego slotu) nazywamy logiczny
@@ -22,6 +24,24 @@ package pl.pwr.odwa.server.metadata;
  * @author Maria Łabaziewicz
  */
 public class MetaDataView extends MetaElement {
+
+   public ArrayList<MetaDimTable> getDimTables()
+   {
+      System.out.println("MetaDataView: getDimTables() executed");
+      return null;
+   }
+
+   public ArrayList<MetaHierarchy> getHierarchies()
+   {
+      System.out.println("MetaDataView: getHierarchies() executed");
+      return null;
+   }
+
+   public ArrayList<MetaMeasure> getMeasures()
+   {
+      System.out.println("MetaDataView: getMeasures() executed");
+      return null;
+   }
 
 }
 

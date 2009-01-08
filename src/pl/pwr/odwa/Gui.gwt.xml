@@ -10,4 +10,10 @@
   	<!-- <inherits name="com.google.gwt.user.theme.chrome.Chrome"/> -->
   	<!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
 
+   <source path="client"/>
+   <source path="dbtypes"/>
+   <source path="result"/>
+   <source path="selection"/>
+   <source path="server"/>
+
 </module>

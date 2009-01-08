@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * @author Maria Łabaziewicz
  */
 public class MetaDimTable extends MetaElement {
-    private ArrayList<MetaDim> m_dims;
+    private ArrayList<MetaDim> m_dims = new ArrayList<MetaDim>();
 
     protected void setDimensions(ArrayList<MetaDim> dims) {
         m_dims = dims;
@@ -37,6 +37,7 @@ public class MetaDimTable extends MetaElement {
 
     /** Zwraca listę wymiarów danej tabeli wymiarów */
     public ArrayList<MetaDim> getDimensions() {
+       System.out.println("MetaDimTable: getDimentions() executed");
         return m_dims;
     }
 }

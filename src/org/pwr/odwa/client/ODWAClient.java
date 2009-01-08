@@ -1,6 +1,6 @@
 package org.pwr.odwa.client;
 
-import org.pwr.odwa.common.*; // XXX: make explicit
+import org.pwr.odwa.common.metadata.MetaGUIApi;
 
 import org.apache.xmlrpc.client.XmlRpcClient;
 import org.apache.xmlrpc.client.util.ClientFactory;
