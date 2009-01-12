@@ -2,6 +2,7 @@ package org.pwr.odwa.client.visualization;
 
 import java.util.ArrayList;
 
+
 /**
  * Klasa zawierajaca selekcje styli uzytkownika do kazdej komórki tabeli.
  * 

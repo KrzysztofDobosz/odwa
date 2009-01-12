@@ -1,14 +1,10 @@
 package org.pwr.odwa.client.reports;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.pwr.odwa.client.visualization.ReportStyle;
 
-
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Abstrakcyjna klasa raportu (dziedziczone po niej Static- i DynamicReport),
@@ -18,7 +14,7 @@ import org.pwr.odwa.client.visualization.ReportStyle;
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
  */
-public class Report implements Serializable {
+public class Report implements IsSerializable {
 	private static final long serialVersionUID = 1726723046281459668L;
 	protected ArrayList<String> description;
 	ReportStyle format;
@@ -29,7 +25,7 @@ public class Report implements Serializable {
 	 * @param filepath
 	 *            nazwa pliku do zapisu raportu
 	 */
-	public void save(String filepath) throws IOException {
+	public void save(String filepath) {
 	   System.out.println("ODWAClient: Report: save executed");
 	   /*try {
 		   FileOutputStream fileOutputStream = new FileOutputStream(filepath);

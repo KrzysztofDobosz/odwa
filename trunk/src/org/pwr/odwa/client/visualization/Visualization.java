@@ -1,5 +1,6 @@
 package org.pwr.odwa.client.visualization;
 
+
 import org.pwr.odwa.common.result.DBResult;
 
 /**

@@ -1,8 +1,5 @@
 package org.pwr.odwa.client.reports;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.Date;
 
 import org.pwr.odwa.client.visualization.ReportStyle;
@@ -48,8 +45,7 @@ public class StaticReport extends Report {
 	 * @param filepath
 	 *            - nazwa/ścieżka do pliku raportu do odczytu
 	 */
-	public StaticReport(String filepath) throws ClassNotFoundException,
-			IOException {
+	public StaticReport(String filepath) {
 	   System.out.println("ODWAClient: StaticReport: filepath constructor executed");
 		/*try {
 			FileInputStream fileInputStream = new FileInputStream(filepath);
