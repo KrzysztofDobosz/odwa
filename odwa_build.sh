@@ -1,12 +1,17 @@
 #!/bin/bash
 GWT_HOME=/home/krzycho/gwt-linux-1.5.3/
+GWTEXT_HOME=/home/krzycho/gwtext-2.0.5/
 TOMCAT_HOME=/home/krzycho/apache-tomcat-6.0.18/
 APPDIR=`dirname $0`;
 
 mkdir out
 
-java -cp "$APPDIR/src:$GWT_HOME/gwt-user.jar:$GWT_HOME/gwt-dev-linux.jar" \
+unzip -q js.zip -d src/org/pwr/odwa/public/
+
+java -cp "$APPDIR/src:$GWT_HOME/gwt-user.jar:$GWT_HOME/gwt-dev-linux.jar:$GWTEXT_HOME/gwtext.jar" \
 	  com.google.gwt.dev.GWTCompiler -out "$APPDIR/out" "$@" org.pwr.odwa.Gui;
+
+rm -R src/org/pwr/odwa/public/js
 
 mkdir -p out/org.pwr.odwa.Gui/WEB-INF/classes
 mkdir out/org.pwr.odwa.Gui/WEB-INF/lib
@@ -51,7 +56,7 @@ javac -cp "$APPDIR/src/org/pwr/odwa/common:$APPDIR/src/org/pwr/odwa/server:$GWT_
 	  src/org/pwr/odwa/server/MetaGUIApiServiceImpl.java
 
 cd out/org.pwr.odwa.Gui/
-zip -r odwa *
+zip -qr odwa *
 rm -R $TOMCAT_HOME/webapps/odwa
 rm $TOMCAT_HOME/webapps/odwa.war
 cp odwa.zip $TOMCAT_HOME/webapps/odwa.war
