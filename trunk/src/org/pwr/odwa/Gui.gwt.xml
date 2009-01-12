@@ -3,6 +3,8 @@
 	<!-- Inherit the core Web Toolkit stuff.                  -->
 	<inherits name='com.google.gwt.user.User'/>
 
+   <inherits name='com.gwtext.GwtExt'/>
+
 	<!-- Specify the app entry point class.                   -->
 	<entry-point class='org.pwr.odwa.client.Gui'/>
 
@@ -12,5 +14,9 @@
 
    <source path="common"/>
    <source path="client"/>
+
+   <stylesheet src="js/ext/resources/css/xtheme-silverCherry.css" />
+   <script src="js/ext/adapter/ext/ext-base.js" />
+   <script src="js/ext/ext-all.js" />
 
 </module>
