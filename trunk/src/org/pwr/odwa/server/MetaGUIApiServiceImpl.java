@@ -12,7 +12,6 @@ public class MetaGUIApiServiceImpl extends RemoteServiceServlet implements
 
    public ArrayList<MetaSlot> getSlots(String userName){
       System.out.println("ODWAServer: MetaGUIApi: getSlots executed");
-       try {
            ArrayList<MetaSlot> list = new ArrayList<MetaSlot>();
 
            MetaSlot sl0 = new MetaSlot();
@@ -34,16 +33,20 @@ public class MetaGUIApiServiceImpl extends RemoteServiceServlet implements
            list.add(sl2);
 
            return list;
-       } catch (Exception ex) {
-           System.err.println("ODWAServer: getSlots: " + ex);
-           return null;
-       }
+
+
    }
 
    public ArrayList<MetaDataView> getDataViews(MetaID slotId){
       System.out.println("ODWAServer: MetaGUIApi: getDataViews executed");
        try {
            ArrayList<MetaDataView> list = new ArrayList<MetaDataView>();
+
+           MetaDataView view = new MetaDataView();
+           view.setID(new MetaID(slotId.getID()*7));
+           view.setName("View "+ view.getID().getID());
+
+           list.add(view);
 
            return list;
        } catch (Exception ex) {
