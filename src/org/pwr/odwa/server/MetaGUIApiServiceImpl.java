@@ -43,7 +43,7 @@ public class MetaGUIApiServiceImpl extends RemoteServiceServlet implements
            ArrayList<MetaDataView> list = new ArrayList<MetaDataView>();
 
            MetaDataView view = new MetaDataView();
-           view.setID(new MetaID(slotId.getID()*7));
+           view.setID(new MetaID(slotId.getID()*3+5));
            view.setName("View "+ view.getID().getID());
 
            list.add(view);

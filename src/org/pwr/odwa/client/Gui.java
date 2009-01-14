@@ -107,7 +107,7 @@ public class Gui implements EntryPoint
 	private TreeNode ctxNode;
 	private TreeEditor treeEditor;
 
-	private MainPanel panel;
+	private final MainPanel panel = new MainPanel();
 
 	private ArrayList<MetaSlot> slotList;
 	private ArrayList<MetaDataView> viewList;
@@ -363,14 +363,18 @@ public class Gui implements EntryPoint
 		metaEndpoint.setServiceEntryPoint(metaRelURL);
 
 
-		MainPanel panel = new MainPanel();
+		//MainPanel panel = new MainPanel();
 
 
-		//panel.login();
-		panel.getSlots();
+		panel.login();
+
+		createSelection();
 
 
-
+		Viewport viewport = new Viewport(panel);
+	}
+	private void createSelection()
+	{
 		/*
 		 * TREE TO TREE DRAG AND DROP
 		 */
@@ -451,6 +455,7 @@ public class Gui implements EntryPoint
 			}
 		});
 
+
 		Panel horizontalPanel = new Panel();
 		horizontalPanel.setLayout(new HorizontalLayout(20));
 		horizontalPanel.setPaddings(15);
@@ -459,7 +464,6 @@ public class Gui implements EntryPoint
 
 		panel.getCenterPanel().add(horizontalPanel);
 
-		Viewport viewport = new Viewport(panel);
 	}
 
 	class SelectionTreePanel extends TreePanel
@@ -496,8 +500,8 @@ public class Gui implements EntryPoint
 		private Panel centerPanel;
 		private final FormPanel viewForm;
 
-		private ComboBox slotCB;
-		private ComboBox viewCB;
+		private final ComboBox slotCB;
+		private final ComboBox viewCB;
 
 
 		public MainPanel()
@@ -582,9 +586,44 @@ public class Gui implements EntryPoint
 			viewForm.setFrame(true);
 			viewForm.setWidth(320);
 
+			slotCB = new ComboBox();
+			viewCB = new ComboBox();
+
+
+			slotCB.setFieldLabel("Select universe");
+			slotCB.setDisplayField("universe");
+			slotCB.setMode(ComboBox.LOCAL);
+			slotCB.setTriggerAction(ComboBox.ALL);
+			slotCB.setForceSelection(true);
+			slotCB.setValueField("cid");
+			slotCB.setReadOnly(true);
+
+			viewCB.setFieldLabel("Select view");
+			viewCB.setDisplayField("view");
+			viewCB.setValueField("id");
+			viewCB.setMode(ComboBox.LOCAL);
+			viewCB.setTriggerAction(ComboBox.ALL);
+			viewCB.setLinked(false);
+			viewCB.setForceSelection(true);
+			viewCB.setReadOnly(true);
+
+
+			viewForm.add(slotCB);
+			viewForm.add(viewCB);
+
 
 			westPanel.add(viewForm);
 
+			Button LoadViewButton = new Button("LOAD VIEW", new ButtonListenerAdapter()
+			{
+				public void onClick(Button button, EventObject e)
+				{
+					//showSelectionPanel(new MetaID(viewCB.getValue()));
+
+				}
+			});
+
+			westPanel.add(LoadViewButton);
 
 			westPanel.setButtonAlign(Position.CENTER);
 			westPanel.setButtons(new Button[]
@@ -671,6 +710,7 @@ public class Gui implements EntryPoint
 						welcomePanel.setHtml("welcome, <b>" + userName + "</b>");
 
 						window.close();
+						getSlots();
 
 					}
 
@@ -688,10 +728,6 @@ public class Gui implements EntryPoint
 		private void setSlots()
 		{
 
-			slotCB = new ComboBox();
-			viewCB = new ComboBox();
-
-
 			final Object[][] universes = new Object[slotList.size()][2];
 
 			for (int i = 0; i < slotList.size(); i++)
@@ -703,29 +739,27 @@ public class Gui implements EntryPoint
 
 			universesStore.load();
 
-			slotCB.setFieldLabel("Select universe");
 			slotCB.setStore(universesStore);
-			slotCB.setDisplayField("universe");
-			slotCB.setMode(ComboBox.LOCAL);
-			slotCB.setTriggerAction(ComboBox.ALL);
-			slotCB.setForceSelection(true);
-			slotCB.setValueField("cid");
-			slotCB.setReadOnly(true);
+			slotCB.show();
+		}
 
-			viewCB.setFieldLabel("Select view");
-			viewCB.setDisplayField("view");
-			viewCB.setValueField("id");
-			viewCB.setMode(ComboBox.LOCAL);
-			viewCB.setTriggerAction(ComboBox.ALL);
-			viewCB.setLinked(false);
-			viewCB.setForceSelection(true);
-			viewCB.setReadOnly(true);
+		private void setViews()
+		{
+			Object[][] views = new Object[viewList.size()][3];
 
-			viewForm.add(slotCB);
-			viewForm.add(viewCB);
+			for (int i = 0; i < viewList.size(); i++)
+				views[i] = new Object[]
+				{ viewList.get(i).getID().getID(), viewList.get(i).getParentSlot().toString(),
+						viewList.get(i).getName() };
 
 
-			/*slotCB.addListener(new ComboBoxListenerAdapter()
+			final Store viewsStore = new SimpleStore(new String[]
+			{ "id", "cid", "view" }, views);
+			viewsStore.load();
+
+			viewCB.setStore(viewsStore);
+
+			slotCB.addListener(new ComboBoxListenerAdapter()
 			{
 
 				public void onSelect(ComboBox comboBox, Record record, int index)
@@ -734,37 +768,15 @@ public class Gui implements EntryPoint
 					viewsStore.filter("cid", comboBox.getValue());
 				}
 			});
-	*/
 
-		}
+			viewCB.show();
+			slotCB.show();
 
-		private void setViews()
-		{
-			System.out.println("ODWAClient: Gui: getDataView() executed");
-
-			Object[][] views = new Object[viewList.size()][3];
-
-			for (int i = 0; i < viewList.size(); i++)
-				views[i] = new Object[]
-				{ i, viewList.get(i).getParentSlot().toString(),
-						viewList.get(i).getName() };
-
-
-			Store viewsStore = new SimpleStore(new String[]
-			{ "id", "cid", "view" }, views);
-			viewsStore.load();
-
-			viewCB.setStore(viewsStore);
-
-			MessageBox.alert("views: " + viewsStore.getCount());
 
 		}
 
 		public void getSlots()
 		{
-
-			//westPanel.add(viewForm);
-			//westPanel.add(loadViewButton);
 
 			metaService.getSlots(userName, new AsyncCallback<ArrayList<MetaSlot>>()
 			{
@@ -776,8 +788,6 @@ public class Gui implements EntryPoint
 
 				public void onSuccess(ArrayList<MetaSlot> result)
 				{
-
-					MessageBox.confirm("Confirm", "Slots are loaded!");
 
 						for (MetaSlot slot : result)
 						{
@@ -792,6 +802,11 @@ public class Gui implements EntryPoint
 						}
 				}
 			});
+
+		}
+
+		private void ShowSelectionPanel(MetaID id)
+		{
 
 		}
 
