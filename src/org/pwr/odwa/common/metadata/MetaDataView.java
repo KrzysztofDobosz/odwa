@@ -23,5 +23,18 @@ package org.pwr.odwa.common.metadata;
  */
 public class MetaDataView extends MetaElement {
 
+	private MetaID parentSlot;
+
+	public MetaID getParentSlot()
+	{
+		return parentSlot;
+	}
+
+	public void setParentSlot(MetaID parentSlot)
+	{
+		this.parentSlot = parentSlot;
+	}
+
+
 }
 
