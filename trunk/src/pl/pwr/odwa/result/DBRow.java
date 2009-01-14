@@ -1,15 +1,19 @@
 package pl.pwr.odwa.result;
 import java.util.ArrayList;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
+
 /**
  * Single row of the db query result
  * (For data presentation module)
  */
-public class DBRow
+public class DBRow implements IsSerializable
 {
 	private int fieldsCount;
 	private ArrayList<Object> values;
-	
+
+	public DBRow(){}
+
 	public DBRow(ArrayList<Object> values)
 	{
 		this.fieldsCount = values.size();
@@ -34,5 +38,5 @@ public class DBRow
 	{
 		return values.get(num);
 	}
-	
+
 }

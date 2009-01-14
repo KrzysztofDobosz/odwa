@@ -51,7 +51,11 @@ javac -cp "$APPDIR/src/org/pwr/odwa/common:$APPDIR/src/org/pwr/odwa/server:$GWT_
 	  src/org/pwr/odwa/server/structure/DBField.java \
 	  src/org/pwr/odwa/server/structure/DBTable.java \
 	  src/org/pwr/odwa/server/structure/DBStructure.java \
-	  src/org/pwr/odwa/server/engine/DBEngine.java \
+	  src/org/pwr/odwa/server/engine/SQLQuery.java \
+     src/org/pwr/odwa/server/engine/SQLLogicOperator.java \
+     src/org/pwr/odwa/server/engine/SQLJoinOperator.java \
+     src/org/pwr/odwa/server/engine/MySQLQuery.java \
+     src/org/pwr/odwa/server/engine/DBEngine.java \
 	  src/org/pwr/odwa/server/DBEngineServiceImpl.java \
 	  src/org/pwr/odwa/server/MetaGUIApiServiceImpl.java
 

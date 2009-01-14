@@ -4,35 +4,136 @@ import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+import org.pwr.odwa.common.dbtypes.DBFieldDataType;
+
 /**
- * Reprezentuje wynik zapytania bazodanowego
+ * Represents database query result (mostly syntactic sugar)
  *
  */
 public class DBResult implements IsSerializable
 {
-	/**
-	 * Zwraca kolejny wiersz wyniku
-	 * @return
-	 */
-	DBRow fetchRow( )
-	{
-		return null;
-	}
-	/**
-	 * Zwraca tablice wynik�w
-	 * @return
-	 */
-	ArrayList<DBRow> fetchArray ( )
-	{
-		return null;
-	}
-	/**
-	 * Sortuje wyniki wg. p�l zadanych w fieldNames (w odpowiadajacej kolejnosci)
-	 * @param fieldNames lista pol wedlug których należy sortowac
-	 */
-	void sort (ArrayList<String> fieldNames )
-	{
+   private int next;
 
-	}
+   private String query;
 
+   private ArrayList<DBRow> rows;
+
+   private ArrayList<String> columnNames;
+
+   private ArrayList<String> fieldTypes;
+
+   private int columnCount;
+
+   public DBResult(){}
+
+   public DBResult(ArrayList<DBRow> DBRes, ArrayList<String> colNames,
+         ArrayList<String> fieldTypes, String query)
+   {
+      this.query = query;
+      this.rows = DBRes;
+      this.columnNames = colNames;
+      this.fieldTypes = fieldTypes;
+      this.columnCount = columnNames.size();
+      next = 0;
+   }
+
+   /**
+    * Returns next row of the result
+    *
+    * @return
+    */
+   DBRow fetchRow()
+   {
+      DBRow ret = rows.get(next);
+      next += 1;
+      return ret;
+   }
+
+   /**
+    * Returns dataType for the column
+    *
+    * @param num
+    *           Column index
+    *
+    * @return
+    */
+   DBFieldDataType getType(int num)
+   {
+      String[] textTypes =
+      { "BLOB", "CHAR ", "BINARY", "VARBINARY", "VARCHAR", "TEXT", "SET",
+            "ENUM", "LONGVARBINARY", "LONGVARCHAR" };
+      String[] numTypes =
+      { "INT", "TINYINT ", "SMALLINT", "MEDIUMINT", "BIGINT", "FLOAT",
+            "DOUBLE", "REAL", "NUMERIC", "INTEGER", "DECIMAL", "BOOLEAN" };
+      String[] dateTypes =
+      { "DATETIME", "DATE", "TIMESTAMP", "TIME", "YEAR" };
+
+      for (int i = 0; i < textTypes.length; i++)
+      {
+         if (fieldTypes.get(num).equals(textTypes[i]))
+            return DBFieldDataType.StringType;
+      }
+      for (int i = 0; i < numTypes.length; i++)
+      {
+         if (fieldTypes.get(num).equals(numTypes[i]))
+            return DBFieldDataType.IntegerType;
+      }
+      for (int i = 0; i < dateTypes.length; i++)
+      {
+         if (fieldTypes.get(num).equals(dateTypes[i]))
+            return DBFieldDataType.DateType;
+      }
+      return null;
+   }
+
+   /**
+    * Returns Type of the field identified by name
+    *
+    * @param name
+    *           field name
+    * @return
+    */
+   DBFieldDataType getType(String name)
+   {
+      int num = columnNames.indexOf(name);
+      return getType(num);
+   }
+
+   /**
+    * Returns Result ArrayList
+    *
+    * @return
+    */
+   ArrayList<DBRow> fetchArray()
+   {
+      return null;
+   }
+
+   /**
+    * @return the columnCount
+    */
+   public int getColumnCount()
+   {
+      return columnCount;
+   }
+
+   /**
+    * Returns name of the column
+    *
+    * @param num
+    *           number of the column
+    * @return
+    */
+   public String getColumnName(int num)
+   {
+      return columnNames.get(num);
+   }
+
+   /**
+    * @return the query
+    */
+   public String getQuery()
+   {
+      return query;
+   }
 }

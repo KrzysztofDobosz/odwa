@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * Class representing a single table in database, contains description of each
  * column as {@link DBField}. Use getFields() to get fields description.
- *
+ * 
  */
 public class DBTable
 {
@@ -14,7 +14,7 @@ public class DBTable
 
 	/**
 	 * Creates empty DBTable for table of given name
-	 *
+	 * 
 	 * @param n
 	 */
 	public DBTable(String n)
@@ -25,7 +25,7 @@ public class DBTable
 
 	/**
 	 * Creates DBTable for table of given name with given fields
-	 *
+	 * 
 	 * @param n table name
 	 * @param field fields list
 	 */
@@ -37,7 +37,7 @@ public class DBTable
 
 	/**
 	 * Returns table name
-	 *
+	 * 
 	 * @return table name
 	 */
 	String getName()
@@ -48,7 +48,7 @@ public class DBTable
 	/**
 	 * Returns list of all columns in table, with detailed description (see
 	 * {@link DBField})
-	 *
+	 * 
 	 * @return list of columns in table
 	 */
 	ArrayList<DBField> getFields()
