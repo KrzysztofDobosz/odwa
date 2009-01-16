@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<medatada>
+<metadata>
     <database>
         <engine>mysql</engine>
 
@@ -584,5 +584,5 @@
             </hierarchies>
         </dimension>
     </dimensions>
-</medatada>
+</metadata>
 
