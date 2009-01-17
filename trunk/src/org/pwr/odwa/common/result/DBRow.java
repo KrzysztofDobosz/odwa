@@ -34,7 +34,7 @@ public class DBRow implements IsSerializable
 	 * @param num field number
 	 * @return field value
 	 */
-	Object getFieldVal ( int num)
+	public Object getFieldVal ( int num)
 	{
 		return values.get(num);
 	}
