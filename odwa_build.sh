@@ -2,7 +2,7 @@
 GWT_HOME=/home/chudi/Utils/gwt-linux-1.5.3
 GWTEXT_HOME=/home/chudi/Utils/gwtext-2.0.5
 TOMCAT_HOME=/home/chudi/Utils/apache-tomcat-6.0.18
-GWTEXTUX_HOME=/home/chudi/Utils/gwtextux-0.3
+GWTEXTUX_HOME=/home/chudi/Utils/gwtextux-0.4
 APPDIR=`dirname $0`;
 
 mkdir out

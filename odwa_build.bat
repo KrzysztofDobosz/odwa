@@ -2,13 +2,14 @@
 set GWT_HOME=c:\eclipse\gwt
 set GWTEXT_HOME=c:\eclipse\lib
 set TOMCAT_HOME=c:\eclipse\apache-tomcat-6.0.18
+set GWTEXTUX_HOME=c:\eclipse\gwtextux-0.4
 set APPDIR=%cd%
 
 mkdir out
 
 7z x -osrc\org\pwr\odwa\public js.zip
 
-java -Xms512m -Xmx512m -cp "%APPDIR%\src;%GWT_HOME%\gwt-user.jar;%GWT_HOME%\gwt-dev-windows.jar;%GWTEXT_HOME%\gwtext.jar" com.google.gwt.dev.GWTCompiler -out "%APPDIR%\out" "$@" org.pwr.odwa.Gui
+java -Xms512m -Xmx512m -cp "%APPDIR%\src;%GWT_HOME%\gwt-user.jar;%GWT_HOME%\gwt-dev-windows.jar;%GWTEXT_HOME%\gwtext.jar;%GWTEXTUX_HOME%\gwtextux.jar" com.google.gwt.dev.GWTCompiler -out "%APPDIR%\out" "$@" org.pwr.odwa.Gui
 
 rd /s src\org\pwr\odwa\public\js
 rd src\org\pwr\odwa\public\js

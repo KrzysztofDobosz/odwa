@@ -42,13 +42,24 @@ public class DBResult implements IsSerializable
     *
     * @return
     */
-   DBRow fetchRow()
+   public DBRow fetchRow()
    {
+      if (next >= rows.size()) return null;
       DBRow ret = rows.get(next);
       next += 1;
       return ret;
    }
 
+   /**
+    * Resets current row number
+    *
+    * @see #fetchRow()
+    */
+   public void reset()
+   {
+      next = 0;
+   }
+   
    /**
     * Returns dataType for the column
     *
@@ -57,7 +68,7 @@ public class DBResult implements IsSerializable
     *
     * @return
     */
-   DBFieldDataType getType(int num)
+   public DBFieldDataType getType(int num)
    {
       String[] textTypes =
       { "BLOB", "CHAR ", "BINARY", "VARBINARY", "VARCHAR", "TEXT", "SET",

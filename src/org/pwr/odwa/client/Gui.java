@@ -531,6 +531,16 @@ public class Gui implements EntryPoint
 			centerPanel.setButtonAlign(Position.RIGHT);
 			centerPanel.add(selectionPanel);
 			selectionPanel.setVisible(false);
+			
+			// adding temporary button for visualization
+			Button button = new Button("Show SUPERWindow");
+			button.addListener(new ButtonListenerAdapter() {
+				public void onClick(Button button, EventObject e) {
+
+					Visualization vis = new Visualization(); 
+					vis.show(null);				}
+			});
+			centerPanel.add(button);
 
 			borderPanel.add(northPanel, new BorderLayoutData(RegionPosition.NORTH));
 			borderPanel.add(westPanel, westData);
