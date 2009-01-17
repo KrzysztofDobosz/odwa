@@ -380,8 +380,6 @@ public class Gui implements EntryPoint
 	}
 
 
-
-
 	class MainPanel extends Panel
 	{
 		private Panel northPanel;
@@ -389,7 +387,7 @@ public class Gui implements EntryPoint
 		private Panel easthPanel;
 		private Panel centerPanel;
 		private final FormPanel viewForm;
-		private final SelectionPanel selectionPanel;
+		private SelectionPanel selectionPanel;
 
 		private final ComboBox slotCB;
 		private final ComboBox viewCB;
@@ -512,7 +510,7 @@ public class Gui implements EntryPoint
 			{
 				public void onClick(Button button, EventObject e)
 				{
-					loadView();
+					loadView(new MetaID(new Long(viewCB.getValue())));
 					//selectionPanel.setVisible(true);
 				}
 			});
@@ -531,16 +529,7 @@ public class Gui implements EntryPoint
 			centerPanel.setButtonAlign(Position.RIGHT);
 			centerPanel.add(selectionPanel);
 			selectionPanel.setVisible(false);
-			
-			// adding temporary button for visualization
-			Button button = new Button("Show SUPERWindow");
-			button.addListener(new ButtonListenerAdapter() {
-				public void onClick(Button button, EventObject e) {
 
-					Visualization vis = new Visualization(); 
-					vis.show(null);				}
-			});
-			centerPanel.add(button);
 
 			borderPanel.add(northPanel, new BorderLayoutData(RegionPosition.NORTH));
 			borderPanel.add(westPanel, westData);
@@ -646,7 +635,7 @@ public class Gui implements EntryPoint
 			slotCB.setStore(universesStore);
 			slotCB.show();
 		}
-		private void loadView()
+		private void loadView(MetaID id)
 		{
 			metaService.getDataView(new MetaID(10),	new AsyncCallback<String>()
 					{
@@ -657,16 +646,17 @@ public class Gui implements EntryPoint
 
 						public void onSuccess(String result)
 						{
-							currentViewXml = result;
-							showView();
+							showView(result);
+
 						}
 					});
 		}
-		private void showView()
+		private void showView(String viewXml)
 		{
 
-			selectionPanel.loadXml(currentViewXml);
+			selectionPanel.loadXml(viewXml);
 			selectionPanel.setVisible(true);
+			//selectionPanel.show();
 		}
 
 		private void setViews()
@@ -774,11 +764,6 @@ public class Gui implements EntryPoint
 
 		}
 
-
-
 	}
-
-
-
 
 }

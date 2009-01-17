@@ -6,9 +6,11 @@ import com.gwtext.client.data.Node;
 import com.gwtext.client.data.NodeTraversalCallback;
 import com.gwtext.client.dd.DragData;
 import com.gwtext.client.dd.DragDrop;
+import com.gwtext.client.widgets.Button;
 import com.gwtext.client.widgets.Component;
 import com.gwtext.client.widgets.MessageBox;
 import com.gwtext.client.widgets.Panel;
+import com.gwtext.client.widgets.event.ButtonListenerAdapter;
 import com.gwtext.client.widgets.form.TextField;
 import com.gwtext.client.widgets.layout.FitLayout;
 import com.gwtext.client.widgets.layout.HorizontalLayout;
@@ -27,8 +29,7 @@ import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 
 public class SelectionPanel extends Panel
 {
-
-	private  TreePanel treePanel;
+	private  final TreePanel treePanel;
 	private  final TreePanel rowsTreePanel;
 
 	private Menu menu;
@@ -44,27 +45,25 @@ public class SelectionPanel extends Panel
 		setLayout(new HorizontalLayout(20));
 		setPaddings(15);
 
-
 		treePanel = new TreePanel();
 		treePanel.setTitle("Structure");
-		// treePanel.setAnimate(true);
+		treePanel.setAnimate(true);
 		treePanel.setFrame(false);
-		treePanel.setEnableDD(true);
+		treePanel.setEnableDrag(true);
 		treePanel.setContainerScroll(true);
 		treePanel.setRootVisible(true);
 		treePanel.setWidth(300);
 		treePanel.setHeight(400);
 		treePanel.setSelectionModel(new MultiSelectionModel());
 
-
 		TreeNode root = new TreeNode("DATA VIEW");
-		//TreeNode root = parser.parse(parser.getTekst());
+		//TreeNode root = parser.parse(xmlString);
 		treePanel.setRootNode(root);
 		root.expand();
 		treePanel.expandAll();
 
 		rowsTreePanel = new SelectionTreePanel();
-		//rowsTreePanel.setAnimate(true);
+		rowsTreePanel.setAnimate(true);
 		rowsTreePanel.setFrame(false);
 		rowsTreePanel.setContainerScroll(true);
 		rowsTreePanel.setRootVisible(true);
@@ -89,18 +88,39 @@ public class SelectionPanel extends Panel
 					DragDrop source, TreeNode dropNode,
 					DropNodeCallback dropDropNodeCallback)
 			{
-				if ("true".equals(target.getAttribute("trip")))
+
+				if ("false".equals(dropNode.getAttribute("allowDrag")))
 				{
+					return false;
+				}
+				if("false".equals(target.getAttribute("multiple")))
+				{
+					if(target.getFirstChild() != null) return false;
+
+				}
+				if("false".equals(target.getAttribute("allowDrop")))
+				{
+					return false;
+
+				}
+
+								//{
 					TreeNode copyNode = dropNode.cloneNode();
+					copyNode.setAttribute("allowDrag", "false");
+					copyNode.setAttribute("allowDrop", "false");
 					Node[] children = copyNode.getChildNodes();
 					for (int i = 0; i < children.length; i++)
 					{
 						Node child = children[i];
 						copyNode.removeChild(child);
 					}
+
 					dropDropNodeCallback.setDropNode(copyNode);
 
-				}
+
+
+
+//				}
 				return true;
 			}
 
@@ -111,10 +131,8 @@ public class SelectionPanel extends Panel
 			}
 		});
 
-
 		add(treePanel);
 		add(rowsTreePanel);
-
 
 	}
 
@@ -126,49 +144,44 @@ public class SelectionPanel extends Panel
 
 			TreeNode root = new TreeNode("User selection:");
 			root.setExpanded(true);
+			root.setAttribute("allowDrag", "false");
+			root.setAttribute("multiple", "false");
+
 
 			TreeNode columns = new TreeNode("COLUMNS");
+			columns.setAttribute("allowDrag", "false");
+			columns.setAttribute("multiple", "true");
 			root.appendChild(columns);
 
 			TreeNode rows = new TreeNode("ROWS");
+			rows.setAttribute("allowDrag", "false");
+			rows.setAttribute("multiple", "true");
 			root.appendChild(rows);
 
 			TreeNode backg = new TreeNode("BACKGROUND");
+			backg.setAttribute("allowDrag", "false");
+			backg.setAttribute("multiple", "true");
 			root.appendChild(backg);
 
+			TreeNode measure = new TreeNode("MEASURE");
+			measure.setAttribute("allowDrag", "false");
+			measure.setAttribute("multiple", "false");
+			root.appendChild(measure);
+
 			setTitle("Selection");
-			setEnableDD(true);
+			setEnableDrop(true);
 			setRootNode(root);
 		}
 	}
 
 	public void loadXml(String xmlString)
 	{
-		removeAll();
-		treePanel = new TreePanel();
-		treePanel.setTitle("Structure");
-		// treePanel.setAnimate(true);
-		treePanel.setFrame(false);
-		treePanel.setEnableDD(true);
-		treePanel.setContainerScroll(true);
-		treePanel.setRootVisible(true);
-		treePanel.setWidth(300);
-		treePanel.setHeight(400);
-		treePanel.setSelectionModel(new MultiSelectionModel());
 
 		TreeNode root = parser.parse(xmlString);
-		treePanel.setRootNode(root);
-
-		root.expand();
-
+		treePanel.getRootNode().appendChild(root);
+		treePanel.getRootNode().expand();
+		//treePanel.expand();
 		//treePanel.expandAll();
-
-		MessageBox.alert(treePanel.getRootNode().getText());
-		//add(treePanel);
-		add(rowsTreePanel);
-
-		show();
-
 	}
 
 	private void showContextMenu(final TreeNode node, EventObject e)
@@ -285,7 +298,5 @@ public class SelectionPanel extends Panel
 			menu.getItem("enable-item").disable();
 		}
 		menu.showAt(e.getXY());
-
 	}
-
 }
