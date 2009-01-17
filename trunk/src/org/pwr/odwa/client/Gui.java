@@ -2,6 +2,7 @@ package org.pwr.odwa.client;
 
 import java.util.ArrayList;
 
+import org.pwr.odwa.client.guiUtils.SelectionPanel;
 import org.pwr.odwa.client.reports.DynamicReport;
 import org.pwr.odwa.client.reports.StaticReport;
 import org.pwr.odwa.client.visualization.ReportStyle;
@@ -103,9 +104,7 @@ public class Gui implements EntryPoint
 	 */
 	private String userName;
 
-	private Menu menu;
-	private TreeNode ctxNode;
-	private TreeEditor treeEditor;
+	private String currentViewXml;
 
 	private final MainPanel panel = new MainPanel();
 
@@ -119,6 +118,8 @@ public class Gui implements EntryPoint
 
 	private Label l = new Label("starting");
 	private Label k = new Label("starting");
+
+
 
 	/**
 	 * Metoda do komunikacji z silnikiem baz danych. WywoĹ‚uje asynchronicznie
@@ -142,15 +143,15 @@ public class Gui implements EntryPoint
 				l.setText("ODWAClient: Gui: Query execution succeed.");
 				// System.out.println("ODWAClient: Gui: Query execution
 				// succeed.");
-				display.show((DBResult) result, new ReportStyle());
+				display.show((DBResult) result);
 			}
 		});
 	}
 
 	public void saveReport()
-	{
+	{/*
 		System.out.println("ODWAClient: Gui: saveReport() executed");
-		ReportStyle style = display.getReportStyle();
+		//ReportStyle style = display.getReportStyle();
 		StaticReport sRep = new StaticReport(currentDBResult, style);
 		try
 		{
@@ -166,12 +167,12 @@ public class Gui implements EntryPoint
 		} catch (Exception exception)
 		{
 			System.err.println("ODWAClient: " + exception);
-		}
+		}*/
 	}
 
 	public void staticReportLoad()
 	{
-		try
+		/*try
 		{
 			StaticReport report = new StaticReport("");
 			currentDBResult = report.getResult();
@@ -180,11 +181,11 @@ public class Gui implements EntryPoint
 		} catch (Exception exception)
 		{
 			System.err.println("ODWAClient: " + exception);
-		}
+		}*/
 	}
 
 	public void dynamicReportLoad()
-	{
+	{/*
 		try
 		{
 			DynamicReport report = new DynamicReport("");
@@ -193,7 +194,7 @@ public class Gui implements EntryPoint
 		} catch (Exception exception)
 		{
 			System.err.println("ODWAClient: " + exception);
-		}
+		}*/
 	}
 
 	/**
@@ -366,131 +367,20 @@ public class Gui implements EntryPoint
 		//MainPanel panel = new MainPanel();
 
 
-		panel.login();
+		display = new Visualization();
 
-		createSelection();
+		//panel.login();
+		panel.getSlots();
+		//createSelection();
+
+
 
 
 		Viewport viewport = new Viewport(panel);
 	}
-	private void createSelection()
-	{
-		/*
-		 * TREE TO TREE DRAG AND DROP
-		 */
-
-		// create source countries tree
-		final TreePanel treePanel = new TreePanel();
-		treePanel.setTitle("Structure");
-		// treePanel.setAnimate(true);
-		treePanel.setFrame(false);
-		treePanel.setEnableDD(true);
-		treePanel.setContainerScroll(true);
-		treePanel.setRootVisible(true);
-		treePanel.setWidth(300);
-		treePanel.setHeight(400);
-		treePanel.setSelectionModel(new MultiSelectionModel());
-
-		final XMLTreeLoader loader = new XMLTreeLoader();
-		loader.setDataUrl("data/metadata.xml");
-		loader.setMethod(Connection.GET);
-		loader.setRootTag("countries");
-		loader.setFolderTitleMapping("@title");
-		loader.setFolderTag("continent");
-		loader.setLeafTitleMapping("@title");
-		loader.setLeafTag("country");
-		loader.setQtipMapping("@qtip");
-
-		AsyncTreeNode root = new AsyncTreeNode("Countries", loader);
-		treePanel.setRootNode(root);
-		root.expand();
-		treePanel.expandAll();
-
-		// create target selection tree
-		final TreePanel rowsTreePanel = new SelectionTreePanel();
-		rowsTreePanel.setAnimate(true);
-		rowsTreePanel.setContainerScroll(true);
-		rowsTreePanel.setRootVisible(true);
-		rowsTreePanel.setWidth(300);
-		rowsTreePanel.setHeight(400);
-
-		TextField field = new TextField();
-		field.setSelectOnFocus(true);
-		treeEditor = new TreeEditor(rowsTreePanel, field);
 
 
-		// add trip tree listener that handles move / copy logic
-		rowsTreePanel.addListener(new TreePanelListenerAdapter()
-		{
-			public void onRender(Component component)
-			{
-				// rowsTreePanel.getRootNode().expand();
-				// rowsTreePanel.expandAll();
-			}
 
-			public boolean doBeforeNodeDrop(TreePanel treePanel,
-					TreeNode target, DragData dragData, String point,
-					DragDrop source, TreeNode dropNode,
-					DropNodeCallback dropDropNodeCallback)
-			{
-				if ("true".equals(target.getAttribute("trip")))
-				{
-					TreeNode copyNode = dropNode.cloneNode();
-					Node[] children = copyNode.getChildNodes();
-					for (int i = 0; i < children.length; i++)
-					{
-						Node child = children[i];
-						copyNode.removeChild(child);
-					}
-					dropDropNodeCallback.setDropNode(copyNode);
-
-				}
-				return true;
-			}
-
-			public void onContextMenu(TreeNode node, EventObject e)
-			{
-				int[] xy = e.getXY();
-				showContextMenu(node, e);
-			}
-		});
-
-
-		Panel horizontalPanel = new Panel();
-		horizontalPanel.setLayout(new HorizontalLayout(20));
-		horizontalPanel.setPaddings(15);
-		horizontalPanel.add(treePanel);
-		horizontalPanel.add(rowsTreePanel);
-
-		panel.getCenterPanel().add(horizontalPanel);
-
-	}
-
-	class SelectionTreePanel extends TreePanel
-	{
-
-		public SelectionTreePanel()
-		{
-
-			TreeNode root = new TreeNode("User selection:");
-			root.setExpanded(true);
-
-			TreeNode columns = new TreeNode("COLUMNS");
-			root.appendChild(columns);
-
-			TreeNode rows = new TreeNode("ROWS");
-			root.appendChild(rows);
-
-			TreeNode backg = new TreeNode("BACKGROUND");
-			root.appendChild(backg);
-
-			setTitle("Selection");
-			setWidth(200);
-			setHeight(400);
-			setEnableDD(true);
-			setRootNode(root);
-		}
-	}
 
 	class MainPanel extends Panel
 	{
@@ -499,6 +389,7 @@ public class Gui implements EntryPoint
 		private Panel easthPanel;
 		private Panel centerPanel;
 		private final FormPanel viewForm;
+		private final SelectionPanel selectionPanel;
 
 		private final ComboBox slotCB;
 		private final ComboBox viewCB;
@@ -511,6 +402,7 @@ public class Gui implements EntryPoint
 
 			Panel borderPanel = new Panel();
 			borderPanel.setLayout(new BorderLayout());
+			selectionPanel = new SelectionPanel();
 
 			northPanel = new Panel();
 			northPanel.setHeight(50);
@@ -555,14 +447,16 @@ public class Gui implements EntryPoint
 			{
 				public void onClick(Button button, EventObject e)
 				{
-					MessageBox.confirm("Confirm",
+					/*MessageBox.confirm("Confirm",
 							"This is where yhe report will appear",
 							new MessageBox.ConfirmCallback()
 							{
 								public void execute(String btnID)
 								{
 								}
-							});
+							});*/
+					display.show(new DBResult());
+
 				}
 
 			});
@@ -618,8 +512,8 @@ public class Gui implements EntryPoint
 			{
 				public void onClick(Button button, EventObject e)
 				{
-					//showSelectionPanel(new MetaID(viewCB.getValue()));
-
+					loadView();
+					//selectionPanel.setVisible(true);
 				}
 			});
 
@@ -635,6 +529,8 @@ public class Gui implements EntryPoint
 			centerPanel.setButtons(new Button[]
 			{ resetButton, execButton });
 			centerPanel.setButtonAlign(Position.RIGHT);
+			centerPanel.add(selectionPanel);
+			selectionPanel.setVisible(false);
 
 			borderPanel.add(northPanel, new BorderLayoutData(RegionPosition.NORTH));
 			borderPanel.add(westPanel, westData);
@@ -650,12 +546,10 @@ public class Gui implements EntryPoint
 		{
 			return northPanel;
 		}
-
 		public Panel getWestPanel()
 		{
 			return westPanel;
 		}
-
 		public Panel getEasthPanel()
 		{
 			return easthPanel;
@@ -742,6 +636,28 @@ public class Gui implements EntryPoint
 			slotCB.setStore(universesStore);
 			slotCB.show();
 		}
+		private void loadView()
+		{
+			metaService.getDataView(new MetaID(10),	new AsyncCallback<String>()
+					{
+						public void onFailure(Throwable caught)
+						{
+							MessageBox.alert("Could not achieve view XML");
+						}
+
+						public void onSuccess(String result)
+						{
+							currentViewXml = result;
+							showView();
+						}
+					});
+		}
+		private void showView()
+		{
+
+			selectionPanel.loadXml(currentViewXml);
+			selectionPanel.setVisible(true);
+		}
 
 		private void setViews()
 		{
@@ -805,7 +721,7 @@ public class Gui implements EntryPoint
 
 		}
 
-		private void ShowSelectionPanel(MetaID id)
+		private void showSelectionPanel(MetaID id)
 		{
 
 		}
@@ -852,122 +768,7 @@ public class Gui implements EntryPoint
 
 	}
 
-	private void showContextMenu(final TreeNode node, EventObject e)
-	{
-		if (menu == null)
-		{
-			menu = new Menu();
-			Item editItem = new Item("Edit", new BaseItemListenerAdapter()
-			{
-				public void onClick(BaseItem item, EventObject e)
-				{
-					treeEditor.startEdit(ctxNode);
-				}
-			});
-			editItem.setId("edit-item");
-			menu.addItem(editItem);
 
-			Item disableItem = new Item("Disable",
-					new BaseItemListenerAdapter()
-					{
-						public void onClick(BaseItem item, EventObject e)
-						{
-							ctxNode.disable();
-							ctxNode.cascade(new NodeTraversalCallback()
-							{
-								public boolean execute(Node node)
-								{
-									((TreeNode) node).disable();
-									return true;
-								}
-							});
-						}
-					});
-			disableItem.setId("disable-item");
-			menu.addItem(disableItem);
-
-			Item enableItem = new Item("Enable", new BaseItemListenerAdapter()
-			{
-				public void onClick(BaseItem item, EventObject e)
-				{
-					ctxNode.enable();
-					ctxNode.cascade(new NodeTraversalCallback()
-					{
-						public boolean execute(Node node)
-						{
-							((TreeNode) node).enable();
-							return true;
-						}
-					});
-				}
-			});
-			enableItem.setId("enable-item");
-			menu.addItem(enableItem);
-
-			Item removeItem = new Item("Remove", new BaseItemListenerAdapter()
-			{
-				public void onClick(BaseItem item, EventObject e)
-				{
-
-					ctxNode.cascade(new NodeTraversalCallback()
-					{
-						public boolean execute(Node node)
-						{
-							((TreeNode) node).remove();
-							return true;
-						}
-					});
-					ctxNode.remove();
-				}
-			});
-			removeItem.setId("remove-item");
-			menu.addItem(removeItem);
-
-			Item cloneItem = new Item("Clone", new BaseItemListenerAdapter()
-			{
-				public void onClick(BaseItem item, EventObject e)
-				{
-					TreeNode clone = ctxNode.cloneNode();
-					clone.setText("Copy of " + clone.getText());
-					ctxNode.getParentNode().appendChild(clone);
-					treeEditor.startEdit(clone);
-				}
-			});
-			cloneItem.setId("clone-item");
-			menu.addItem(cloneItem);
-
-			Item newFolderItem = new Item("New Folder",
-					new BaseItemListenerAdapter()
-					{
-						public void onClick(BaseItem item, EventObject e)
-						{
-							TreeNode newFolder = new TreeNode("New Folder");
-							ctxNode.getParentNode().appendChild(newFolder);
-							treeEditor.startEdit(newFolder);
-						}
-					});
-			newFolderItem.setId("newfolder-item");
-			menu.addItem(newFolderItem);
-		}
-
-		if (ctxNode != null)
-		{
-			ctxNode = null;
-		}
-		ctxNode = node;
-
-		if (ctxNode.isDisabled())
-		{
-			menu.getItem("disable-item").disable();
-			menu.getItem("enable-item").enable();
-		} else
-		{
-			menu.getItem("disable-item").enable();
-			menu.getItem("enable-item").disable();
-		}
-		menu.showAt(e.getXY());
-
-	}
 
 
 }

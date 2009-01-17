@@ -1,14 +1,15 @@
 #!/bin/bash
-GWT_HOME=/home/krzycho/gwt-linux-1.5.3/
-GWTEXT_HOME=/home/krzycho/gwtext-2.0.5/
-TOMCAT_HOME=/home/krzycho/apache-tomcat-6.0.18/
+GWT_HOME=/home/chudi/Utils/gwt-linux-1.5.3
+GWTEXT_HOME=/home/chudi/Utils/gwtext-2.0.5
+TOMCAT_HOME=/home/chudi/Utils/apache-tomcat-6.0.18
+GWTEXTUX_HOME=/home/chudi/Utils/gwtextux-0.3
 APPDIR=`dirname $0`;
 
 mkdir out
 
 unzip -q js.zip -d src/org/pwr/odwa/public/
 
-java -cp "$APPDIR/src:$GWT_HOME/gwt-user.jar:$GWT_HOME/gwt-dev-linux.jar:$GWTEXT_HOME/gwtext.jar" \
+java -Xmx256m -cp "$APPDIR/src:$GWT_HOME/gwt-user.jar:$GWT_HOME/gwt-dev-linux.jar:$GWTEXT_HOME/gwtext.jar:$GWTEXTUX_HOME/gwtextux.jar" \
 	  com.google.gwt.dev.GWTCompiler -out "$APPDIR/out" "$@" org.pwr.odwa.Gui;
 
 rm -R src/org/pwr/odwa/public/js

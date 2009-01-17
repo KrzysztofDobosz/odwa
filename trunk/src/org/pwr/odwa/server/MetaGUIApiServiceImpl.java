@@ -10,6 +10,7 @@ public class MetaGUIApiServiceImpl extends RemoteServiceServlet implements
       MetaGUIApiService
 {
 
+
    public ArrayList<MetaSlot> getSlots(String userName){
       System.out.println("ODWAServer: MetaGUIApi: getSlots executed");
            ArrayList<MetaSlot> list = new ArrayList<MetaSlot>();
@@ -114,5 +115,27 @@ public class MetaGUIApiServiceImpl extends RemoteServiceServlet implements
            return null;
        }
    }
+
+public String getDataView(MetaID viewId)
+{
+	return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+	+ "<metadata>" + "<database>" + "<engine>mysql</engine>"
+	+ "<host>localhost</host>" + "<port>3306</port>"
+	+ "<name>odwa</name>" + "</database>" + "<measures>" + "<measure>"
+	+ "<uid>M1</uid>" + "<name>Order Quantity</name>"
+	+ "<desc>Order Quantity measure</desc>"
+	+ "<table>factinternetsales</table>"
+	+ "<field>OrderQuantity</field>" + "<format>%d</format>"
+	+ "<function>sum</function>" + "</measure>" + "<measure>"
+	+ "<uid>M2</uid>" + "<name>Sales Amount</name>"
+	+ "<desc>Sales Amount measure</desc>"
+	+ "<table>factinternetsales</table>" + "<field>SalesAmount</field>"
+	+ "<format>%d</format>" + "<function>sum</function>" + "</measure>"
+	+ "<measure>" + "<uid>M3</uid>" + "<name>Freight</name>"
+	+ "<desc>Freight measure</desc>"
+	+ "<table>factinternetsales</table>" + "<field>Freight</field>"
+	+ "<format>%.2f</format>" + "<function>sum</function>"
+	+ "</measure>" + "</measures>" + "</metadata>";
+}
 
 }

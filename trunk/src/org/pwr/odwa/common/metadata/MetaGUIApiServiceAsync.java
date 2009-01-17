@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.pwr.odwa.common.metadata.*;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface MetaGUIApiServiceAsync
 {
@@ -15,4 +16,5 @@ public interface MetaGUIApiServiceAsync
    public void getMeasures(MetaID viewId, AsyncCallback<ArrayList<MetaMeasure>> callback);
    public void getHierarchies(MetaID viewId, AsyncCallback<ArrayList<MetaHierarchy>> callback);
    public void getDimElements(MetaID dimentionId, AsyncCallback<ArrayList<MetaDimElement>> callback);
+   public void getDataView(MetaID viewId, AsyncCallback<String> callback);
 }
