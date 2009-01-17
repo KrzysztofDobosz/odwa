@@ -8,6 +8,12 @@
 	<!-- Specify the app entry point class.                   -->
 	<entry-point class='org.pwr.odwa.client.Gui'/>
 
+	<inherits name="com.gwtext.Charts"/>
+<!--    <inherits name="com.gwtextux.GwtExtUx"/>
+
+    <inherits name="com.gwtextux.GridSearchPlugin"/>
+    <inherits name="com.gwtextux.GridFilterPlugin"/>-->
+
   	<inherits name="com.google.gwt.user.theme.standard.Standard"/>
   	<!-- <inherits name="com.google.gwt.user.theme.chrome.Chrome"/> -->
   	<!-- <inherits name="com.google.gwt.user.theme.dark.Dark"/> -->
@@ -16,7 +22,8 @@
    <source path="client"/>
 
    <stylesheet src="js/ext/resources/css/xtheme-silverCherry.css" />
+<!-- moved to gui.html
    <script src="js/ext/adapter/ext/ext-base.js" />
-   <script src="js/ext/ext-all.js" />
+   <script src="js/ext/ext-all.js" />-->
 
 </module>
