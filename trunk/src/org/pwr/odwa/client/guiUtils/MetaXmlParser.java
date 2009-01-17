@@ -20,6 +20,7 @@ public class MetaXmlParser
 		Element root = doc.getDocumentElement();
 
 		TreeNode returnNode = new TreeNode("METADATA");
+		returnNode.setExpanded(true);
 
 		if (root.getNodeName().equals("metadata"))
 		{
@@ -32,6 +33,7 @@ public class MetaXmlParser
 				if (rootChild.getNodeName().equals("measures"))
 				{
 					TreeNode measures = new TreeNode("MEASURES");
+					measures.setExpanded(true);
 					measures.setAttribute("allowDrag", "false");
 					returnNode.appendChild(measures);
 					NodeList measuresChildren = rootChild.getChildNodes();
@@ -63,6 +65,7 @@ public class MetaXmlParser
 				} else if (rootChild.getNodeName().equals("dimensions"))
 				{
 					TreeNode dimensions = new TreeNode("DIMENSIONS");
+					dimensions.setExpanded(true);
 					dimensions.setAttribute("allowDrag", "false");
 					returnNode.appendChild(dimensions);
 					NodeList dimensionsChildren = rootChild.getChildNodes();
