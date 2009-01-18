@@ -470,6 +470,14 @@ public class Gui implements EntryPoint
 			{
 				public void onClick(Button button, EventObject e)
 				{
+					MessageBox.alert(selectionPanel.loadSelection().toString());
+				}
+			});
+			Button previewButton = new Button("PREVIEW", new ButtonListenerAdapter()
+			{
+				public void onClick(Button button, EventObject e)
+				{
+					MessageBox.alert(selectionPanel.loadSelection().toString());
 				}
 			});
 
@@ -525,7 +533,7 @@ public class Gui implements EntryPoint
 			centerPanel.setTitle("Selection");
 			centerPanel.setCollapsible(true);
 			centerPanel.setButtons(new Button[]
-			{ resetButton, execButton });
+			{ resetButton,previewButton, execButton });
 			centerPanel.setButtonAlign(Position.RIGHT);
 			centerPanel.add(selectionPanel);
 			selectionPanel.setVisible(false);
