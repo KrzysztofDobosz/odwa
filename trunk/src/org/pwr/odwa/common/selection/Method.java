@@ -1,6 +1,9 @@
 package org.pwr.odwa.common.selection;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+
+
+import java.io.Serializable;
+
 
 /**
  * Klasa reprezentująca metodę opisu członków wymiaru na podstawie innych
@@ -12,33 +15,35 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Michał Brzeziński-Spiczak
  *
  */
-public class Method implements IsSerializable {
+public class Method implements Serializable {
 
 	private static final long serialVersionUID = 5987452597403813853L;
-	private int methodId;
+	private String methodId;
 	/**
 	 * Konstruktor domyślny
 	 */
-	public Method(){}
+	public Method(){
+		methodId = null;
+	}
 	/**
 	 * Konstruktor na bazie identyfikatora metody
 	 * @param methodId
 	 */
-	public Method(int methodId){
+	public Method(String methodId){
 		this.methodId = methodId;
 	}
 	/**
 	 * Ustawia identyfikator metody na wartość podaną jako parametr
 	 * @param methodId - identyfikator metody do ustawienia
 	 */
-	public void setMethodId(int methodId) {
+	public void setMethodId(String methodId) {
 		this.methodId = methodId;
 	}
 	/**
 	 * Zwraca identyfikator metody
 	 * @return methodId - identyfikator metody
 	 */
-	public int getMethodId() {
+	public String getMethodId() {
 		return methodId;
 	}
 }

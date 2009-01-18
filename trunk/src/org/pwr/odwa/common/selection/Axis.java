@@ -1,23 +1,24 @@
-/**
- *
- */
 package org.pwr.odwa.common.selection;
+
+
 /**
  * Klasa reprezentująca zagnieżdżoną oś zapytania {@link UserSelection}
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
  */
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Axis implements IsSerializable {
+public class Axis implements Serializable {
 	private static final long serialVersionUID = 1490457996717239587L;
 	private ArrayList<AxisElement> axisElements;
 	/**
 	 * Konstruktor domyślny
 	 */
-	public Axis(){}
+	public Axis(){
+		axisElements = new ArrayList<AxisElement>();
+	}
 	/**
 	 * Zwraca ilość zagnieżdżonych osi {@link AxisElement} (0 dla pojedynczej osi)
 	 * @return ilość zagnieżdżonych osi {@link AxisElement}

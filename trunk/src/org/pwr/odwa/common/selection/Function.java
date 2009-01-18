@@ -1,20 +1,22 @@
 package org.pwr.odwa.common.selection;
 
+
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Klasa reprezentująca funkcję nałożoną na zbiór elementów wymiaru (np. headX,
- * toppercen, notempty)
+ * toppercent, notempty)
  *
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
  *
  */
-public class Function implements IsSerializable {
+public class Function implements Serializable {
 	private static final long serialVersionUID = 8987240111613491526L;
-	private int functionId;
+	private String functionId;
 
 	private ArrayList<Object> parameter;
 
@@ -22,6 +24,8 @@ public class Function implements IsSerializable {
 	 * Konstruktor domyślny
 	 */
 	public Function() {
+		functionId = null;
+		
 	}
 
 	/**
@@ -29,7 +33,7 @@ public class Function implements IsSerializable {
 	 *
 	 * @param id
 	 */
-	public Function(int id) {
+	public Function(String id) {
 		functionId = id;
 		parameter = null;
 	}
@@ -40,7 +44,7 @@ public class Function implements IsSerializable {
 	 * @param id
 	 * @param o
 	 */
-	public Function(int id, ArrayList<Object> o) {
+	public Function(String id, ArrayList<Object> o) {
 		functionId = id;
 		parameter = o;
 	}
@@ -50,7 +54,7 @@ public class Function implements IsSerializable {
 	 *
 	 * @return
 	 */
-	public int getFunctionId() {
+	public String getFunctionId() {
 		return functionId;
 	}
 
@@ -69,7 +73,7 @@ public class Function implements IsSerializable {
 	 * @param argument
 	 *            do ustawienia
 	 */
-	public void setFunctionId(int functionId) {
+	public void setFunctionId(String functionId) {
 		this.functionId = functionId;
 	}
 
