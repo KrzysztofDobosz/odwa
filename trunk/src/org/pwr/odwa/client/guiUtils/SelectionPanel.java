@@ -1,5 +1,9 @@
 package org.pwr.odwa.client.guiUtils;
 
+import java.util.ArrayList;
+
+import org.pwr.odwa.common.selection.SelectionLoader;
+
 import com.gwtext.client.core.Connection;
 import com.gwtext.client.core.EventObject;
 import com.gwtext.client.data.Node;
@@ -51,6 +55,7 @@ public class SelectionPanel extends Panel
 		treePanel.setFrame(false);
 		treePanel.setEnableDrag(true);
 		treePanel.setContainerScroll(true);
+		treePanel.setAutoScroll(true);
 		treePanel.setRootVisible(true);
 		treePanel.setWidth(300);
 		treePanel.setHeight(400);
@@ -88,39 +93,54 @@ public class SelectionPanel extends Panel
 					DragDrop source, TreeNode dropNode,
 					DropNodeCallback dropDropNodeCallback)
 			{
-
-				if ("false".equals(dropNode.getAttribute("allowDrag")))
+				if ("false".equals(target.getAttribute("allowDrop")))
 				{
 					return false;
 				}
-				if("false".equals(target.getAttribute("multiple")))
+
+				else if ("false".equals(dropNode.getAttribute("allowDrag")))
+				{
+					return false;
+				}
+				else if("false".equals(target.getAttribute("multiple")))
 				{
 					if(target.getFirstChild() != null) return false;
 
 				}
-				if("false".equals(target.getAttribute("allowDrop")))
+				else if("false".equals(target.getAttribute("allowDrop")))
 				{
 					return false;
 
 				}
+				else if(!(dropNode.getAttribute("metaType").equals(target.getAttribute("metaType"))))
+				{
 
-								//{
-					TreeNode copyNode = dropNode.cloneNode();
-					copyNode.setAttribute("allowDrag", "false");
+					return false;
+				}
+
+				else if(target.getDepth()> 1 && dropNode.getAttribute("metaType").equals("dimension")
+						&& !(dropNode.getAttribute("uid").contains(target.getAttribute("uid"))))
+					return false;
+
+				TreeNode copyNode = dropNode.cloneNode();
+				copyNode.setAttribute("allowDrag", "false");
+
+				if(target.getDepth()> 1 || dropNode.getAttribute("metaType").equals("measure"))
+						copyNode.setAttribute("allowDrop", "false");
+				else copyNode.setAttribute("multiple", "true");
+
+				if (dropNode.getAttribute("metaType").equals("measure"))
 					copyNode.setAttribute("allowDrop", "false");
-					Node[] children = copyNode.getChildNodes();
-					for (int i = 0; i < children.length; i++)
-					{
-						Node child = children[i];
-						copyNode.removeChild(child);
-					}
 
-					dropDropNodeCallback.setDropNode(copyNode);
+				Node[] children = copyNode.getChildNodes();
+				for (int i = 0; i < children.length; i++)
+				{
+					Node child = children[i];
+					copyNode.removeChild(child);
+				}
 
+				dropDropNodeCallback.setDropNode(copyNode);
 
-
-
-//				}
 				return true;
 			}
 
@@ -145,33 +165,43 @@ public class SelectionPanel extends Panel
 			TreeNode root = new TreeNode("User selection:");
 			root.setExpanded(true);
 			root.setAttribute("allowDrag", "false");
-			root.setAttribute("multiple", "false");
+			root.setAttribute("allowDrop", "false");
+			root.setAttribute("metaType", "false");
 
 
 			TreeNode columns = new TreeNode("COLUMNS");
+			columns.setAttribute("name", "COLUMNS");
 			columns.setAttribute("allowDrag", "false");
 			columns.setAttribute("multiple", "true");
+			columns.setAttribute("metaType", "dimension");
 			root.appendChild(columns);
 
 			TreeNode rows = new TreeNode("ROWS");
+			rows.setAttribute("name", "ROWS");
 			rows.setAttribute("allowDrag", "false");
 			rows.setAttribute("multiple", "true");
+			rows.setAttribute("metaType", "dimension");
 			root.appendChild(rows);
 
 			TreeNode backg = new TreeNode("BACKGROUND");
+			backg.setAttribute("name", "BACKGROUND");
 			backg.setAttribute("allowDrag", "false");
 			backg.setAttribute("multiple", "true");
+			backg.setAttribute("metaType", "dimension");
 			root.appendChild(backg);
 
 			TreeNode measure = new TreeNode("MEASURE");
+			measure.setAttribute("name", "MEASURE");
 			measure.setAttribute("allowDrag", "false");
 			measure.setAttribute("multiple", "false");
+			measure.setAttribute("metaType", "measure");
 			root.appendChild(measure);
 
 			setTitle("Selection");
 			setEnableDrop(true);
 			setRootNode(root);
 		}
+
 	}
 
 	public void loadXml(String xmlString)
@@ -299,4 +329,83 @@ public class SelectionPanel extends Panel
 		}
 		menu.showAt(e.getXY());
 	}
+
+	public SelectionLoader loadSelection()
+	{
+		SelectionLoader result = new SelectionLoader();
+
+		ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> cols = new ArrayList<ArrayList<String>>();
+		ArrayList<ArrayList<String>> back = new ArrayList<ArrayList<String>>();
+		String measure = "";
+
+		TreeNode root = rowsTreePanel.getRootNode();
+
+		Node[] nodes = root.getChildNodes();
+
+		for (int i = 0; i< nodes.length; i++)
+		{
+			Node currentNode = nodes[i];
+			if(currentNode.getAttribute("name").equals("ROWS"))
+			{
+				Node[] rowsNodes = currentNode.getChildNodes();
+				ArrayList<String> rowsUid = new ArrayList<String>();
+				for(Node row : rowsNodes)
+				{
+					Node[] subaxis = row.getChildNodes();
+					for(Node subrow: subaxis)
+					{
+						rowsUid.add(subrow.getAttribute("uid"));
+					}
+					rows.add(rowsUid);
+				}
+
+
+			}
+			else if(currentNode.getAttribute("name").equals("COLUMNS"))
+			{
+				Node[] colsNodes = currentNode.getChildNodes();
+
+				for(Node row : colsNodes)
+				{
+					ArrayList<String> colsUid = new ArrayList<String>();
+					Node[] subaxis = row.getChildNodes();
+					for(Node subrow: subaxis)
+					{
+						colsUid.add(subrow.getAttribute("uid"));
+					}
+					cols.add(colsUid);
+				}
+
+			}
+			else if(currentNode.getAttribute("name").equals("BACKGROUND"))
+			{
+				Node[] backNodes = currentNode.getChildNodes();
+
+				for(Node row : backNodes)
+				{
+					ArrayList<String> backUid = new ArrayList<String>();
+					Node[] subaxis = row.getChildNodes();
+					for(Node subrow: subaxis)
+					{
+						backUid.add(subrow.getAttribute("uid"));
+					}
+					back.add(backUid);
+				}
+
+			}
+			else if(currentNode.getAttribute("name").equals("MEASURE"))
+			{
+				measure = currentNode.getFirstChild().getAttribute("uid");
+			}
+		}
+
+		result.setRows(rows);
+		result.setCols(cols);
+		result.setBackground(back);
+		result.setMeasure(measure);
+
+		return result;
+	}
+
 }
