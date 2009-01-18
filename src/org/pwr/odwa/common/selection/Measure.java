@@ -1,6 +1,9 @@
 package org.pwr.odwa.common.selection;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+
+
+import java.io.Serializable;
+
 
 /**
  * Klasa reprezentująca miarę definiowaną poprzez identyfikator measureId
@@ -12,10 +15,10 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Michał Brzeziński-Spiczak
  *
  */
-public class Measure implements IsSerializable {
+public class Measure implements Serializable {
 
 	private static final long serialVersionUID = 4677861308416261725L;
-	private int measureId;
+	private String measureUid;
 
 	/**
 	 * Konstruktor domyślny
@@ -26,21 +29,21 @@ public class Measure implements IsSerializable {
 	 * Konstruktor przyjmujacy indentyfikator miary
 	 * @param measureId
 	 */
-	public Measure(int measureId){
-		this.measureId = measureId;
+	public Measure(String measureId){
+		this.measureUid = measureUid;
 	}
 	/**
 	 * Zwraca identyfikator miary
 	 * @return measureId - identyfikator miary
 	 */
-	public int getMeasureId() {
-		return measureId;
+	public String getMeasureUid() {
+		return measureUid;
 	}
 	/**
 	 * Ustawia identyfikator miary na podany w argumencie
 	 * @param measureId - identyfikator miary
 	 */
-	public void setMeasureId(int measureId) {
-		this.measureId = measureId;
+	public void setMeasureUid(String measureUid) {
+		this.measureUid = measureUid;
 	}
 }

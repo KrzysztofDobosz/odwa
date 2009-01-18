@@ -1,8 +1,10 @@
 package org.pwr.odwa.common.selection;
 
+
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Klasa-kontener elementów wymiaru
@@ -11,7 +13,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Michał Brzeziński-Spiczak
  *
  */
-public class DimensionElSet implements IsSerializable {
+public class DimensionElSet implements Serializable {
 
 	private static final long serialVersionUID = 1882221553803217784L;
 
@@ -22,6 +24,7 @@ public class DimensionElSet implements IsSerializable {
 	 * Konstrktor domyślny
 	 */
 	public DimensionElSet() {
+		dimensionEls = new ArrayList<DimensionEl>();
 	};
 	/**
 	 * Zwraca ilość elementów w kontenerze

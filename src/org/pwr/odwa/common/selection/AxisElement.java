@@ -1,6 +1,10 @@
 package org.pwr.odwa.common.selection;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+
+
+import java.io.Serializable;
+
+
 /**
  * Klasa reprezentująca pojedynczy poziom zagnieżdżenia osi w zapytaniu {@link UserSelection}
  *
@@ -8,14 +12,16 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Michał Brzeziński-Spiczak
   */
 
-public class AxisElement implements IsSerializable {
+public class AxisElement implements Serializable {
 	private static final long serialVersionUID = 5157213403910585037L;
 	private DimensionElSet dimensionElSet;
 	private Function function;
 	/**
 	 * Konstruktor domyślny
 	 */
-	public AxisElement(){}
+	public AxisElement(){
+		
+	}
 	/**
 	 * Konstruktor poziomu zagnieżdżenia osi na bazie składowych (złączenie metod typu set)
 	 * @param dimensionElSet - kontener elementów wymiaru ({@link DimensionElSet})

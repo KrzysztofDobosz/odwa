@@ -1,8 +1,10 @@
 package org.pwr.odwa.common.selection;
 
+
+
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Klasa reprezentująca ścieżkę hierarchii wewnątrz wymiaru
@@ -11,37 +13,28 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Michał Brzeziński-Spiczak
  *
  */
-public class Path implements IsSerializable {
+public class Path implements Serializable {
 
 	private static final long serialVersionUID = -2841252524985516662L;
 
-	private ArrayList<String> path;
+	private String path;
 
 	/**
 	 * Konstruktor domyślny
 	 */
 	public Path() {
+		path = null;
 	}
 
-	/**
-	 * Konstruktor ścieżki poprzez parsowanie Stringa (hierarchi w zapisie MDX -
-	 * NazwaKategorii.NazwaPodKategorii.(...).NazwaCzłonkaWymiaru)
-	 *
-	 * @param p reprezentacja MDX ścieżki
-	 */
-	public Path(String p) {
-		String[] temp = p.split(".");
-		for (int i = 0; i < temp.length; i++)
-			path.add(temp[i]);
-
-	}
-
-	/**
-	 * Dekompozycja ścieżki na kontener {@link ArrayList} Stringów
-	 * @return
-	 */
-	public ArrayList<String> decompose() {
+	public String getPath() {
 		return path;
 	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	
+
 
 }

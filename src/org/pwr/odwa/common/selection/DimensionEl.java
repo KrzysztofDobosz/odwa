@@ -1,6 +1,9 @@
 package org.pwr.odwa.common.selection;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+
+
+import java.io.Serializable;
+
 
 /**
  * Klasa reprezentująca zbiór członków wymiaru poprzez ścieżkę hierarchi (
@@ -10,7 +13,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  * @author Michał Brzeziński-Spiczak
  *
  */
-public class DimensionEl implements IsSerializable {
+public class DimensionEl implements Serializable {
 
 	private static final long serialVersionUID = 819048093372776792L;
 	private Path path;
