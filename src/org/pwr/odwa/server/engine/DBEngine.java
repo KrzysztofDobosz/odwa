@@ -22,7 +22,7 @@ import org.pwr.odwa.server.structure.DBTable;
  */
 public class DBEngine
 {
-   Connection conn;
+	Connection conn;
 
 	/**
 	 * Connects to Database under given URL, as a given user with given password
@@ -33,12 +33,15 @@ public class DBEngine
 	 *            user login
 	 * @param password
 	 */
-	public void connect(String url, String user, String password) {
-		try {
+	public void connect(String url, String user, String password)
+	{
+		try
+		{
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println(DriverManager.getDrivers());
 			conn = DriverManager.getConnection(url, user, password);
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -46,10 +49,13 @@ public class DBEngine
 	/**
 	 * Ends connection with database
 	 */
-	public void disconnect() {
-		try {
+	public void disconnect()
+	{
+		try
+		{
 			conn.close();
-		} catch (SQLException e) {
+		} catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -57,14 +63,15 @@ public class DBEngine
 	/**
 	 * Executes Query in Database
 	 * 
-	 * testowane dla sumy sprzeda¿y w podziale na kraje dla p³ci w roku
+	 * testowane dla sumy sprzedaï¿½y w podziale na kraje dla pï¿½ci w roku
 	 * 2008(filtr)
 	 * 
 	 * @param Query
 	 *            User Query
 	 * @return Result of User Query
 	 */
-	public DBResult executeQuery(UserSelection Query) {
+	public DBResult executeQuery(UserSelection Query)
+	{
 		// getting fact Table name
 		String factTable = "factinternetsales";
 
@@ -94,9 +101,11 @@ public class DBEngine
 		SQLQuery query = new MySQLQuery();
 		query.addToFromClause(factTable); // add fact table to from fields...
 
-		for (int i = 0; i < axisDimList.size(); i++) {
+		for (int i = 0; i < axisDimList.size(); i++)
+		{
 			String elem;
-			if (!addedDimTables.contains(elem = axisDimList.get(i))) {
+			if (!addedDimTables.contains(elem = axisDimList.get(i)))
+			{
 				addedDimTables.add(elem);
 				query.addToFromClause(elem, SQLJoinOperator.INNER_JOIN, elem
 						+ "." + dimIdFieldList.get(i), factTable + "."
@@ -127,9 +136,11 @@ public class DBEngine
 		ArrayList<String> boundDimValuesList = new ArrayList<String>();
 		boundDimValuesList.add("2003");
 
-		for (int i = 0; i < boundDimList.size(); i++) {
+		for (int i = 0; i < boundDimList.size(); i++)
+		{
 			String elem;
-			if (!addedDimTables.contains(elem = boundDimList.get(i))) {
+			if (!addedDimTables.contains(elem = boundDimList.get(i)))
+			{
 				addedDimTables.add(elem);
 				query.addToFromClause(elem, SQLJoinOperator.INNER_JOIN, elem
 						+ "." + boundDimIdFieldList.get(i), factTable + "."
@@ -139,7 +150,8 @@ public class DBEngine
 					+ boundDimValuesList.get(i) + "'", SQLLogicOperator.AND);
 		}
 
-		try {
+		try
+		{
 			Statement db = conn.createStatement(); // ResultSet result =
 			ResultSet result = db.executeQuery(query.getQuery());
 
@@ -148,28 +160,33 @@ public class DBEngine
 
 			int columnCount = (result.getMetaData().getColumnCount());
 
-			for (int i = 1; i <= columnCount; i++) {
+			for (int i = 1; i <= columnCount; i++)
+			{
 				colNames.add(result.getMetaData().getColumnName(i));
 				fieldTypes.add(result.getMetaData().getColumnTypeName(i));
 			}
 
 			ArrayList<DBRow> rows = new ArrayList<DBRow>();
 
-			ArrayList<Object> rowObjects = new ArrayList<Object>();
-
-			if (result.next()) {
-				for (int i = 1; i <= columnCount; i++) {
+			while (result.next())
+			{
+				ArrayList<Object> rowObjects = new ArrayList<Object>();
+				for (int i = 1; i <= columnCount; i++)
+				{
 					rowObjects.add(result.getObject(i));
 				}
 				rows.add(new DBRow(rowObjects));
-			} else {
+			}
+			if (rows.size() == 0)
+			{
 				return null;
 			}
 
 			DBResult res = new DBResult(rows, colNames, fieldTypes, query
 					.getQuery());
 			return res;
-		} catch (SQLException e) {
+		} catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
 
@@ -183,22 +200,26 @@ public class DBEngine
 	 * @return list of structures of all databases visible for logged user. See
 	 *         {@link DBStructure}
 	 */
-	public ArrayList<DBStructure> getDatabases() {
-		try {
+	public ArrayList<DBStructure> getDatabases()
+	{
+		try
+		{
 			DatabaseMetaData meta = conn.getMetaData();
 			ResultSet catalogs = meta.getCatalogs();
 
 			ArrayList<DBStructure> result = new ArrayList<DBStructure>();
 
 			// adding databases
-			while (catalogs.next()) {
+			while (catalogs.next())
+			{
 				String catName = catalogs.getString(1);
 				ResultSet tables = meta.getTables(catName, null, null, null);
 
 				ArrayList<DBTable> dbTables = new ArrayList<DBTable>();
 
 				// adding tables
-				while (tables.next()) {
+				while (tables.next())
+				{
 					String tabName = tables.getString(3);
 					ResultSet fields = meta.getColumns(catName, null, tabName,
 							null);
@@ -210,7 +231,8 @@ public class DBEngine
 							tabName);
 					ArrayList<String> primKeys = new ArrayList<String>();
 
-					while (primaryKeys.next()) {
+					while (primaryKeys.next())
+					{
 						primKeys.add(primaryKeys.getString(4));
 					}
 
@@ -220,7 +242,8 @@ public class DBEngine
 					ArrayList<String> foreKeys = new ArrayList<String>();
 					ArrayList<ForeKeyCont> foreKeysDesc = new ArrayList<ForeKeyCont>();
 
-					while (foreignKeys.next()) {
+					while (foreignKeys.next())
+					{
 						foreKeys.add(foreignKeys.getString(8));
 						foreKeysDesc.add(new ForeKeyCont(foreignKeys
 								.getString(8), foreignKeys.getString(3),
@@ -228,12 +251,14 @@ public class DBEngine
 					}
 
 					// adding fields
-					while (fields.next()) {
+					while (fields.next())
+					{
 						String fieldName = fields.getString(4);
 						String foreTable = null;
 						String foreColumn = null;
 
-						if (foreKeys.contains(fieldName)) {
+						if (foreKeys.contains(fieldName))
+						{
 							int i = foreKeys.indexOf(fieldName);
 							ForeKeyCont cont = foreKeysDesc.get(i);
 							foreTable = cont.getForeTableName();
@@ -257,7 +282,8 @@ public class DBEngine
 				result.add(struct);
 			}
 			return result;
-		} catch (SQLException e) {
+		} catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
 
@@ -268,7 +294,8 @@ public class DBEngine
 /**
  * Container for Foreign Key Data, usage only in getStructure()
  */
-class ForeKeyCont {
+class ForeKeyCont
+{
 	private String name;
 
 	private String foreTableName;
@@ -285,21 +312,25 @@ class ForeKeyCont {
 	 * @param c
 	 *            Refered column name
 	 */
-	public ForeKeyCont(String n, String t, String c) {
+	public ForeKeyCont(String n, String t, String c)
+	{
 		name = n;
 		foreTableName = t;
 		foreColumnName = c;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
-	public String getForeTableName() {
+	public String getForeTableName()
+	{
 		return foreTableName;
 	}
 
-	public String getForeColumnName() {
+	public String getForeColumnName()
+	{
 		return foreColumnName;
 	}
 }
