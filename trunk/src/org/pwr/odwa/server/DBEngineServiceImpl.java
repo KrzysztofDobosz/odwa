@@ -11,6 +11,14 @@ public class DBEngineServiceImpl extends RemoteServiceServlet implements DBEngin
 
    public DBResult executeQuery(UserSelection userSel)
    {
+	   //FIXME: DO KRZYŚKA: nim poprawisz komunikację, musisz tutaj wywołać connect() (tak jak rozmawialiśmy)
+	   //poniżej example:
+	   /*
+	    * 
+	    * DBEngine db = new DBEngine();
+		* db.connect("jdbc:mysql://localhost/odwa", "odwa", "odwa");
+		* DBResult res = db.executeQuery(userSel);
+	    */
       DBEngine dbEn = new DBEngine();
       return dbEn.executeQuery(userSel);
    }
