@@ -1,8 +1,8 @@
 package org.pwr.odwa.common.metadata;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
-public class MetaID implements IsSerializable {
+public class MetaID implements Serializable {
     protected long m_id;
 
     public MetaID(){}

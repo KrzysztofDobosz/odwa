@@ -10,8 +10,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class DBEngineServiceImpl extends RemoteServiceServlet implements
       DBEngineService
 {
-   private DBEngine dbEn = new DBEngine();
-
    public DBResult executeQuery(UserSelection userSel)
    {
       // FIXME: DO KRZYŚKA: nim poprawisz komunikację, musisz tutaj wywołać
@@ -22,12 +20,13 @@ public class DBEngineServiceImpl extends RemoteServiceServlet implements
        * DBEngine db = new DBEngine(); db.connect("jdbc:mysql://localhost/odwa",
        * "odwa", "odwa"); DBResult res = db.executeQuery(userSel);
        */
-
+      DBEngine dbEn = new DBEngine();
       return dbEn.executeQuery(userSel);
    }
 
    public String connect(String url, String user, String password)
    {
+      DBEngine dbEn = new DBEngine();
       dbEn.connect(url, user, password);
       return "";
    }
