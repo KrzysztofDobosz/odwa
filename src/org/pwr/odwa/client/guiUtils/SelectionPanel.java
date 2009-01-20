@@ -402,7 +402,7 @@ public class SelectionPanel extends Panel
 
 		result.setRows(rows);
 		result.setCols(cols);
-		result.setBackground(back);
+		//result.setBackground(back);
 		result.setMeasure(measure);
 
 		return result;
