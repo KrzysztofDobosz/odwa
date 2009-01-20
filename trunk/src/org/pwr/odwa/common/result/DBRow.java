@@ -10,11 +10,11 @@ import java.util.ArrayList;
 public class DBRow implements Serializable
 {
 	private int fieldsCount;
-	private ArrayList<Object> values;
+	private ArrayList<String> values;
 
 	public DBRow(){}
 
-	public DBRow(ArrayList<Object> values)
+	public DBRow(ArrayList<String> values)
 	{
 		this.fieldsCount = values.size();
 		this.values = values;

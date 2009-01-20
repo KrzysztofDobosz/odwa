@@ -728,7 +728,28 @@ public class Gui implements EntryPoint
 
             public void onSuccess(DBResult result)
             {
-               MessageBox.alert("ExecuteQuery succeed");
+               DBRow row;
+               String out = "";
+               int count = result.getColumnCount();
+               for (int i = 0; i < count; i++)
+               {
+                  out = out.concat(result.getColumnName(i) + " ");
+                  System.out.print(result.getColumnName(i) + " ");
+               }
+               out = out.concat("\n");
+               System.out.println();
+
+               while ((row = result.fetchRow()) != null)
+               {
+                  for (int i = 0; i < count; i++)
+                  {
+                     out = out.concat(row.getFieldVal(i).toString() + " ");
+                     System.out.print(row.getFieldVal(i).toString() + " ");
+                  }
+                  out = out.concat("\n");
+                  System.out.println();
+               }
+               MessageBox.alert(out);
                display.show((DBResult) result);
             }
          });

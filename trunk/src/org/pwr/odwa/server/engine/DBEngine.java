@@ -72,6 +72,15 @@ public class DBEngine
 	 */
 	public DBResult executeQuery(UserSelection Query)
 	{
+	   try
+      {
+         Class.forName("com.mysql.jdbc.Driver");
+         System.out.println(DriverManager.getDrivers());
+         conn = DriverManager.getConnection("jdbc:mysql://localhost/odwa", "odwa", "odwa");
+      } catch (Exception e)
+      {
+         e.printStackTrace();
+      }
 		// getting fact Table name
 		String factTable = "factinternetsales";
 
@@ -170,10 +179,10 @@ public class DBEngine
 
 			while (result.next())
 			{
-				ArrayList<Object> rowObjects = new ArrayList<Object>();
+				ArrayList<String> rowObjects = new ArrayList<String>();
 				for (int i = 1; i <= columnCount; i++)
 				{
-					rowObjects.add(result.getObject(i));
+					rowObjects.add(result.getObject(i).toString());
 				}
 				rows.add(new DBRow(rowObjects));
 			}

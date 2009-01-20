@@ -1,8 +1,8 @@
 #!/bin/bash
-GWT_HOME=/home/chudi/Utils/gwt-linux-1.5.3
-GWTEXT_HOME=/home/chudi/Utils/gwtext-2.0.5
-TOMCAT_HOME=/home/chudi/Utils/apache-tomcat-6.0.18
-GWTEXTUX_HOME=/home/chudi/Utils/gwtextux-0.4
+GWT_HOME=/home/krzycho/gwt-linux-1.5.3
+GWTEXT_HOME=/home/krzycho/gwtext-2.0.5
+TOMCAT_HOME=/home/krzycho/apache-tomcat-6.0.18
+GWTEXTUX_HOME=/home/krzycho/gwtextux-0.4
 APPDIR=`dirname $0`;
 
 mkdir out
@@ -31,6 +31,7 @@ javac -cp "$APPDIR/src/org/pwr/odwa/common:$APPDIR/src/org/pwr/odwa/server:$GWT_
 	  src/org/pwr/odwa/common/selection/DimensionElSet.java \
 	  src/org/pwr/odwa/common/selection/AxisElement.java \
 	  src/org/pwr/odwa/common/selection/Axis.java \
+     src/org/pwr/odwa/common/selection/SelectionLoader.java \
 	  src/org/pwr/odwa/common/selection/UserSelection.java \
 	  src/org/pwr/odwa/common/dbtypes/DBFieldDataType.java \
 	  src/org/pwr/odwa/common/dbtypes/DBFieldType.java \

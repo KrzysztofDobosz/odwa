@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.pwr.odwa.common.metadata.*;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface MetaGUIApiServiceAsync
 {

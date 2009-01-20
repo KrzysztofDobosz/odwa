@@ -1,6 +1,6 @@
 package org.pwr.odwa.common.metadata;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
+import java.io.Serializable;
 
 /** Klasa bazowa dla klas będących elementami bazy metadanych.
  *
@@ -19,7 +19,7 @@ import com.google.gwt.user.client.rpc.IsSerializable;
  *  @author Mateusz Paprocki
  *  @author Maria Łabaziewicz
  */
-public class MetaElement implements IsSerializable {
+public class MetaElement implements Serializable {
     protected MetaID m_id = null;
     protected String m_name = null;
     protected String m_notes = null;
