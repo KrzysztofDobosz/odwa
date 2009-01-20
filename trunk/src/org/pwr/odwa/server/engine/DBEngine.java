@@ -26,7 +26,7 @@ public class DBEngine
 
 	/**
 	 * Connects to Database under given URL, as a given user with given password
-	 * 
+	 *
 	 * @param url
 	 *            database adress
 	 * @param user
@@ -62,10 +62,10 @@ public class DBEngine
 
 	/**
 	 * Executes Query in Database
-	 * 
+	 *
 	 * testowane dla sumy sprzeda�y w podziale na kraje dla p�ci w roku
 	 * 2008(filtr)
-	 * 
+	 *
 	 * @param Query
 	 *            User Query
 	 * @return Result of User Query
@@ -185,7 +185,7 @@ public class DBEngine
 			DBResult res = new DBResult(rows, colNames, fieldTypes, query
 					.getQuery());
 			return res;
-		} catch (SQLException e)
+		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -196,7 +196,7 @@ public class DBEngine
 	/**
 	 * Returns all available databases. First use connect for getting
 	 * connections. Returns only databases visible for logged user.
-	 * 
+	 *
 	 * @return list of structures of all databases visible for logged user. See
 	 *         {@link DBStructure}
 	 */
@@ -304,7 +304,7 @@ class ForeKeyCont
 
 	/**
 	 * Creates new ForeKeyKont
-	 * 
+	 *
 	 * @param n
 	 *            Foreign Key name
 	 * @param t

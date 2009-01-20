@@ -10,4 +10,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface DBEngineService extends RemoteService
 {
    public DBResult executeQuery(UserSelection userSel);
+   public String connect(String url, String user, String password);
 }
