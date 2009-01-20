@@ -6,14 +6,32 @@ public class SelectionLoader
 {
 	private ArrayList<ArrayList<String>> rows;
 	private ArrayList<ArrayList<String>> cols;
-	private ArrayList<ArrayList<String>> background;
+	private ArrayList<String> background;
 	private String measure;
+	private String dataBaseId;
+
+	
+	public ArrayList<ArrayList<String>> getRows() {
+		return rows;
+	}
+
+	public ArrayList<ArrayList<String>> getCols() {
+		return cols;
+	}
+
+	public ArrayList<String> getBackground() {
+		return background;
+	}
+
+	public String getMeasure() {
+		return measure;
+	}
 
 	public SelectionLoader()
 	{
 		rows = new ArrayList<ArrayList<String>>();
 		cols = new ArrayList<ArrayList<String>>();
-		background = new ArrayList<ArrayList<String>>();
+		background = new ArrayList<String>();
 		measure = "";
 	}
 
@@ -27,7 +45,7 @@ public class SelectionLoader
 		this.cols = cols;
 	}
 
-	public void setBackground(ArrayList<ArrayList<String>> background)
+	public void setBackground(ArrayList<String> background)
 	{
 		this.background = background;
 	}
@@ -59,17 +77,22 @@ public class SelectionLoader
 			}
 			retStr += "\n";
 		}
-		for(ArrayList<String> backList : background)
+		for(String backList : background)
 		{
 			retStr += "background: \n";
-			for(String bac: backList)
-			{
-				retStr += bac + " ";
-			}
+			retStr += backList;
 			retStr += "\n";
 		}
 		retStr += "measure: " + measure;
 		return retStr;
+	}
+
+	public void setDataBaseId(String dataBaseId) {
+		this.dataBaseId = dataBaseId;
+	}
+
+	public String getDataBaseId() {
+		return dataBaseId;
 	}
 
 }

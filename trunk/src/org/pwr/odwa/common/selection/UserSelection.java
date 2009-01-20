@@ -1,7 +1,5 @@
 package org.pwr.odwa.common.selection;
 
-
-
 import java.io.Serializable;
 
 /**
@@ -141,57 +139,56 @@ public class UserSelection implements Serializable {
 	public String toString() {
 		String selection = new String();
 
-		if (getDataBaseId()!=null)
-		selection += "Database: " + getDataBaseId() + "<br>";
+		if (getDataBaseId() != null)
+			selection += "Database: " + getDataBaseId() + "<br>";
 		else
 			selection += "Database: null <br>";
-		if (measure.getMeasureUid()!=null)
-		selection += "Measure: " + measure.getMeasureUid() + "<br>";
+		if (measure.getMeasureUid() != null)
+			selection += "Measure: " + measure.getMeasureUid() + "<br>";
 		else
 			selection += "Measure: null <br>";
 		AxisElement el;
-		selection += "<br><b>Column:<b><br>";
+		selection += "<br><b>Column:</b><br>";
 
 		for (int i = 0; i < getColumn().getAxisElementAmount(); i++) {
 			selection += " <b>  Axis_</b>" + (i + 1) + " - function: ";
 			el = getColumn().getAxisElement(i);
 			DimensionElSet dimelset = el.getDimensionElSet();
 			Function func = el.getFunction();
-			
-				selection += func.getFunctionId();
+
+			selection += func.getFunctionId();
 			selection += "<br>{";
 			DimensionEl dimel;
 			for (int k = 0; k < dimelset.getDimensionElAmount(); k++) {
 				dimel = dimelset.getDimensionEl(k);
-			//	if (dimel.getMethod() != null)
-				selection += "(" + dimel.getPath().getPath() + ", " + dimel.getMethod().getMethodId()
-						+ ")";
-			//	else
-			//		selection += "(" + dimel.getPath().getPath() + ", null)";
+				// if (dimel.getMethod() != null)
+				selection += "(" + dimel.getPath().getPath() + ", "
+						+ dimel.getMethod().getMethodId() + ")";
+				// else
+				// selection += "(" + dimel.getPath().getPath() + ", null)";
 
 			}
-			selection += "}<br><br>"; 
+			selection += "}<br><br>";
 		}
-		selection += "<br><b>Row:<b><br>";   
+		selection += "<br><b>Row:</b><br>";
 
 		for (int i = 0; i < getRow().getAxisElementAmount(); i++) {
 			selection += " <b>  Axis_</b>" + (i + 1) + " - function: ";
-			el = getColumn().getAxisElement(i);
+			el = getRow().getAxisElement(i);
 			DimensionElSet dimelset = el.getDimensionElSet();
 			Function func = el.getFunction();
 			selection += func.getFunctionId() + "<br>{";
 			DimensionEl dimel;
 			for (int k = 0; k < dimelset.getDimensionElAmount(); k++) {
 				dimel = dimelset.getDimensionEl(k);
-			//	if (dimel.getMethod() != null)
-					selection += "(" + dimel.getPath().getPath() + ", " + dimel.getMethod().getMethodId()
-							+ ")";
-//					else
-//						selection += "(" + dimel.getPath().getPath() + ", null)";
-
+				// if (dimel.getMethod() != null)
+				selection += "(" + dimel.getPath().getPath() + ", "
+						+ dimel.getMethod().getMethodId() + ")";
+				// else
+				// selection += "(" + dimel.getPath().getPath() + ", null)";
 
 			}
-			selection += "}<br><br>"; 
+			selection += "}<br><br>";
 		}
 
 		selection += "Slice:<br>";
@@ -200,14 +197,99 @@ public class UserSelection implements Serializable {
 		for (int k = 0; k < dimelset.getDimensionElAmount(); k++) {
 			dimel = dimelset.getDimensionEl(k);
 			if (dimel.getMethod() != null)
-				selection += "(" + dimel.getPath().getPath() + ", " + dimel.getMethod().getMethodId()
-						+ ")";
-				else
-					selection += "(" + dimel.getPath().getPath() + ", null)";
+				selection += "(" + dimel.getPath().getPath() + ", "
+						+ dimel.getMethod().getMethodId() + ")";
+			else
+				selection += "(" + dimel.getPath().getPath() + ", null)";
 
 		}
 
 		return selection;
 
+	}
+
+	public void load(SelectionLoader sloader) {
+		Measure m = new Measure();
+		m.setMeasureUid(sloader.getMeasure());
+		setMeasure(m);
+
+		//setDataBaseId(sloader.getDatabaseId());
+
+		Axis col_ = new Axis();
+
+		Function func = new Function();
+
+		for (int i = 0; i < sloader.getCols().size(); i++) {
+			AxisElement col_el = new AxisElement();
+			DimensionElSet dimelset = new DimensionElSet();
+			for (int k = 0; k < sloader.getCols().get(i).size(); k++) {
+				DimensionEl dimel = new DimensionEl();
+				String el = sloader.getCols().get(i).get(k);
+				Path path = new Path();
+				Method method = new Method();
+				if (el.contains(".")) {
+					path.setPath(el.split("\\.")[0]);
+					if (el.split("\\.").length == 2)
+						method.setMethodId(el.split("\\.")[1]);
+
+				} else
+					path.setPath(el);
+				dimel.setMethod(method);
+				dimel.setPath(path);
+				dimelset.addDimensionEl(dimel);
+
+			}
+			col_el.setDimensionElSet(dimelset);
+			col_el.setFunction(func);
+			col_.addAxisElement(col_el);
+		}
+		setColumn(col_);
+		
+		Axis row_ = new Axis();
+		for (int i = 0; i < sloader.getRows().size(); i++) {
+			AxisElement row_el = new AxisElement();
+			DimensionElSet dimelset = new DimensionElSet();
+			for (int k = 0; k < sloader.getRows().get(i).size(); k++) {
+				DimensionEl dimel = new DimensionEl();
+				String el = sloader.getRows().get(i).get(k);
+				Path path = new Path();
+				Method method = new Method();
+				if (el.contains(".")) {
+					path.setPath(el.split("\\.")[0]);
+					if (el.split("\\.").length == 2)
+						method.setMethodId(el.split("\\.")[1]);
+
+				} else
+					path.setPath(el);
+				dimel.setMethod(method);
+				dimel.setPath(path);
+				dimelset.addDimensionEl(dimel);
+
+			}
+			row_el.setDimensionElSet(dimelset);
+			row_el.setFunction(func);
+			row_.addAxisElement(row_el);
+		}
+		setRow(row_);
+		
+		DimensionElSet dimelset = new DimensionElSet();
+		for (int k = 0; k < sloader.getBackground().size(); k++) {
+			DimensionEl dimel = new DimensionEl();
+			String el = sloader.getBackground().get(k);
+			Path path = new Path();
+			Method method = new Method();
+			if (el.contains(".")) {
+				path.setPath(el.split("\\.")[0]);
+				if (el.split("\\.").length == 2)
+					method.setMethodId(el.split("\\.")[1]);
+
+			} else
+				path.setPath(el);
+			dimel.setMethod(method);
+			dimel.setPath(path);
+			dimelset.addDimensionEl(dimel);
+
+		}
+		setSlice(dimelset);
 	}
 }
