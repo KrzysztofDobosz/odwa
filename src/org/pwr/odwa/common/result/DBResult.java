@@ -1,8 +1,8 @@
 package org.pwr.odwa.common.result;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 import org.pwr.odwa.common.dbtypes.DBFieldDataType;
 
@@ -10,7 +10,7 @@ import org.pwr.odwa.common.dbtypes.DBFieldDataType;
  * Represents database query result (mostly syntactic sugar)
  *
  */
-public class DBResult implements IsSerializable
+public class DBResult implements Serializable
 {
    private int next;
 

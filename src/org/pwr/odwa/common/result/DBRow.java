@@ -1,13 +1,13 @@
 package org.pwr.odwa.common.result;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
  * Single row of the db query result
  * (For data presentation module)
  */
-public class DBRow implements IsSerializable
+public class DBRow implements Serializable
 {
 	private int fieldsCount;
 	private ArrayList<Object> values;
