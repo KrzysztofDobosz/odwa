@@ -72,15 +72,7 @@ public class DBEngine
 	 */
 	public DBResult executeQuery(UserSelection Query)
 	{
-	   try
-      {
-         Class.forName("com.mysql.jdbc.Driver");
-         System.out.println(DriverManager.getDrivers());
-         conn = DriverManager.getConnection("jdbc:mysql://localhost/odwa", "odwa", "odwa");
-      } catch (Exception e)
-      {
-         e.printStackTrace();
-      }
+	   
 		// getting fact Table name
 		String factTable = "factinternetsales";
 
