@@ -1,8 +1,8 @@
 #!/bin/bash
-GWT_HOME=/home/krzycho/gwt-linux-1.5.3
-GWTEXT_HOME=/home/krzycho/gwtext-2.0.5
-TOMCAT_HOME=/home/krzycho/apache-tomcat-6.0.18
-GWTEXTUX_HOME=/home/krzycho/gwtextux-0.4
+GWT_HOME=/home/dane/install/gwt-linux-1.5.3
+GWTEXT_HOME=/home/dane/install/gwtext-2.0.5
+TOMCAT_HOME=/home/dane/install/apache-tomcat-6.0.18
+GWTEXTUX_HOME=/home/dane/install/gwtextux-0.3
 APPDIR=`dirname $0`;
 
 mkdir out
