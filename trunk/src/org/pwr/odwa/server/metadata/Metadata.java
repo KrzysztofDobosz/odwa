@@ -4,11 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import javax.xml.xpath.*;
-import org.xml.sax.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.xml.sax.*;
+import org.w3c.dom.*;
+
+import javax.xml.parsers.*;
+
+import javax.xml.transform.*;
+import javax.xml.transform.dom.*;
+import javax.xml.transform.stream.*;
 
 import java.io.*;
 
@@ -138,7 +142,11 @@ public class Metadata {
 
                 node = (Node)xpath.evaluate("desc",
                     dimensions.item(d), XPathConstants.NODE);
-                dimension.setDesc(node.getTextContent());
+                if (node != null) {
+                    dimension.setDesc(node.getTextContent());
+                } else {
+                    dimension.setDesc("");
+                }
 
                 node = (Node)xpath.evaluate("table",
                     dimensions.item(d), XPathConstants.NODE);
@@ -157,7 +165,7 @@ public class Metadata {
                 if (node != null) {
                     dimension.setDefault(new UID(node.getTextContent()));
                 } else {
-                    dimension.setDesc("");
+                    dimension.setDefault(null);
                 }
 
                 path = "hierarchies/hierarchy";
@@ -186,7 +194,13 @@ public class Metadata {
                         hierarchy.setDesc("");
                     }
 
-                    hierarchy.setDefault(dimension.getUID());
+                    node = (Node)xpath.evaluate("default",
+                        hierarchies.item(h), XPathConstants.NODE);
+                    if (node != null) {
+                        hierarchy.setDefault(new UID(node.getTextContent()));
+                    } else {
+                        hierarchy.setDefault(null);
+                    }
 
                     path = "levels/level";
 
@@ -199,11 +213,11 @@ public class Metadata {
                         Level level = new Level();
 
                         node = (Node)xpath.evaluate("uid",
-                            levels.item(h), XPathConstants.NODE);
+                            levels.item(l), XPathConstants.NODE);
                         level.setUID(new UID(node.getTextContent()));
 
                         node = (Node)xpath.evaluate("name",
-                            levels.item(h), XPathConstants.NODE);
+                            levels.item(l), XPathConstants.NODE);
                         level.setName(node.getTextContent());
 
                         node = (Node)xpath.evaluate("desc",
@@ -224,13 +238,14 @@ public class Metadata {
 
                         node = (Node)xpath.evaluate("default",
                             levels.item(l), XPathConstants.NODE);
-                        level.setDefault(new UID(node.getTextContent()));
+                        if (node != null) {
+                            level.setDefault(new UID(node.getTextContent()));
+                        } else {
+                            level.setDefault(null);
+                        }
 
                         level.setDimension(dimension.getUID());
                         level.setHierarchy(hierarchy.getUID());
-
-                        // prevlevel
-                        // nextlevel
 
                         path = "members/member";
 
@@ -265,9 +280,6 @@ public class Metadata {
                             member.setDimension(dimension.getUID());
                             member.setHierarchy(hierarchy.getUID());
                             member.setLevel(level.getUID());
-
-                            // prevmember
-                            // nextmember
 
                             path = "children/child";
 
@@ -315,6 +327,140 @@ public class Metadata {
         }
     }
 
+    public String getMetadataTree() {
+        try {
+            DocumentBuilderFactory doc_factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder doc_builder = doc_factory.newDocumentBuilder();
+
+            Document doc = doc_builder.newDocument();
+
+            Element root = doc.createElement("metadata");
+            doc.appendChild(root);
+
+            for (UID d_uid : m_types.get(EltType.MDX_DIMENSION)) {
+                Dimension d_elt = (Dimension)m_cache.get(d_uid);
+
+                Element d_node = doc.createElement("dimension");
+                root.appendChild(d_node);
+
+                Element d__uid_node = doc.createElement("uid");
+                Element d_name_node = doc.createElement("name");
+                Element d_desc_node = doc.createElement("desc");
+
+                Text d__uid_data = doc.createTextNode(d_elt.getUID().toString());
+                Text d_name_data = doc.createTextNode(d_elt.getName());
+                Text d_desc_data = doc.createTextNode(d_elt.getDesc());
+
+                d__uid_node.appendChild(d__uid_data);
+                d_name_node.appendChild(d_name_data);
+                d_desc_node.appendChild(d_desc_data);
+
+                d_node.appendChild(d__uid_node);
+                d_node.appendChild(d_name_node);
+                d_node.appendChild(d_desc_node);
+
+                Element d_hierarchies = doc.createElement("hierarchies");
+
+                for (UID h_uid : d_elt.getHierarchies()) {
+                    Hierarchy h_elt = (Hierarchy)m_cache.get(h_uid);
+
+                    Element h_node = doc.createElement("hierarchy");
+
+                    Element h__uid_node = doc.createElement("uid");
+                    Element h_name_node = doc.createElement("name");
+                    Element h_desc_node = doc.createElement("desc");
+
+                    Text h__uid_data = doc.createTextNode(h_elt.getUID().toString());
+                    Text h_name_data = doc.createTextNode(h_elt.getName());
+                    Text h_desc_data = doc.createTextNode(h_elt.getDesc());
+
+                    h__uid_node.appendChild(h__uid_data);
+                    h_name_node.appendChild(h_name_data);
+                    h_desc_node.appendChild(h_desc_data);
+
+                    h_node.appendChild(h__uid_node);
+                    h_node.appendChild(h_name_node);
+                    h_node.appendChild(h_desc_node);
+
+                    Element h_levels = doc.createElement("members");
+
+                    for (UID l_uid : h_elt.getLevels()) {
+                        Level l_elt = (Level)m_cache.get(l_uid);
+
+                        Element l_node = doc.createElement("level");
+
+                        Element l__uid_node = doc.createElement("uid");
+                        Element l_name_node = doc.createElement("name");
+                        Element l_desc_node = doc.createElement("desc");
+
+                        Text l__uid_data = doc.createTextNode(l_elt.getUID().toString());
+                        Text l_name_data = doc.createTextNode(l_elt.getName());
+                        Text l_desc_data = doc.createTextNode(l_elt.getDesc());
+
+                        l__uid_node.appendChild(l__uid_data);
+                        l_name_node.appendChild(l_name_data);
+                        l_desc_node.appendChild(l_desc_data);
+
+                        l_node.appendChild(l__uid_node);
+                        l_node.appendChild(l_name_node);
+                        l_node.appendChild(l_desc_node);
+
+                        Element l_members = doc.createElement("members");
+
+                        for (UID m_uid : l_elt.getMembers()) {
+                            Member m_elt = (Member)m_cache.get(m_uid);
+
+                            Element m_node = doc.createElement("member");
+
+                            Element m__uid_node = doc.createElement("uid");
+                            Element m_name_node = doc.createElement("name");
+                            Element m_desc_node = doc.createElement("desc");
+
+                            Text m__uid_data = doc.createTextNode(m_elt.getUID().toString());
+                            Text m_name_data = doc.createTextNode(m_elt.getName());
+                            Text m_desc_data = doc.createTextNode(m_elt.getDesc());
+
+                            m__uid_node.appendChild(m__uid_data);
+                            m_name_node.appendChild(m_name_data);
+                            m_desc_node.appendChild(m_desc_data);
+
+                            m_node.appendChild(m__uid_node);
+                            m_node.appendChild(m_name_node);
+                            m_node.appendChild(m_desc_node);
+
+                            l_members.appendChild(m_node);
+                        }
+
+                        l_node.appendChild(l_members);
+                        h_levels.appendChild(l_node);
+                    }
+
+                    h_node.appendChild(h_levels);
+                    d_hierarchies.appendChild(h_node);
+                }
+
+                d_node.appendChild(d_hierarchies);
+            }
+
+            TransformerFactory trans_factory = TransformerFactory.newInstance();
+            Transformer trans = trans_factory.newTransformer();
+
+            trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+            trans.setOutputProperty(OutputKeys.INDENT, "yes");
+
+            StringWriter sw = new StringWriter();
+            StreamResult sr = new StreamResult(sw);
+            DOMSource source = new DOMSource(doc);
+
+            trans.transform(source, sr);
+
+            return sw.toString();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
     private void updateTypes(EltType type, Meta elt) {
         ArrayList<UID> list;
 
@@ -352,6 +498,7 @@ public class Metadata {
     public static void main(String[] args) {
         Metadata meta = new Metadata();
         meta.loadMetadata("../opt/metadata.xml");
+        System.out.println(meta.getMetadataTree());
     }
 }
 

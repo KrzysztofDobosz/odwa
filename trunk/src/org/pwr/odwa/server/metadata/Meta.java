@@ -37,5 +37,10 @@ class Meta {
     public String getDesc() {
         return m_desc;
     }
+
+    public String toString() {
+        return "(" + getUID().toString() + ", " +
+            getName() + ", " + getDesc() + ")";
+    }
 }
 
