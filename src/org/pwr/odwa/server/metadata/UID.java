@@ -13,6 +13,10 @@ public final class UID implements Serializable {
         return m_uid;
     }
 
+    public String toString() {
+        return m_uid;
+    }
+
     public int hashCode() {
         return m_uid.hashCode();
     }
