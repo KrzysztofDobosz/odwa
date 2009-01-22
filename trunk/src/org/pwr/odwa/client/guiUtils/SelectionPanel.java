@@ -33,8 +33,8 @@ import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 
 public class SelectionPanel extends Panel
 {
-	private  final TreePanel treePanel;
-	private  final TreePanel rowsTreePanel;
+	private final TreePanel treePanel;
+	private final TreePanel rowsTreePanel;
 
 	private Menu menu;
 	private TreeNode ctxNode;
@@ -62,7 +62,7 @@ public class SelectionPanel extends Panel
 		treePanel.setSelectionModel(new MultiSelectionModel());
 
 		TreeNode root = new TreeNode("DATA VIEW");
-		//TreeNode root = parser.parse(xmlString);
+		// TreeNode root = parser.parse(xmlString);
 		treePanel.setRootNode(root);
 		root.expand();
 		treePanel.expandAll();
@@ -74,7 +74,6 @@ public class SelectionPanel extends Panel
 		rowsTreePanel.setRootVisible(true);
 		rowsTreePanel.setWidth(300);
 		rowsTreePanel.setHeight(400);
-
 
 		TextField field = new TextField();
 		field.setSelectOnFocus(true);
@@ -102,36 +101,45 @@ public class SelectionPanel extends Panel
 				{
 					return false;
 				}
-				else if("false".equals(target.getAttribute("multiple")))
+
+				else if ("false".equals(target.getAttribute("multiple")))
 				{
-					if(target.getFirstChild() != null) return false;
+					if (target.getFirstChild() != null)
+						return false;
 
 				}
-				else if("false".equals(target.getAttribute("allowDrop")))
-				{
-					return false;
 
-				}
-				else if(!(dropNode.getAttribute("metaType").equals(target.getAttribute("metaType"))))
+				else if (!(dropNode.getAttribute("metaType").equals(target
+						.getAttribute("metaType"))))
 				{
 
 					return false;
 				}
 
-				else if(target.getDepth()> 1 && dropNode.getAttribute("metaType").equals("dimension")
-						&& !(dropNode.getAttribute("uid").contains(target.getAttribute("uid"))))
-					return false;
+				else if (target.getDepth() >= 1
+						&& dropNode.getAttribute("metaType")
+								.equals("dimension") && !(target.getAttribute("name").equals("BACKGROUND")))
+				{
+					if (target.getChildNodes().length != 0)
+						if (!(target.getFirstChild().getAttribute("uid")
+								.substring(0, 2).equals(dropNode.getAttribute(
+								"uid").substring(0, 2))))
+							return false;
+				}
 
 				TreeNode copyNode = dropNode.cloneNode();
 				copyNode.setAttribute("allowDrag", "false");
 
-				if(target.getDepth()> 1 || dropNode.getAttribute("metaType").equals("measure"))
-						copyNode.setAttribute("allowDrop", "false");
-				else copyNode.setAttribute("multiple", "true");
-
-				if (dropNode.getAttribute("metaType").equals("measure"))
-					copyNode.setAttribute("allowDrop", "false");
-
+				copyNode.setAttribute("allowDrop", "false");
+				/*
+				 * if (target.getDepth() > 1 ||
+				 * dropNode.getAttribute("metaType").equals("measure"))
+				 * copyNode.setAttribute("allowDrop", "false"); else
+				 * copyNode.setAttribute("multiple", "true");
+				 *
+				 * if (dropNode.getAttribute("metaType").equals("measure"))
+				 * copyNode.setAttribute("allowDrop", "false");
+				 */
 				Node[] children = copyNode.getChildNodes();
 				for (int i = 0; i < children.length; i++)
 				{
@@ -167,7 +175,6 @@ public class SelectionPanel extends Panel
 			root.setAttribute("allowDrag", "false");
 			root.setAttribute("allowDrop", "false");
 			root.setAttribute("metaType", "false");
-
 
 			TreeNode columns = new TreeNode("COLUMNS");
 			columns.setAttribute("name", "COLUMNS");
@@ -207,11 +214,24 @@ public class SelectionPanel extends Panel
 	public void loadXml(String xmlString)
 	{
 
+		//MessageBox.alert(xmlString);
 		TreeNode root = parser.parse(xmlString);
-		treePanel.getRootNode().appendChild(root);
-		treePanel.getRootNode().expand();
-		//treePanel.expand();
-		//treePanel.expandAll();
+		TreeNode panelRoot = treePanel.getRootNode();
+		Node[] oldNodes = panelRoot.getChildNodes();
+
+		for(Node node : oldNodes)
+			panelRoot.removeChild(node);
+
+		//Node[] newNodes = root.getChildNodes();
+
+		//for(Node node : newNodes)
+			panelRoot.appendChild(root);
+
+		panelRoot.expand();
+
+		reset();
+		// treePanel.expand();
+		// treePanel.expandAll();
 	}
 
 	private void showContextMenu(final TreeNode node, EventObject e)
@@ -285,30 +305,29 @@ public class SelectionPanel extends Panel
 			removeItem.setId("remove-item");
 			menu.addItem(removeItem);
 
-			Item cloneItem = new Item("Clone", new BaseItemListenerAdapter()
-			{
-				public void onClick(BaseItem item, EventObject e)
-				{
-					TreeNode clone = ctxNode.cloneNode();
-					clone.setText("Copy of " + clone.getText());
-					ctxNode.getParentNode().appendChild(clone);
-					treeEditor.startEdit(clone);
-				}
-			});
-			cloneItem.setId("clone-item");
-			menu.addItem(cloneItem);
-
-			Item newFolderItem = new Item("New Folder",
+			Item newFolderItem = new Item("New Axis",
 					new BaseItemListenerAdapter()
 					{
 						public void onClick(BaseItem item, EventObject e)
 						{
-							TreeNode newFolder = new TreeNode("New Folder");
-							ctxNode.getParentNode().appendChild(newFolder);
-							treeEditor.startEdit(newFolder);
+							if (ctxNode.getAttribute("metaType").equals(
+									"dimension")
+									&& ctxNode.getDepth() == 1
+									&& !ctxNode.getAttribute("name").equals(
+											"BACKGROUND"))
+							{
+								TreeNode subaxis = new TreeNode("Subaxis");
+								subaxis.setAttribute("multiple", "true");
+								subaxis.setAttribute("allowDrop", "true");
+								subaxis.setAttribute("metaType", "dimension");
+								ctxNode.appendChild(subaxis);
+								ctxNode.expand();
+								// treeEditor.startEdit(subaxis);
+							}
+
 						}
 					});
-			newFolderItem.setId("newfolder-item");
+			newFolderItem.setId("newAxis-item");
 			menu.addItem(newFolderItem);
 		}
 
@@ -317,6 +336,12 @@ public class SelectionPanel extends Panel
 			ctxNode = null;
 		}
 		ctxNode = node;
+
+		/*
+		 * if (ctxNode.getDepth() != 1 ||
+		 * !(ctxNode.getAttribute("metaType").equals("dimension"))) {
+		 * menu.getItem("newAxis-item").disable(); }
+		 */
 
 		if (ctxNode.isDisabled())
 		{
@@ -330,71 +355,127 @@ public class SelectionPanel extends Panel
 		menu.showAt(e.getXY());
 	}
 
+	public void reset()
+	{
+		TreeNode root = rowsTreePanel.getRootNode();
+
+		Node[] rootNodes = root.getChildNodes();
+		for(Node node : rootNodes)
+			root.removeChild(node);
+
+		TreeNode columns = new TreeNode("COLUMNS");
+		columns.setAttribute("name", "COLUMNS");
+		columns.setAttribute("allowDrag", "false");
+		columns.setAttribute("multiple", "true");
+		columns.setAttribute("metaType", "dimension");
+		root.appendChild(columns);
+
+		TreeNode rows = new TreeNode("ROWS");
+		rows.setAttribute("name", "ROWS");
+		rows.setAttribute("allowDrag", "false");
+		rows.setAttribute("multiple", "true");
+		rows.setAttribute("metaType", "dimension");
+		root.appendChild(rows);
+
+		TreeNode backg = new TreeNode("BACKGROUND");
+		backg.setAttribute("name", "BACKGROUND");
+		backg.setAttribute("allowDrag", "false");
+		backg.setAttribute("multiple", "true");
+		backg.setAttribute("metaType", "dimension");
+		root.appendChild(backg);
+
+		TreeNode measure = new TreeNode("MEASURE");
+		measure.setAttribute("name", "MEASURE");
+		measure.setAttribute("allowDrag", "false");
+		measure.setAttribute("multiple", "false");
+		measure.setAttribute("metaType", "measure");
+		root.appendChild(measure);
+
+		root.expand();
+
+	}
+
 	public SelectionLoader loadSelection()
 	{
 		SelectionLoader result = new SelectionLoader();
 
 		ArrayList<ArrayList<String>> rows = new ArrayList<ArrayList<String>>();
 		ArrayList<ArrayList<String>> cols = new ArrayList<ArrayList<String>>();
-		ArrayList<ArrayList<String>> back = new ArrayList<ArrayList<String>>();
+		ArrayList<String> back = new ArrayList<String>();
 		String measure = "";
 
 		TreeNode root = rowsTreePanel.getRootNode();
 
 		Node[] nodes = root.getChildNodes();
 
-		for (int i = 0; i< nodes.length; i++)
+		for (int i = 0; i < nodes.length; i++)
 		{
 			Node currentNode = nodes[i];
-			if(currentNode.getAttribute("name").equals("ROWS"))
+			if (currentNode.getAttribute("name").equals("ROWS"))
 			{
 				Node[] rowsNodes = currentNode.getChildNodes();
-				ArrayList<String> rowsUid = new ArrayList<String>();
-				for(Node row : rowsNodes)
-				{
-					Node[] subaxis = row.getChildNodes();
-					for(Node subrow: subaxis)
-					{
-						rowsUid.add(subrow.getAttribute("uid"));
-					}
-					rows.add(rowsUid);
-				}
 
+				ArrayList<String> singles = new ArrayList<String>();
+
+				for (Node row : rowsNodes)
+				{
+					if (row.getAttribute("multiple").equals("true"))
+					{
+
+						Node[] subaxis = row.getChildNodes();
+
+						ArrayList<String> rowsUid = new ArrayList<String>();
+						for (Node subrow : subaxis)
+						{
+							rowsUid.add(subrow.getAttribute("uid"));
+						}
+						rows.add(rowsUid);
+
+					} else
+						singles.add(row.getAttribute("uid"));
+				}
+				if (!singles.isEmpty())
+					rows.add(singles);
 
 			}
-			else if(currentNode.getAttribute("name").equals("COLUMNS"))
+
+			else if (currentNode.getAttribute("name").equals("COLUMNS"))
 			{
 				Node[] colsNodes = currentNode.getChildNodes();
 
-				for(Node row : colsNodes)
-				{
-					ArrayList<String> colsUid = new ArrayList<String>();
-					Node[] subaxis = row.getChildNodes();
-					for(Node subrow: subaxis)
-					{
-						colsUid.add(subrow.getAttribute("uid"));
-					}
-					cols.add(colsUid);
-				}
+				ArrayList<String> singles = new ArrayList<String>();
 
-			}
-			else if(currentNode.getAttribute("name").equals("BACKGROUND"))
+				for (Node row : colsNodes)
+				{
+					if (row.getAttribute("multiple").equals("true"))
+					{
+						ArrayList<String> colsUid = new ArrayList<String>();
+						Node[] subaxis = row.getChildNodes();
+						for (Node subrow : subaxis)
+						{
+							colsUid.add(subrow.getAttribute("uid"));
+						}
+						cols.add(colsUid);
+					} else
+						singles.add(row.getAttribute("uid"));
+				}
+				if (!singles.isEmpty())
+					cols.add(singles);
+
+			} else if (currentNode.getAttribute("name").equals("BACKGROUND"))
 			{
 				Node[] backNodes = currentNode.getChildNodes();
 
-				for(Node row : backNodes)
+				ArrayList<String> singles = new ArrayList<String>();
+
+				for (Node row : backNodes)
 				{
-					ArrayList<String> backUid = new ArrayList<String>();
-					Node[] subaxis = row.getChildNodes();
-					for(Node subrow: subaxis)
-					{
-						backUid.add(subrow.getAttribute("uid"));
-					}
-					back.add(backUid);
+
+					back.add(row.getAttribute("uid"));
+
 				}
 
-			}
-			else if(currentNode.getAttribute("name").equals("MEASURE"))
+			} else if (currentNode.getAttribute("name").equals("MEASURE"))
 			{
 				measure = currentNode.getFirstChild().getAttribute("uid");
 			}
@@ -402,7 +483,7 @@ public class SelectionPanel extends Panel
 
 		result.setRows(rows);
 		result.setCols(cols);
-		//result.setBackground(back);
+		result.setBackground(back);
 		result.setMeasure(measure);
 
 		return result;
