@@ -137,7 +137,7 @@ public class MySQLQuery implements SQLQuery
 			whereClause.append(" " + clause);
 		} else
 		{
-			whereClause.append(" " + logicOperator(op) + " " + clause);
+			whereClause.append(" " + SQLLogicOperator.AND + " " + clause);
 		}
 	}
 
