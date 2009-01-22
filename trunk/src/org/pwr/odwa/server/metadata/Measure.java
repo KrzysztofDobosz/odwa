@@ -1,6 +1,6 @@
 package org.pwr.odwa.server.metadata;
 
-class Measure extends Meta {
+public class Measure extends Meta {
     protected String m_table;
     protected String m_field;
     protected String m_format;

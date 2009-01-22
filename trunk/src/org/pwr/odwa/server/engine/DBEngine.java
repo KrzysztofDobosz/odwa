@@ -11,10 +11,25 @@ import java.util.ArrayList;
 
 import org.pwr.odwa.common.result.DBRow;
 import org.pwr.odwa.common.result.DBResult;
+import org.pwr.odwa.common.selection.Axis;
+import org.pwr.odwa.common.selection.AxisElement;
+import org.pwr.odwa.common.selection.DimensionEl;
+import org.pwr.odwa.common.selection.DimensionElSet;
+import org.pwr.odwa.common.selection.Measure;
+import org.pwr.odwa.common.selection.Method;
+import org.pwr.odwa.common.selection.Path;
 import org.pwr.odwa.common.selection.UserSelection;
+import org.pwr.odwa.server.metadata.Dimension;
+import org.pwr.odwa.server.metadata.Level;
+import org.pwr.odwa.server.metadata.Member;
+import org.pwr.odwa.server.metadata.Meta;
+import org.pwr.odwa.server.metadata.Metadata;
+import org.pwr.odwa.server.metadata.UID;
 import org.pwr.odwa.server.structure.DBField;
 import org.pwr.odwa.server.structure.DBStructure;
 import org.pwr.odwa.server.structure.DBTable;
+
+
 
 /**
  *
@@ -26,7 +41,7 @@ public class DBEngine
 
 	/**
 	 * Connects to Database under given URL, as a given user with given password
-	 *
+	 * 
 	 * @param url
 	 *            database adress
 	 * @param user
@@ -62,142 +77,192 @@ public class DBEngine
 
 	/**
 	 * Executes Query in Database
-	 *
-	 * testowane dla sumy sprzeda�y w podziale na kraje dla p�ci w roku
-	 * 2008(filtr)
-	 *
-	 * @param Query
+	 * 
+	 * 
+	 * @param usrQuery
 	 *            User Query
 	 * @return Result of User Query
 	 */
-	public DBResult executeQuery(UserSelection Query)
+	public DBResult executeQuery(UserSelection usrQuery)
 	{
-	   
-		// getting fact Table name
-		String factTable = "factinternetsales";
-
-		ArrayList<String> addedDimTables = new ArrayList<String>();
-
-		// ***************axis dimensions checking
-		ArrayList<String> dimIdFieldList = new ArrayList<String>(); // list
-		// of field names and ids similarly to axisElemList
-		dimIdFieldList.add("CustomerKey");
-		dimIdFieldList.add("SalesTerritoryKey");
-
-		ArrayList<String> factDimIdFieldList = new ArrayList<String>(); // list
-		// of field names and ids in the fact table as the above
-		factDimIdFieldList.add("CustomerKey");
-		factDimIdFieldList.add("SalesTerritoryKey");
-
-		ArrayList<String> dimElemName = new ArrayList<String>(); // list
-		// of dimension elements' names expected by user
-		dimElemName.add("Gender");
-		dimElemName.add("SalesTerritoryCountry");
-		ArrayList<String> axisDimList = new ArrayList<String>(); // obtained
-		// from userSelection and translated to dimension names
-		axisDimList.add("dimcustomer");
-		axisDimList.add("dimsalesterritory");
-
-		// Create MySQL query
-		SQLQuery query = new MySQLQuery();
-		query.addToFromClause(factTable); // add fact table to from fields...
-
-		for (int i = 0; i < axisDimList.size(); i++)
-		{
-			String elem;
-			if (!addedDimTables.contains(elem = axisDimList.get(i)))
-			{
-				addedDimTables.add(elem);
-				query.addToFromClause(elem, SQLJoinOperator.INNER_JOIN, elem
-						+ "." + dimIdFieldList.get(i), factTable + "."
-						+ factDimIdFieldList.get(i));
-
-			}
-			query.addResField(elem + "." + dimElemName.get(i));
-			query.addToGroupByClause(elem + "." + dimElemName.get(i));
-		}
-
-		String measure = "SUM(factinternetsales.SalesAmount)";// metadata module
-		query.addResField(measure);
-
-		// *************constraints check
-		ArrayList<String> boundDimIdFieldList = new ArrayList<String>(); // list
-		// field names and dimension id corresponding to
-		// axisElemList
-		boundDimIdFieldList.add("TimeKey");
-		ArrayList<String> boundFactDimIdFieldList = new ArrayList<String>();
-		// list of field names and dimension ids in the fact tabel as the above
-		boundFactDimIdFieldList.add("OrderDateKey");
-		ArrayList<String> boundDimElemName = new ArrayList<String>(); // list
-		// dimension element names expected by user
-		boundDimElemName.add("CalendarYear");
-		ArrayList<String> boundDimList = new ArrayList<String>(); // obtained
-		// from userSelection and translated to dimension table names
-		boundDimList.add("dimtime");
-		ArrayList<String> boundDimValuesList = new ArrayList<String>();
-		boundDimValuesList.add("2003");
-
-		for (int i = 0; i < boundDimList.size(); i++)
-		{
-			String elem;
-			if (!addedDimTables.contains(elem = boundDimList.get(i)))
-			{
-				addedDimTables.add(elem);
-				query.addToFromClause(elem, SQLJoinOperator.INNER_JOIN, elem
-						+ "." + boundDimIdFieldList.get(i), factTable + "."
-						+ boundFactDimIdFieldList.get(i));
-			}
-			query.addToWhereClause(elem + "." + boundDimElemName.get(i) + "='"
-					+ boundDimValuesList.get(i) + "'", SQLLogicOperator.AND);
-		}
 
 		try
 		{
-			Statement db = conn.createStatement(); // ResultSet result =
-			ResultSet result = db.executeQuery(query.getQuery());
+			// Create MySQL query
+			SQLQuery query = new MySQLQuery();
 
-			ArrayList<String> colNames = new ArrayList<String>();
-			ArrayList<String> fieldTypes = new ArrayList<String>();
+			Metadata meta = new Metadata();
+			meta
+					.loadMetadata("./opt/metadata.xml");
 
-			int columnCount = (result.getMetaData().getColumnCount());
+			Measure meas = usrQuery.getMeasure();
+			String measUID = meas.getMeasureUid();
+			org.pwr.odwa.server.metadata.Measure aMeasure = (org.pwr.odwa.server.metadata.Measure) meta
+					.getElement(new UID(measUID));
 
-			for (int i = 1; i <= columnCount; i++)
+			// getting fact Table
+			// name---------------------------------------------------------------
+			String factTable = aMeasure.getTable();
+			query.addToFromClause(factTable); // add fact table to from
+												// fields...
+
+			String measure = aMeasure.getFunction() + "(" + factTable + "."
+					+ aMeasure.getField() + ")";// metadata module
+			query.addMeasureResField(measure);
+			// ---------------------------------------------------------------------------------------
+			ArrayList<String> whereClauses = new ArrayList<String>();
+			ArrayList<Axis> axis = new ArrayList<Axis>();
+			axis.add(usrQuery.getColumn());
+			axis.add(usrQuery.getRow());
+			for (Axis aAxis : axis)
 			{
-				colNames.add(result.getMetaData().getColumnName(i));
-				fieldTypes.add(result.getMetaData().getColumnTypeName(i));
+				for (int i = 0; i < aAxis.getAxisElementAmount(); i++)
+				{
+
+					AxisElement currEl = aAxis.getAxisElement(i);
+					DimensionElSet dimElSet = currEl.getDimensionElSet();
+					for (int j = 0; j < dimElSet.getDimensionElAmount(); j++)
+					{
+						DimensionEl dimEl = dimElSet.getDimensionEl(j);
+						Method met = dimEl.getMethod();
+						System.out.println(met.getMethodId());
+						String methodId = met.getMethodId();
+						Path path = dimEl.getPath();
+
+						String dimTable = new String();
+						String dimTablePrimaryKey = new String();
+						// Dimension table primary key name in fact table
+						String foreignKeyName = new String();
+						String dimLevel = new String();
+
+						if (methodId == null || !methodId.equals("members"))
+						{
+
+							Member aMeta = (Member) meta.getElement(new UID(
+									path.getPath()));
+							Dimension currDim = (Dimension) meta
+									.getElement(aMeta.getDimension());
+							dimTable = currDim.getTable();
+							dimTablePrimaryKey = currDim.getPrimary();
+							// Dimension table primary key name in fact table
+							foreignKeyName = currDim.getForeign();
+
+							Level aLevel = (Level) meta.getElement(aMeta
+									.getLevel());
+							dimLevel = aLevel.getField();
+							String memberName = aMeta.getItem();
+
+							whereClauses.add(dimTable + "." + dimLevel + "='"
+									+ memberName + "'");
+
+						} else //FIXME: HIERARCHY support!
+						{
+							Level aLevel = (Level) meta.getElement(new UID(path
+									.getPath()));
+							Dimension currDim = (Dimension) meta
+									.getElement(aLevel.getDimension());
+							dimTable = currDim.getTable();
+							dimTablePrimaryKey = currDim.getPrimary();
+							// Dimension table primary key name in fact table
+							foreignKeyName = currDim.getForeign();
+							dimLevel = aLevel.getField();
+
+						}
+						query.addResField(dimTable + "." + dimLevel);
+						query.addToFromClause(dimTable,
+								SQLJoinOperator.INNER_JOIN, dimTable + "."
+										+ dimTablePrimaryKey, factTable + "."
+										+ foreignKeyName);
+						query.addToGroupByClause(dimTable + "." + dimLevel);
+
+					}
+
+				}
+			}
+			if (whereClauses.size() != 0)
+			{
+				query.addToWhereClause(whereClauses, SQLLogicOperator.OR);
 			}
 
-			ArrayList<DBRow> rows = new ArrayList<DBRow>();
-
-			while (result.next())
+			DimensionElSet aSlice = usrQuery.getSlice();
+			for (int i = 0; i < aSlice.getDimensionElAmount(); i++)
 			{
-				ArrayList<String> rowObjects = new ArrayList<String>();
+				DimensionEl dimEl = aSlice.getDimensionEl(i);
+				Method met = dimEl.getMethod();
+				System.out.println(met.getMethodId());
+				String methodId = met.getMethodId();
+				Path path = dimEl.getPath();
+				Member aMeta = (Member) meta
+						.getElement(new UID(path.getPath()));
+				Dimension currDim = (Dimension) meta.getElement(aMeta
+						.getDimension());
+				String dimTable = currDim.getTable();
+				String dimTablePrimaryKey = currDim.getPrimary();
+				// Dimension table primary key name in fact table
+				String foreignKeyName = currDim.getForeign();
+
+				Level aLevel = (Level) meta.getElement(aMeta.getLevel());
+				String dimLevel = aLevel.getField();
+				String memberName = aMeta.getItem();
+				query.addToFromClause(dimTable, SQLJoinOperator.INNER_JOIN,
+						dimTable + "." + dimTablePrimaryKey, factTable + "."
+								+ foreignKeyName);
+				query.addToWhereClause(dimTable + "." + dimLevel + "='"
+						+ memberName + "'", SQLLogicOperator.AND);
+			}
+
+			try
+			{
+
+				System.out.println(query.getQuery());
+				Statement db = conn.createStatement(); // ResultSet result =
+				ResultSet result = db.executeQuery(query.getQuery());
+
+				ArrayList<String> colNames = new ArrayList<String>();
+				ArrayList<String> fieldTypes = new ArrayList<String>();
+
+				int columnCount = (result.getMetaData().getColumnCount());
+
 				for (int i = 1; i <= columnCount; i++)
 				{
-					rowObjects.add(result.getObject(i).toString());
+					colNames.add(result.getMetaData().getColumnName(i));
+					fieldTypes.add(result.getMetaData().getColumnTypeName(i));
 				}
-				rows.add(new DBRow(rowObjects));
-			}
-			if (rows.size() == 0)
-			{
-				return null;
-			}
 
-			DBResult res = new DBResult(rows, colNames, fieldTypes, query
-					.getQuery());
-			return res;
+				ArrayList<DBRow> rows = new ArrayList<DBRow>();
+
+				while (result.next())
+				{
+					ArrayList<String> rowObjects = new ArrayList<String>();
+					for (int i = 1; i <= columnCount; i++)
+					{
+						rowObjects.add(result.getObject(i).toString());
+					}
+					rows.add(new DBRow(rowObjects));
+				}
+				if (rows.size() == 0)
+				{
+					return null;
+				}
+
+				DBResult res = new DBResult(rows, colNames, fieldTypes, query
+						.getQuery());
+				return res;
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		} catch (Exception e)
 		{
 			e.printStackTrace();
 		}
-
 		return null;
 	}
 
 	/**
 	 * Returns all available databases. First use connect for getting
 	 * connections. Returns only databases visible for logged user.
-	 *
+	 * 
 	 * @return list of structures of all databases visible for logged user. See
 	 *         {@link DBStructure}
 	 */
@@ -305,7 +370,7 @@ class ForeKeyCont
 
 	/**
 	 * Creates new ForeKeyKont
-	 *
+	 * 
 	 * @param n
 	 *            Foreign Key name
 	 * @param t

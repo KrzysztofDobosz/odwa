@@ -1,6 +1,6 @@
 package org.pwr.odwa.server.metadata;
 
-class Meta {
+public class Meta {
     protected UID m_uid;
     protected EltType m_type;
     protected String m_name;
