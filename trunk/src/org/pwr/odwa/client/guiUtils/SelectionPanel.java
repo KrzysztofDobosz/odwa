@@ -131,6 +131,7 @@ public class SelectionPanel extends Panel
 				copyNode.setAttribute("allowDrag", "false");
 
 				copyNode.setAttribute("allowDrop", "false");
+				//copyNode.setAttribute("element", dropNode.getAttribute("element"));
 				/*
 				 * if (target.getDepth() > 1 ||
 				 * dropNode.getAttribute("metaType").equals("measure"))
@@ -427,11 +428,20 @@ public class SelectionPanel extends Panel
 						ArrayList<String> rowsUid = new ArrayList<String>();
 						for (Node subrow : subaxis)
 						{
-							rowsUid.add(subrow.getAttribute("uid"));
+							if(subrow.getAttribute("element").equals("false"))
+								{
+								String uidMem = subrow.getAttribute("uid")+ ".members";
+								rowsUid.add(uidMem);
+								}
+							else
+								rowsUid.add(subrow.getAttribute("uid"));
 						}
+
 						rows.add(rowsUid);
 
-					} else
+					} else if(row.getAttribute("element").equals("false"))
+						singles.add(row.getAttribute("uid") + ".members");
+					else
 						singles.add(row.getAttribute("uid"));
 				}
 				if (!singles.isEmpty())
@@ -453,10 +463,18 @@ public class SelectionPanel extends Panel
 						Node[] subaxis = row.getChildNodes();
 						for (Node subrow : subaxis)
 						{
+							if(subrow.getAttribute("element").equals("false"))
+							{
+							String uidMem = subrow.getAttribute("uid")+ ".members";
+							colsUid.add(uidMem);
+							}
+						else
 							colsUid.add(subrow.getAttribute("uid"));
 						}
 						cols.add(colsUid);
-					} else
+					} else if(row.getAttribute("element").equals("false"))
+						singles.add(row.getAttribute("uid") + ".members");
+					else
 						singles.add(row.getAttribute("uid"));
 				}
 				if (!singles.isEmpty())
@@ -471,7 +489,10 @@ public class SelectionPanel extends Panel
 				for (Node row : backNodes)
 				{
 
-					back.add(row.getAttribute("uid"));
+					if(row.getAttribute("element").equals("false"))
+						back.add(row.getAttribute("uid")+ ".members");
+					else
+						back.add(row.getAttribute("uid"));
 
 				}
 

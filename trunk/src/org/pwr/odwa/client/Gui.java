@@ -254,9 +254,9 @@ public class Gui implements EntryPoint
                 * appear", new MessageBox.ConfirmCallback() { public void
                 * execute(String btnID) { } });
                 */
-            	currentSelection = new UserSelection();
-            	currentSelection.load(selectionPanel.loadSelection());
-               executeQuery();
+            	UserSelection selection = new UserSelection();
+            	selection.load(selectionPanel.loadSelection());
+               executeQuery(selection);
                // display.show(new DBResult());
 
             }
@@ -578,9 +578,9 @@ public class Gui implements EntryPoint
 
       }
 
-      public void executeQuery()
+      public void executeQuery(UserSelection selection)
       {
-         dbService.executeQuery(currentSelection, new AsyncCallback<DBResult>()
+         dbService.executeQuery(selection, new AsyncCallback<DBResult>()
          {
             public void onFailure(Throwable caught)
             {
@@ -589,7 +589,7 @@ public class Gui implements EntryPoint
 
             public void onSuccess(DBResult result)
             {
-               DBRow row;
+               /*DBRow row;
                String out = "ARGH";
                int count = result.getColumnCount();
                for (int i = 0; i < count; i++)
@@ -611,7 +611,10 @@ public class Gui implements EntryPoint
                   System.out.println();
                }
                MessageBox.alert(out);
-               display.show((DBResult) result);
+               display.show((DBResult) result);*/
+            	Visualization vis = new Visualization();
+
+            	vis.show(result);
             }
          });
       }

@@ -1,4 +1,4 @@
-package org.pwr.odwa.client.guiUtils;
+package org.pwr.odwa.odwaServlet;
 
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
@@ -9,12 +9,13 @@ import com.gwtext.client.widgets.MessageBox;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.google.gwt.xml.client.XMLParser;
 
-public class MetaXmlParser
+public class MetaXmlParserServlet
 {
 
-	public TreeNode parse(String xmlString)
+	public String parse(String xmlString)
 	{
 
+		String result = "";
 		Document doc = XMLParser.parse(xmlString);
 		// MessageBox.alert("Parsing XML");
 		Element root = doc.getDocumentElement();
@@ -32,11 +33,7 @@ public class MetaXmlParser
 				Node rootChild = rootChildren.item(i);
 				if (rootChild.getNodeName().equals("measures"))
 				{
-					TreeNode measures = new TreeNode("MEASURES");
-					measures.setExpanded(true);
-					measures.setAttribute("allowDrag", "false");
-					measures.setAttribute("metaType", "measure");
-					returnNode.appendChild(measures);
+					result += "___MEASURES<br>";
 					NodeList measuresChildren = rootChild.getChildNodes();
 					for (int j = 0; j < measuresChildren.getLength(); j++)
 					{
@@ -45,22 +42,14 @@ public class MetaXmlParser
 						{
 							String name = getAttribute("name", measuresChild);
 							String uid = getAttribute("uid", measuresChild);
-							NodeList attributes = measuresChild.getChildNodes();
 
-							TreeNode measure = new TreeNode(name);
-							measure.setAttribute("uid", uid);
-							measure.setAttribute("allowDrag", "true");
-							measure.setAttribute("metaType", "measure");
-							measures.appendChild(measure);
+							result += "______" + name + " " + uid + "<p>";
 						}
 					}
 
 				} else if (rootChild.getNodeName().equals("dimensions"))
 				{
-					TreeNode dimensions = new TreeNode("DIMENSIONS");
-					dimensions.setExpanded(true);
-					dimensions.setAttribute("allowDrag", "false");
-					returnNode.appendChild(dimensions);
+					result += "___DIMENSIONS<br>";
 					NodeList dimensionsChildren = rootChild.getChildNodes();
 					for (int j = 0; j < dimensionsChildren.getLength(); j++)
 					{
@@ -70,18 +59,14 @@ public class MetaXmlParser
 							String name = getAttribute("name", dimensionsChild);
 							String uid = getAttribute("uid", dimensionsChild);
 
-							TreeNode dimension = new TreeNode(name);
-							dimension.setAttribute("uid", uid);
-							dimension.setAttribute("allowDrag", "false");
-							dimension.setAttribute("metaType", "dimension");
+							result += "_______" + name + " " + uid + "<br>";
+
 							NodeList attributes = dimensionsChild.getChildNodes();
 
 							for (int k = 0; k < attributes.getLength(); k++)
 							{
 								if (attributes.item(k).getNodeName().equals("hierarchies"))
 								{
-									TreeNode hierarchies = new TreeNode("hierarchies");
-									hierarchies.setAttribute("allowDrag", "false");
 									NodeList hierarchiesChildren = attributes.item(k).getChildNodes();
 									for (int l = 0; l < hierarchiesChildren.getLength(); l++)
 									{
@@ -91,12 +76,7 @@ public class MetaXmlParser
 											String hierName = getAttribute("name", hierChild);
 											String hierUid = getAttribute("uid", hierChild);
 
-											TreeNode hierarchy = new TreeNode(name);
-
-											hierarchy.setAttribute("uid", uid);
-											hierarchy.setAttribute("allowDrag", "false");
-											hierarchy.setAttribute("metaType", "dimension");
-
+											result += "__________" + hierName + " " + hierUid + "<br>";
 											for (int m = 0; m < hierChild.getChildNodes().getLength(); m++)
 											{
 												Node hlevels = hierChild.getChildNodes().item(m);
@@ -107,13 +87,8 @@ public class MetaXmlParser
 														Node hlevel = hlevels.getChildNodes().item(n);
 														String levName = getAttribute("name", hlevel);
 														String levUid = getAttribute("uid", hlevel);
-														TreeNode level = new TreeNode(levName);
-														level.setAttribute("uid", levUid);
-														level.setAttribute("allowDrag", "true");
-														level.setAttribute("metaType", "dimension");
-														level.setAttribute("element", "false");
-														hierarchy.appendChild(level);
-														hierarchy.setExpanded(true);
+
+														result += "__________" + levName + " " + levUid + "<br>";
 
 														for (int o = 0; o < hlevel.getChildNodes().getLength(); o++)
 														{
@@ -125,12 +100,8 @@ public class MetaXmlParser
 																{
 																	Node member = lmembers.getChildNodes().item(p);
 
-																	TreeNode mbr = memberWithChildren(member);//new TreeNode(mbrName);
-
-
-																	level.appendChild(mbr);
-																	level.setExpanded(true);
-																	mbr.setExpanded(false);
+																	String mbr = memberWithChildren(member,12);//new TreeNode(mbrName);
+																	result += mbr;
 
 																}
 															}
@@ -139,16 +110,11 @@ public class MetaXmlParser
 												}
 											}
 
-											dimension.appendChild(hierarchy);
-											dimension.setExpanded(true);
 										}
 									}
-									// dimension.appendChild(hierarchies);
 								}
 
 							}
-							dimensions.setExpanded(true);
-							dimensions.appendChild(dimension);
 						}
 					}
 
@@ -156,23 +122,20 @@ public class MetaXmlParser
 			}
 		} else
 			MessageBox.alert("Could not load view!");
-		return returnNode;
+		return result;
 	}
 
-	private TreeNode memberWithChildren(Node node)
+	private String memberWithChildren(Node node, int spaces)
 	{
+		String result ="";
 
 		NodeList firstLevel = node.getChildNodes();
 		String name = getAttribute("name", node);
 		String uid = getAttribute("uid", node);
+		for(int i=0; i<spaces;i++)
+			result += "_";
 
-		TreeNode finalNode = new TreeNode(name);
-		finalNode.setAttribute("uid", uid);
-		finalNode.setAttribute("allowDrag", "true");
-		finalNode.setAttribute("metaType", "dimension");
-		finalNode.setAttribute("element", "true");
-		finalNode.setExpanded(false);
-
+		result += name + " " + uid + "<br>";
 
 		for (int i = 0; i < firstLevel.getLength(); i++)
 		{
@@ -185,14 +148,14 @@ public class MetaXmlParser
 					{
 
 
-						TreeNode child = memberWithChildren(childrenList.item(j));
-						finalNode.appendChild(child);
+						String child = memberWithChildren(childrenList.item(j));
+						result +=child;
 					}
 				}
 			}
 		}
 
-		return finalNode;
+		return result;
 	}
 
 	private String getAttribute(String name, Node node)
