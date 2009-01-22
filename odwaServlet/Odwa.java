@@ -123,21 +123,24 @@ public class Odwa extends HttpServlet {
 			
 			try{
 			  DBEngine db = new DBEngine();
-		        db.connect("jdbc:mysql://localhost/" + baseId, "root", "pass");
+		        db.connect("jdbc:mysql://localhost/" + baseId, "odwa", "odwa");
 		       
-		        DBResult res = db.executeQuery(selection);
+		        DBResult result = db.executeQuery(selection);
 		        db.disconnect();
+		        
+		        
+		        /* Basic output
 		        DBRow row__;
-		        int count = res.getColumnCount();
+		        int count = result.getColumnCount();
 		        out.println("<br><br>");
 		        for (int i = 0; i < count; i++)
 		        {
-		            out.print(res.getColumnName(i) + " ");
+		            out.print(result.getColumnName(i) + " ");
 		        } 
 		       out.println("<br>");
 		       
 		       
-		        while ( (row__ = res.fetchRow()) != null)
+		        while ( (row__ = result.fetchRow()) != null)
 		        {
 		            for (int i = 0; i< count; i++)
 		                { 
@@ -146,10 +149,108 @@ public class Odwa extends HttpServlet {
 		                out.println("<br>");
 		                
 		                
-		        }
+		        }*/
 		        
+				/*
+				 * Basic example of DBResult:
+				 *  Row | Column | Value
+				 * -----+--------+-------
+				 *   F  |   PL   |   5
+				 *   F  |   DE   |   6
+				 *   F  |   RU   |   4
+				 *   M  |   PL   |   8
+				 *   M  |   DE   |   5
+				 *   M  |   RU   |   1
+				 *    
+				 *    
+				 * Table to be shown:   
+				 *    | PL | DE | RU
+				 * ---+----+----+----
+				 *  F |  5 |  6 |  4
+				 *  M |  8 |  5 |  1
+				 * 
+				 * rowsInResult = 2
+				 * colsInResult = 3
+				 */
+		        
+		        
+		        
+				DBRow visRow = new DBRow();
+				int rowsInResult = 0;
+				int colsInResult = 0;
+				if ((visRow = result.fetchRow()) != null) {
+					String firstRow = visRow.getFieldVal(0).toString();
+					String firstCol = visRow.getFieldVal(1).toString();
+					rowsInResult++;
+					colsInResult++;
+					while ((visRow = result.fetchRow()) != null) {
+						if (firstRow.compareTo(visRow.getFieldVal(0).toString()) == 0) {
+							colsInResult++;
+						} 
+						if (firstCol.compareTo(visRow.getFieldVal(1).toString()) == 0) {
+							rowsInResult++;
+						}
+					}
+				}
+				
+				result.reset(); // Make fetchRow start from the beginning.
+				
+				int queryCols = result.getColumnCount();
+
+				out.println("<div class=\"result-outer\">");
+				out.println("<table id=\"result-table\"><tr>");
+				out.println("<th>"+" "+"</th>");
+				// display attribute names
+				for (int i=0;i<colsInResult;i++) {
+					if ((visRow = result.fetchRow()) != null) {
+						out.println("<th>");
+						out.print(visRow.getFieldVal(1).toString());
+						out.println("</th>");
+					}
+				}
+				
+				out.println("</tr><tr>");
+				
+				result.reset(); // Make fetchRow start from the beginning.
+				
+				// display rows
+				int i=0; // row number
+				int j=0; // col numer
+				if ((visRow = result.fetchRow()) != null) {
+					String CurrentRow = visRow.getFieldVal(0).toString();
+					out.println("<td>");
+					out.print(CurrentRow);
+					out.println("</td><td>");
+					j++;
+					out.print(visRow.getFieldVal(queryCols-1).toString());
+					out.println("</td>");
+					j++; // j=2
+					while ((visRow = result.fetchRow()) != null) {
+						if (CurrentRow.compareTo(visRow.getFieldVal(0).toString()) == 0) {
+							out.println("<td>");
+							out.print(visRow.getFieldVal(queryCols-1).toString());
+							out.println("</td>");
+							j++;
+						} else {
+							out.println("</tr><tr><td>");
+							i++;
+							j=0;
+							CurrentRow = visRow.getFieldVal(0).toString();
+							out.println(CurrentRow);
+							out.println("</td><td>");
+							j++;
+							out.print(visRow.getFieldVal(queryCols-1).toString());
+							out.println("</td>");
+							j++; // j=2
+						}
+					}
+				}
+				
+				out.println("</tr></table>");
+				out.println("</div>");
+				
 		}catch (Exception e) {
-			out.println("Nieznany b³¹d!");
+			out.println("Nieznany bï¿½ï¿½d!");
 			out.println(e.getMessage());
 		}
 			
