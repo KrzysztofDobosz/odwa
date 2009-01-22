@@ -60,17 +60,17 @@ javac -cp "$APPDIR/src/org/pwr/odwa/common:$APPDIR/src/org/pwr/odwa/server:$GWT_
      src/org/pwr/odwa/server/engine/DBEngine.java \
 	  src/org/pwr/odwa/server/DBEngineServiceImpl.java \
 	  src/org/pwr/odwa/server/MetaGUIApiServiceImpl.java \
-	  src\org\pwr\odwa\server\metadata\UID.java \
-	   src\org\pwr\odwa\server\metadata\EltType.java \
-	   src\org\pwr\odwa\server\metadata\Member.java \
-	   src\org\pwr\odwa\server\metadata\Measure.java \
-	   src\org\pwr\odwa\server\metadata\DatabaseInfo.java \
-	   src\org\pwr\odwa\server\metadata\Level.java \
-	   src\org\pwr\odwa\server\metadata\Dimension.java \
-	   src\org\pwr\odwa\server\metadata\Hierarchy.java \
-	   src\org\pwr\odwa\server\metadata\Child.java \
-	   src\org\pwr\odwa\server\metadata\Meta.java \
-	   src\org\pwr\odwa\server\metadata\Metadata.java
+	  src/org/pwr/odwa/server/metadata/UID.java \
+	   src/org/pwr/odwa/server/metadata/EltType.java \
+	   src/org/pwr/odwa/server/metadata/Member.java \
+	   src/org/pwr/odwa/server/metadata/Measure.java \
+	   src/org/pwr/odwa/server/metadata/DatabaseInfo.java \
+	   src/org/pwr/odwa/server/metadata/Level.java \
+	   src/org/pwr/odwa/server/metadata/Dimension.java \
+	   src/org/pwr/odwa/server/metadata/Hierarchy.java \
+	   src/org/pwr/odwa/server/metadata/Child.java \
+	   src/org/pwr/odwa/server/metadata/Meta.java \
+	   src/org/pwr/odwa/server/metadata/Metadata.java
 
 cd out/org.pwr.odwa.Gui/
 zip -qr odwa *
