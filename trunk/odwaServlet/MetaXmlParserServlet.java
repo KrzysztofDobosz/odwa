@@ -1,39 +1,50 @@
-package org.pwr.odwa.odwaServlet;
+package odwaServlet;
 
-import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.NamedNodeMap;
-import com.google.gwt.xml.client.Node;
-import com.google.gwt.xml.client.NodeList;
-import com.gwtext.client.widgets.MessageBox;
-import com.gwtext.client.widgets.tree.TreeNode;
-import com.google.gwt.xml.client.XMLParser;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class MetaXmlParserServlet
 {
 
-	public String parse(String xmlString)
+	 ArrayList<String> measures = new ArrayList<String>();
+	 String databaseId = new String();
+	 
+	public String parse(String fileName)
 	{
 
 		String result = "";
-		Document doc = XMLParser.parse(xmlString);
-		// MessageBox.alert("Parsing XML");
-		Element root = doc.getDocumentElement();
+		Node root = parseXmlFile(fileName, false).getDocumentElement();
 
-		TreeNode returnNode = new TreeNode("METADATA");
-		returnNode.setExpanded(true);
-
+		
 		if (root.getNodeName().equals("metadata"))
 		{
-			returnNode.setAttribute("allowDrag", "false");
+			
 
 			NodeList rootChildren = root.getChildNodes();
 			for (int i = 0; i < rootChildren.getLength(); i++)
 			{
 				Node rootChild = rootChildren.item(i);
+				if (rootChild.getNodeName().equals("database")) {
+					NodeList attributesDb = rootChild.getChildNodes();
+					for (int k = 0; k < attributesDb.getLength(); k++) {
+						if (attributesDb.item(k).getNodeName().equals(
+								"name"))
+							databaseId = attributesDb.item(k)
+									.getFirstChild().getNodeValue();
+
+					}
+				}
 				if (rootChild.getNodeName().equals("measures"))
 				{
-					result += "___MEASURES<br>";
 					NodeList measuresChildren = rootChild.getChildNodes();
 					for (int j = 0; j < measuresChildren.getLength(); j++)
 					{
@@ -43,13 +54,13 @@ public class MetaXmlParserServlet
 							String name = getAttribute("name", measuresChild);
 							String uid = getAttribute("uid", measuresChild);
 
-							result += "______" + name + " " + uid + "<p>";
+							measures.add(name + ":" + uid);
 						}
 					}
 
 				} else if (rootChild.getNodeName().equals("dimensions"))
 				{
-					result += "___DIMENSIONS<br>";
+					result += "DIMENSIONS<br>";
 					NodeList dimensionsChildren = rootChild.getChildNodes();
 					for (int j = 0; j < dimensionsChildren.getLength(); j++)
 					{
@@ -59,7 +70,7 @@ public class MetaXmlParserServlet
 							String name = getAttribute("name", dimensionsChild);
 							String uid = getAttribute("uid", dimensionsChild);
 
-							result += "_______" + name + " " + uid + "<br>";
+							result += "____" + name + " " + uid + "<br>";
 
 							NodeList attributes = dimensionsChild.getChildNodes();
 
@@ -76,7 +87,7 @@ public class MetaXmlParserServlet
 											String hierName = getAttribute("name", hierChild);
 											String hierUid = getAttribute("uid", hierChild);
 
-											result += "__________" + hierName + " " + hierUid + "<br>";
+											result += "_______" + hierName + " " + hierUid + "<br>";
 											for (int m = 0; m < hierChild.getChildNodes().getLength(); m++)
 											{
 												Node hlevels = hierChild.getChildNodes().item(m);
@@ -88,7 +99,7 @@ public class MetaXmlParserServlet
 														String levName = getAttribute("name", hlevel);
 														String levUid = getAttribute("uid", hlevel);
 
-														result += "__________" + levName + " " + levUid + "<br>";
+														result += "_______" + levName + " " + levUid + "<br>";
 
 														for (int o = 0; o < hlevel.getChildNodes().getLength(); o++)
 														{
@@ -121,7 +132,7 @@ public class MetaXmlParserServlet
 				}
 			}
 		} else
-			MessageBox.alert("Could not load view!");
+			System.out.println("Could not load view!");
 		return result;
 	}
 
@@ -148,7 +159,7 @@ public class MetaXmlParserServlet
 					{
 
 
-						String child = memberWithChildren(childrenList.item(j));
+						String child = memberWithChildren(childrenList.item(j), spaces);
 						result +=child;
 					}
 				}
@@ -169,6 +180,27 @@ public class MetaXmlParserServlet
 
 		}
 		return retStr;
+	}
+	public Document parseXmlFile(String filename, boolean validating) {
+		try {
+			// Create a builder factory
+			DocumentBuilderFactory factory = DocumentBuilderFactory
+					.newInstance();
+			factory.setValidating(validating);
+
+			// Create the builder and parse the file
+			Document doc = factory.newDocumentBuilder().parse(
+					new File(filename));
+			return doc;
+		} catch (SAXException e) {
+			System.out.println(e.getMessage());
+			// A parsing error occurred; the xml input is not valid
+		} catch (ParserConfigurationException e) {
+			System.out.println(e.getMessage());
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
 	}
 
 }
