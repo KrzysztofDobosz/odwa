@@ -154,147 +154,6 @@ public class Gui implements EntryPoint
        */
    }
 
-   /**
-    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od
-    * serwera sloty dostÄ™pne dla danego uĹĽytkownika.
-    *
-    * @param userName
-    *           nazwa uĹĽytkownika
-    */
-
-   /**
-    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od
-    * serwera tabelki wymiarĂłw dostÄ™pne dla danego widoku danych.
-    *
-    * @param view
-    *           wybrany przez uĹĽytkownika widok danych
-    */
-   public void getDimTables(MetaID viewId)
-   {
-      System.out.println("ODWAClient: Gui: getDimTables() executed");
-      metaService.getDimTables(viewId,
-            new AsyncCallback<ArrayList<MetaDimTable>>()
-            {
-               public void onFailure(Throwable caught)
-               {
-                  System.out.println("Gui: Getting dimention tables failed.");
-               }
-
-               public void onSuccess(ArrayList<MetaDimTable> result)
-               {
-                  System.out.println("Gui: Getting dimention tables succeed.");
-                  getDimentions(new MetaID(0));
-               }
-            });
-
-   }
-
-   /**
-    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od
-    * serwera wymiary dostÄ™pne dla danej tabelki wymiarĂłw.
-    *
-    * @param table
-    *           tabelka wymiarĂłw
-    */
-   public void getDimentions(MetaID tableId)
-   {
-      System.out.println("ODWAClient: Gui: getDimentions() executed");
-      metaService.getDimentions(tableId,
-            new AsyncCallback<ArrayList<MetaDim>>()
-            {
-               public void onFailure(Throwable caught)
-               {
-                  System.out.println("Gui: Getting dimentions failed.");
-               }
-
-               public void onSuccess(ArrayList<MetaDim> result)
-               {
-                  System.out.println("Gui: Getting dimentions succeed.");
-                  getDimElements(new MetaID(0));
-               }
-            });
-
-   }
-
-   /**
-    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od
-    * serwera miary dostÄ™pne dla danego widoku danych.
-    *
-    * @param view
-    *           wybrany przez uĹĽytkownika widok danych
-    */
-   public void getMeasures(MetaID viewId)
-   {
-      System.out.println("ODWAClient: Gui: getMeasures() executed");
-      metaService.getMeasures(viewId,
-            new AsyncCallback<ArrayList<MetaMeasure>>()
-            {
-               public void onFailure(Throwable caught)
-               {
-                  System.out.println("Gui: Getting measures failed.");
-               }
-
-               public void onSuccess(ArrayList<MetaMeasure> result)
-               {
-                  System.out.println("Gui: Getting measures succeed.");
-               }
-            });
-
-   }
-
-   /**
-    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od
-    * serwera hierarchie dostÄ™pne dla danego widoku danych.
-    *
-    * @param view
-    *           wybrany przez uĹĽytkownika widok danych
-    */
-   public void getHierarchies(MetaID viewId)
-   {
-      System.out.println("ODWAClient: Gui: getHierarchies() executed");
-      metaService.getHierarchies(viewId,
-            new AsyncCallback<ArrayList<MetaHierarchy>>()
-            {
-               public void onFailure(Throwable caught)
-               {
-                  System.out.println("Gui: Getting hierarchies failed.");
-               }
-
-               public void onSuccess(ArrayList<MetaHierarchy> result)
-               {
-                  System.out.println("Gui: Getting hierarchies succeed.");
-               }
-            });
-
-   }
-
-   /**
-    * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od
-    * serwera elementy wymiarĂłw dostÄ™pne dla danego widoku danych.
-    *
-    * @param view
-    *           wybrany przez uĹĽytkownika widok danych
-    */
-   public void getDimElements(MetaID dimentionId)
-   {
-      System.out.println("ODWAClient: Gui: getDimElements() executed");
-
-      metaService.getDimElements(dimentionId,
-            new AsyncCallback<ArrayList<MetaDimElement>>()
-            {
-               public void onFailure(Throwable caught)
-               {
-                  System.out.println("Gui: Getting dimention elements failed.");
-               }
-
-               public void onSuccess(ArrayList<MetaDimElement> result)
-               {
-                  System.out
-                        .println("Gui: Getting dimention elements succeed.");
-               }
-            });
-
-   }
 
    /**
     * Metoda analogiczna do main(). Jest uruchamiana przy starcie programu.
@@ -395,6 +254,8 @@ public class Gui implements EntryPoint
                 * appear", new MessageBox.ConfirmCallback() { public void
                 * execute(String btnID) { } });
                 */
+            	currentSelection = new UserSelection();
+            	currentSelection.load(selectionPanel.loadSelection());
                executeQuery();
                // display.show(new DBResult());
 
@@ -414,7 +275,7 @@ public class Gui implements EntryPoint
          {
             public void onClick(Button button, EventObject e)
             {
-               MessageBox.alert(selectionPanel.loadSelection().toString());
+               selectionPanel.reset();
             }
          });
          Button previewButton = new Button("PREVIEW",
@@ -729,7 +590,7 @@ public class Gui implements EntryPoint
             public void onSuccess(DBResult result)
             {
                DBRow row;
-               String out = "";
+               String out = "ARGH";
                int count = result.getColumnCount();
                for (int i = 0; i < count; i++)
                {

@@ -78,18 +78,15 @@ public class MetaXmlParser
 
 							for (int k = 0; k < attributes.getLength(); k++)
 							{
-								if (attributes.item(k).getNodeName().equals(
-										"hierarchies"))
+								if (attributes.item(k).getNodeName().equals("hierarchies"))
 								{
 									TreeNode hierarchies = new TreeNode("hierarchies");
 									hierarchies.setAttribute("allowDrag", "false");
-									NodeList hierarchiesChildren = attributes
-											.item(k).getChildNodes();
-									for (int l = 0; l < hierarchiesChildren
-											.getLength(); l++)
+									NodeList hierarchiesChildren = attributes.item(k).getChildNodes();
+									for (int l = 0; l < hierarchiesChildren.getLength(); l++)
 									{
 										Node hierChild = hierarchiesChildren.item(l);
-										if(hierChild.getNodeName().equals("hierarchy"))
+										if (hierChild.getNodeName().equals("hierarchy"))
 										{
 											String hierName = getAttribute("name", hierChild);
 											String hierUid = getAttribute("uid", hierChild);
@@ -100,12 +97,12 @@ public class MetaXmlParser
 											hierarchy.setAttribute("allowDrag", "true");
 											hierarchy.setAttribute("metaType", "dimension");
 
-											for(int m = 0; m< hierChild.getChildNodes().getLength(); m++)
+											for (int m = 0; m < hierChild.getChildNodes().getLength(); m++)
 											{
 												Node hlevels = hierChild.getChildNodes().item(m);
-												if(hlevels.getNodeName().equals("levels"))
+												if (hlevels.getNodeName().equals("levels"))
 												{
-													for(int n = 0;n < hlevels.getChildNodes().getLength(); n++)
+													for (int n = 0; n < hlevels.getChildNodes().getLength(); n++)
 													{
 														Node hlevel = hlevels.getChildNodes().item(n);
 														String levName = getAttribute("name", hlevel);
@@ -118,21 +115,25 @@ public class MetaXmlParser
 														hierarchy.appendChild(level);
 														hierarchy.setExpanded(true);
 
-														for(int o = 0;o < hlevel.getChildNodes().getLength(); o++)
+														for (int o = 0; o < hlevel.getChildNodes().getLength(); o++)
 														{
 															Node lmembers = hlevel.getChildNodes().item(o);
-															if(lmembers.getNodeName().equals("members"))
+															if (lmembers.getNodeName().equals("members"))
 															{
-																for(int p = 0;p < lmembers.getChildNodes().getLength(); p++)
+																for (int p = 0; p < lmembers.getChildNodes()
+																		.getLength(); p++)
 																{
 																	Node member = lmembers.getChildNodes().item(p);
 
-																	String mbrName = getAttribute("name", member);
-																	String mbrUid = getAttribute("uid", member);
-																	TreeNode mbr = new TreeNode(mbrName);
-																	mbr.setAttribute("uid", mbrUid);
-																	mbr.setAttribute("allowDrag", "true");
-																	mbr.setAttribute("metaType", "dimension");
+																	//String mbrName = getAttribute("name", member);
+																	//String mbrUid = getAttribute("uid", member);
+																	TreeNode mbr = memberWithChildren(member);//new TreeNode(mbrName);
+																	//mbr.setAttribute("uid", mbrUid);
+																	//mbr.setAttribute("allowDrag", "true");
+																	//mbr.setAttribute("metaType", "dimension");
+
+
+
 																	level.appendChild(mbr);
 																	level.setExpanded(true);
 																	mbr.setExpanded(false);
@@ -144,14 +145,12 @@ public class MetaXmlParser
 												}
 											}
 
-
 											dimension.appendChild(hierarchy);
 											dimension.setExpanded(true);
 										}
 									}
-									//dimension.appendChild(hierarchies);
+									// dimension.appendChild(hierarchies);
 								}
-
 
 							}
 							dimensions.setExpanded(true);
@@ -166,6 +165,41 @@ public class MetaXmlParser
 		return returnNode;
 	}
 
+	private TreeNode memberWithChildren(Node node)
+	{
+
+		NodeList firstLevel = node.getChildNodes();
+		String name = getAttribute("name", node);
+		String uid = getAttribute("uid", node);
+
+		TreeNode finalNode = new TreeNode(name);
+		finalNode.setAttribute("uid", uid);
+		finalNode.setAttribute("allowDrag", "true");
+		finalNode.setAttribute("metaType", "dimension");
+		finalNode.setExpanded(false);
+
+
+		for (int i = 0; i < firstLevel.getLength(); i++)
+		{
+			if (firstLevel.item(i).getNodeName().equals("children"))
+			{
+				NodeList childrenList = firstLevel.item(i).getChildNodes();
+				for (int j = 0; j < childrenList.getLength(); j++)
+				{
+					if (childrenList.item(j).getNodeName().equals("child"))
+					{
+
+
+						TreeNode child = memberWithChildren(childrenList.item(j));
+						finalNode.appendChild(child);
+					}
+				}
+			}
+		}
+
+		return finalNode;
+	}
+
 	private String getAttribute(String name, Node node)
 	{
 		NodeList attributes = node.getChildNodes();
@@ -173,8 +207,7 @@ public class MetaXmlParser
 		for (int m = 0; m < attributes.getLength(); m++)
 		{
 			if (attributes.item(m).getNodeName().equals(name))
-				retStr = attributes.item(m).getFirstChild()
-						.getNodeValue();
+				retStr = attributes.item(m).getFirstChild().getNodeValue();
 
 		}
 		return retStr;
