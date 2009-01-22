@@ -2,7 +2,7 @@ package org.pwr.odwa.server.metadata;
 
 import java.util.ArrayList;
 
-class Level extends Meta {
+public class Level extends Meta {
     protected String m_field;
     protected String m_dtype;
     protected UID m_default;

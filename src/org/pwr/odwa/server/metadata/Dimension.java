@@ -2,7 +2,7 @@ package org.pwr.odwa.server.metadata;
 
 import java.util.ArrayList;
 
-class Dimension extends Meta {
+public class Dimension extends Meta {
     protected String m_table;
     protected String m_primary;
     protected String m_foreign;

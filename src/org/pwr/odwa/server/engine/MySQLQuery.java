@@ -1,117 +1,216 @@
 package org.pwr.odwa.server.engine;
+
+import java.util.ArrayList;
+
 /**
  * Class responsible for creating MySQL querries.
  */
 
 public class MySQLQuery implements SQLQuery
 {
-	private String fromClause;
+	private StringBuilder fromClause;
+	private ArrayList<String> fromClauses;
 
-	private String selectClause;
+	private StringBuilder selectClause;
+	private ArrayList<String> selectClauses;
 
-	private String groupByClause;
+	private StringBuilder measureSelectClause;
+	private ArrayList<String> measureSelectClauses;
 
-	private String whereClause;
+	private StringBuilder groupByClause;
+	private ArrayList<String> groupByClauses;
+
+	private StringBuilder whereClause;
 
 	public MySQLQuery()
 	{
-		fromClause = new String();
-		selectClause = new String();
-		groupByClause = new String();
-		whereClause = new String();
+		fromClause = new StringBuilder();
+		selectClause = new StringBuilder();
+		groupByClause = new StringBuilder();
+		whereClause = new StringBuilder();
+		fromClauses = new ArrayList<String>();
+		selectClauses = new ArrayList<String>();
+		measureSelectClause = new StringBuilder();
+		measureSelectClauses = new ArrayList<String>();
+
+		groupByClauses = new ArrayList<String>();
 	}
 
 	/**
 	 * Add result field to the query
-	 * @param field name of field, which will be added
+	 * 
+	 * @param field
+	 *            name of field, which will be added
 	 */
 	public void addResField(String field)
 	{
-		if (selectClause.length() != 0)
+		if (!selectClauses.contains(field))
 		{
-			selectClause += ",";
+			if (selectClause.length() != 0)
+			{
+				selectClause.append(",");
+			}
+			selectClause.append(" " + field);
+			selectClauses.add(field);
 		}
-		selectClause += " " + field;
+
+	}
+
+	/**
+	 * Add measure result field to the query
+	 * 
+	 * @param field
+	 *            name of measure, which will be added
+	 */
+	public void addMeasureResField(String field)
+	{
+		if (!measureSelectClauses.contains(field))
+		{
+			if (measureSelectClause.length() != 0)
+			{
+				measureSelectClause.append(",");
+			}
+			measureSelectClause.append(" " + field);
+			measureSelectClauses.add(field);
+		}
 
 	}
 
 	/**
 	 * Adds element to GROUP BY clause in the query
-	 * @param clause element
+	 * 
+	 * @param clause
+	 *            element
 	 */
 	public void addToGroupByClause(String clause)
 	{
-		if (groupByClause.length() != 0)
+		if (!groupByClauses.contains(clause))
 		{
-			groupByClause += ",";
+			if (groupByClause.length() != 0)
+			{
+				groupByClause.append(",");
+			}
+			groupByClause.append(" " + clause);
+			groupByClauses.add(clause);
 		}
-		groupByClause += " " + clause;
+
 	}
 
 	/**
 	 * Adds first element to WHERE clause in the query. If it's not the first
-	 * element, it is not going to be added, just because then you have to use 
+	 * element, it is not going to be added, just because then you have to use
 	 * version of this function with operator parameter
-	 * @param clause element
+	 * 
+	 * @param clause
+	 *            element
 	 */
 	public void addToWhereClause(String clause)
 	{
 		if (whereClause.length() == 0)
 		{
-			whereClause = " " + clause;
+			whereClause = new StringBuilder(" " + clause);
 		}
 
+	}
+
+	/**
+	 * Adds elements to WHERE clause (joins all of them with op operator)
+	 * example clauses = [a=b,b=c,c=e],op=and -> query WHERE (a=b and b=c and
+	 * c=e)
+	 * 
+	 * @param clauses
+	 *            element that is going to be added
+	 * @param op
+	 *            operator (if it is not the first one
+	 */
+	public void addToWhereClause(ArrayList<String> clauses, SQLLogicOperator op)
+	{
+		String clause = "( ";
+		for (int i = 0; i < clauses.size(); i++)
+		{
+			clause += (i == 0 ? clauses.get(i) : " " + logicOperator(op) + " "
+					+ clauses.get(i));
+		}
+		clause += ")";
+		if (whereClause.length() == 0)
+		{
+			whereClause.append(" " + clause);
+		} else
+		{
+			whereClause.append(" " + logicOperator(op) + " " + clause);
+		}
 	}
 
 	/**
 	 * Adds element to WHERE clause (if it is first element, operator will be
 	 * ignored)
-	 * @param clause element that is going to be added
-	 * @param op operator (if it is not the first one
+	 * 
+	 * @param clause
+	 *            element that is going to be added
+	 * @param op
+	 *            operator (if it is not the first one
 	 */
 	public void addToWhereClause(String clause, SQLLogicOperator op)
 	{
 		if (whereClause.length() == 0)
 		{
-			whereClause = " " + clause;
+			whereClause.append(" " + clause);
 		} else
 		{
-			whereClause += " " + logicOperator(op) + " " + clause;
+			whereClause.append(" " + logicOperator(op) + " " + clause);
 		}
 	}
 
 	/**
-	 * Adds FIRST element to the from clause (if it is not the first one, it 
+	 * Adds FIRST element to the from clause (if it is not the first one, it
 	 * will be ignored, just because you have to use version with join)
-	 * @param fromField field that is going to be addded
+	 * 
+	 * @param fromField
+	 *            field that is going to be addded
 	 */
 	public void addToFromClause(String fromField)
 	{
-		if (fromClause.length() == 0)
+		if (!fromClauses.contains(fromField))
 		{
-			fromClause = " " + fromField;
+			if (fromClause.length() == 0)
+			{
+				fromClause.append(" " + fromField);
+			}
+			fromClauses.add(fromField);
 		}
 	}
 
 	/**
-	 * Adds element to from clause. If it is first one, join operator will be 
+	 * Adds element to from clause. If it is first one, join operator will be
 	 * ignored.
-	 * @param fromField field that is going to be added
-	 * @param op Join operator (for more than one field
-	 * @param on1 first field that is going to be joined on
-	 * @param on2 as the above
+	 * 
+	 * @param fromField
+	 *            field that is going to be added
+	 * @param op
+	 *            Join operator (for more than one field
+	 * @param on1
+	 *            first field that is going to be joined on
+	 * @param on2
+	 *            as the above
 	 */
 	public void addToFromClause(String fromField, SQLJoinOperator op,
 			String on1, String on2)
 	{
-		if (fromClause.length() == 0)
+		// TODO: what if we need to add the same from field twice with
+		// different operators? Is it correct? Is it needed?
+		if (!fromClauses.contains(fromField))
 		{
-			fromClause = " " + fromField;
-		} else
-		{
-			fromClause += " " + joinMySQL(op) + " " + fromField + " " + " ON "
-					+ on1 + "=" + on2;
+			if (fromClause.length() == 0)
+			{
+				fromClause.append(" " + fromField);
+			} else
+			{
+				fromClause.append(" " + joinMySQL(op) + " " + fromField + " "
+						+ " ON " + on1 + "=" + on2);
+			}
+			fromClauses.add(fromField);
 		}
+
 	}
 
 	private String joinMySQL(SQLJoinOperator op)
@@ -149,8 +248,15 @@ public class MySQLQuery implements SQLQuery
 	 */
 	public String getQuery()
 	{
-		return "SELECT" + selectClause + " FROM" + fromClause
-				+ (whereClause.length() != 0 ? " WHERE" + whereClause : "")
-				+ (groupByClause.length() != 0 ? " GROUP BY" + groupByClause : "");
+		return "SELECT"
+				+ selectClause.toString()
+				+ (selectClause.length() != 0 ? ", " : "")
+				+ measureSelectClause.toString()
+				+ " FROM"
+				+ fromClause.toString()
+				+ (whereClause.length() != 0 ? " WHERE"
+						+ whereClause.toString() : "")
+				+ (groupByClause.length() != 0 ? " GROUP BY"
+						+ groupByClause.toString() : "");
 	}
 }
