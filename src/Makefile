@@ -11,6 +11,7 @@ SOURCES=$(PREFIX)/UID.java            \
         $(PREFIX)/Hierarchy.java      \
         $(PREFIX)/Level.java          \
         $(PREFIX)/Member.java         \
+        $(PREFIX)/Child.java          \
         $(PREFIX)/Metadata.java       \
         $(PREFIX)/DatabaseInfo.java
 

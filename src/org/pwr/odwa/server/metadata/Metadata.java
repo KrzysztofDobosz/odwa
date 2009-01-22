@@ -37,6 +37,7 @@ public class Metadata {
             EltType.MDX_HIERARCHY,
             EltType.MDX_LEVEL,
             EltType.MDX_MEMBER,
+            EltType.MDX_CHILD,
         };
 
         ArrayList<UID> list;
@@ -289,7 +290,10 @@ public class Metadata {
                             ArrayList<UID> ary_children = new ArrayList<UID>();
 
                             for (int c = 0; c < children.getLength(); c++) {
-                                ary_children.add(new UID(children.item(c).getTextContent()));
+                                node = (Node)xpath.evaluate("ref",
+                                    children.item(c), XPathConstants.NODE);
+
+                                ary_children.add(new UID(node.getTextContent()));
                             }
 
                             member.setChildren(ary_children);
@@ -322,6 +326,8 @@ public class Metadata {
                 updateNames(dimension);
                 updateCache(dimension);
             }
+
+            enumAllChildren();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -382,7 +388,7 @@ public class Metadata {
                     h_node.appendChild(h_name_node);
                     h_node.appendChild(h_desc_node);
 
-                    Element h_levels = doc.createElement("members");
+                    Element h_levels = doc.createElement("levels");
 
                     for (UID l_uid : h_elt.getLevels()) {
                         Level l_elt = (Level)m_cache.get(l_uid);
@@ -428,6 +434,17 @@ public class Metadata {
                             m_node.appendChild(m_name_node);
                             m_node.appendChild(m_desc_node);
 
+                            Element m_children = doc.createElement("children");
+
+                            ArrayList<UID> path = new ArrayList<UID>();
+                            path.add(m_uid);
+
+                            for (UID c_uid : m_elt.getChildren()) {
+                                Node c_node = enumRecChildrenNodes(doc, path, c_uid);
+                                m_children.appendChild(c_node);
+                            }
+
+                            m_node.appendChild(m_children);
                             l_members.appendChild(m_node);
                         }
 
@@ -446,7 +463,7 @@ public class Metadata {
             Transformer trans = trans_factory.newTransformer();
 
             trans.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
-            trans.setOutputProperty(OutputKeys.INDENT, "yes");
+            trans.setOutputProperty(OutputKeys.INDENT, "no");
 
             StringWriter sw = new StringWriter();
             StreamResult sr = new StreamResult(sw);
@@ -487,6 +504,92 @@ public class Metadata {
         m_cache.put(elt.getUID(), elt);
     }
 
+    private void dumpCache() {
+        System.out.println(m_cache.toString());
+    }
+
+    private void enumRecChildren(ArrayList<UID> path, UID uid) {
+        Member elt = (Member)m_cache.get(uid);
+
+        ArrayList<UID> new_path =
+            new ArrayList<UID>(path);
+        new_path.add(elt.getUID());
+
+        if (!path.isEmpty()) {
+            Child c_elt = new Child();
+
+            c_elt.setUID(new UID(new_path));
+
+            c_elt.setMember(elt);
+            c_elt.setPath(path);
+
+            updateTypes(EltType.MDX_CHILD, c_elt);
+            updateCache(c_elt);
+        }
+
+        for (UID c_uid : elt.getChildren()) {
+            enumRecChildren(new_path, c_uid);
+        }
+    }
+
+    private void enumAllChildren() {
+        for (UID l_uid : m_types.get(EltType.MDX_LEVEL)) {
+            Level l_elt = (Level)m_cache.get(l_uid);
+
+            ArrayList<UID> path =
+                new ArrayList<UID>();
+
+            for (UID m_uid : l_elt.getMembers()) {
+                enumRecChildren(path, m_uid);
+            }
+        }
+    }
+
+    private Element enumRecChildrenNodes(Document doc, ArrayList<UID> path, UID uid) {
+        Member elt = (Member)m_cache.get(uid);
+
+        ArrayList<UID> new_path =
+            new ArrayList<UID>(path);
+        new_path.add(elt.getUID());
+
+        Child c_elt = (Child)m_cache.get(new UID(new_path));
+
+        Element c_node = doc.createElement("child");
+
+        Element c__uid_node = doc.createElement("uid");
+        Element c_name_node = doc.createElement("name");
+        Element c_desc_node = doc.createElement("desc");
+
+        Text c__uid_data = doc.createTextNode(c_elt.getUID().toString());
+        Text c_name_data = doc.createTextNode(c_elt.getMember().getName());
+        Text c_desc_data = doc.createTextNode(c_elt.getMember().getDesc());
+
+        c__uid_node.appendChild(c__uid_data);
+        c_name_node.appendChild(c_name_data);
+        c_desc_node.appendChild(c_desc_data);
+
+        c_node.appendChild(c__uid_node);
+        c_node.appendChild(c_name_node);
+        c_node.appendChild(c_desc_node);
+
+        Element c_children = doc.createElement("children");
+
+        for (UID c_uid : elt.getChildren()) {
+            Node node = enumRecChildrenNodes(doc, new_path, c_uid);
+            c_children.appendChild(node);
+        }
+
+        c_node.appendChild(c_children);
+
+        return c_node;
+    }
+
+    public static void main(String[] args) {
+        Metadata meta = new Metadata();
+        meta.loadMetadata("../opt/metadata.xml");
+        System.out.println(meta.getMetadataTree());
+    }
+
     public Meta getElement(UID uid) {
         return m_cache.get(uid);
     }
@@ -495,10 +598,5 @@ public class Metadata {
         return m_info;
     }
 
-    public static void main(String[] args) {
-        Metadata meta = new Metadata();
-        meta.loadMetadata("../opt/metadata.xml");
-        System.out.println(meta.getMetadataTree());
-    }
 }
 

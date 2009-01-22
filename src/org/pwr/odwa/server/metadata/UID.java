@@ -1,5 +1,6 @@
 package org.pwr.odwa.server.metadata;
 
+import java.util.ArrayList;
 import java.io.Serializable;
 
 public final class UID implements Serializable {
@@ -7,6 +8,14 @@ public final class UID implements Serializable {
 
     public UID(String uid) {
         m_uid = uid;
+    }
+
+    public UID(ArrayList<UID> uids) {
+        m_uid = new String();
+
+        for (UID uid : uids) {
+            m_uid += uid.get_uid();
+        }
     }
 
     public String get_uid() {
