@@ -29,14 +29,11 @@ import org.pwr.odwa.server.structure.DBField;
 import org.pwr.odwa.server.structure.DBStructure;
 import org.pwr.odwa.server.structure.DBTable;
 
-
-
 /**
  *
  *
  */
-public class DBEngine
-{
+public class DBEngine {
 	Connection conn;
 
 	/**
@@ -48,15 +45,12 @@ public class DBEngine
 	 *            user login
 	 * @param password
 	 */
-	public void connect(String url, String user, String password)
-	{
-		try
-		{
+	public void connect(String url, String user, String password) {
+		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println(DriverManager.getDrivers());
 			conn = DriverManager.getConnection(url, user, password);
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -64,13 +58,10 @@ public class DBEngine
 	/**
 	 * Ends connection with database
 	 */
-	public void disconnect()
-	{
-		try
-		{
+	public void disconnect() {
+		try {
 			conn.close();
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
@@ -83,17 +74,14 @@ public class DBEngine
 	 *            User Query
 	 * @return Result of User Query
 	 */
-	public DBResult executeQuery(UserSelection usrQuery)
-	{
+	public DBResult executeQuery(UserSelection usrQuery) {
 
-		try
-		{
+		try {
 			// Create MySQL query
 			SQLQuery query = new MySQLQuery();
 
 			Metadata meta = new Metadata();
-			meta
-					.loadMetadata("./opt/metadata.xml");
+			meta.loadMetadata("c:\\workspace\\odwaSVN\\opt\\metadata.xml");
 
 			Measure meas = usrQuery.getMeasure();
 			String measUID = meas.getMeasureUid();
@@ -104,25 +92,23 @@ public class DBEngine
 			// name---------------------------------------------------------------
 			String factTable = aMeasure.getTable();
 			query.addToFromClause(factTable); // add fact table to from
-												// fields...
+			// fields...
 
 			String measure = aMeasure.getFunction() + "(" + factTable + "."
 					+ aMeasure.getField() + ")";// metadata module
 			query.addMeasureResField(measure);
 			// ---------------------------------------------------------------------------------------
-			ArrayList<String> whereClauses = new ArrayList<String>();
 			ArrayList<Axis> axis = new ArrayList<Axis>();
 			axis.add(usrQuery.getColumn());
 			axis.add(usrQuery.getRow());
-			for (Axis aAxis : axis)
-			{
-				for (int i = 0; i < aAxis.getAxisElementAmount(); i++)
-				{
+			for (Axis aAxis : axis) {
+
+				for (int i = 0; i < aAxis.getAxisElementAmount(); i++) {
+					ArrayList<String> whereClauses = new ArrayList<String>();
 
 					AxisElement currEl = aAxis.getAxisElement(i);
 					DimensionElSet dimElSet = currEl.getDimensionElSet();
-					for (int j = 0; j < dimElSet.getDimensionElAmount(); j++)
-					{
+					for (int j = 0; j < dimElSet.getDimensionElAmount(); j++) {
 						DimensionEl dimEl = dimElSet.getDimensionEl(j);
 						Method met = dimEl.getMethod();
 						System.out.println(met.getMethodId());
@@ -135,8 +121,7 @@ public class DBEngine
 						String foreignKeyName = new String();
 						String dimLevel = new String();
 
-						if (methodId == null || !methodId.equals("members"))
-						{
+						if (methodId == null || !methodId.equals("members")) {
 
 							Member aMeta = (Member) meta.getElement(new UID(
 									path.getPath()));
@@ -155,7 +140,7 @@ public class DBEngine
 							whereClauses.add(dimTable + "." + dimLevel + "='"
 									+ memberName + "'");
 
-						} else //FIXME: HIERARCHY support!
+						} else // FIXME: HIERARCHY support!
 						{
 							Level aLevel = (Level) meta.getElement(new UID(path
 									.getPath()));
@@ -176,17 +161,17 @@ public class DBEngine
 						query.addToGroupByClause(dimTable + "." + dimLevel);
 
 					}
+					if (whereClauses.size() != 0) {
+						query.addToWhereClause(whereClauses,
+								SQLLogicOperator.OR);
 
+					}
 				}
-			}
-			if (whereClauses.size() != 0)
-			{
-				query.addToWhereClause(whereClauses, SQLLogicOperator.OR);
+
 			}
 
 			DimensionElSet aSlice = usrQuery.getSlice();
-			for (int i = 0; i < aSlice.getDimensionElAmount(); i++)
-			{
+			for (int i = 0; i < aSlice.getDimensionElAmount(); i++) {
 				DimensionEl dimEl = aSlice.getDimensionEl(i);
 				Method met = dimEl.getMethod();
 				System.out.println(met.getMethodId());
@@ -211,8 +196,7 @@ public class DBEngine
 						+ memberName + "'", SQLLogicOperator.AND);
 			}
 
-			try
-			{
+			try {
 
 				System.out.println(query.getQuery());
 				Statement db = conn.createStatement(); // ResultSet result =
@@ -223,37 +207,31 @@ public class DBEngine
 
 				int columnCount = (result.getMetaData().getColumnCount());
 
-				for (int i = 1; i <= columnCount; i++)
-				{
+				for (int i = 1; i <= columnCount; i++) {
 					colNames.add(result.getMetaData().getColumnName(i));
 					fieldTypes.add(result.getMetaData().getColumnTypeName(i));
 				}
 
 				ArrayList<DBRow> rows = new ArrayList<DBRow>();
 
-				while (result.next())
-				{
+				while (result.next()) {
 					ArrayList<String> rowObjects = new ArrayList<String>();
-					for (int i = 1; i <= columnCount; i++)
-					{
+					for (int i = 1; i <= columnCount; i++) {
 						rowObjects.add(result.getObject(i).toString());
 					}
 					rows.add(new DBRow(rowObjects));
 				}
-				if (rows.size() == 0)
-				{
+				if (rows.size() == 0) {
 					return null;
 				}
 
 				DBResult res = new DBResult(rows, colNames, fieldTypes, query
 						.getQuery());
 				return res;
-			} catch (Exception e)
-			{
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		} catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -266,26 +244,22 @@ public class DBEngine
 	 * @return list of structures of all databases visible for logged user. See
 	 *         {@link DBStructure}
 	 */
-	public ArrayList<DBStructure> getDatabases()
-	{
-		try
-		{
+	public ArrayList<DBStructure> getDatabases() {
+		try {
 			DatabaseMetaData meta = conn.getMetaData();
 			ResultSet catalogs = meta.getCatalogs();
 
 			ArrayList<DBStructure> result = new ArrayList<DBStructure>();
 
 			// adding databases
-			while (catalogs.next())
-			{
+			while (catalogs.next()) {
 				String catName = catalogs.getString(1);
 				ResultSet tables = meta.getTables(catName, null, null, null);
 
 				ArrayList<DBTable> dbTables = new ArrayList<DBTable>();
 
 				// adding tables
-				while (tables.next())
-				{
+				while (tables.next()) {
 					String tabName = tables.getString(3);
 					ResultSet fields = meta.getColumns(catName, null, tabName,
 							null);
@@ -297,8 +271,7 @@ public class DBEngine
 							tabName);
 					ArrayList<String> primKeys = new ArrayList<String>();
 
-					while (primaryKeys.next())
-					{
+					while (primaryKeys.next()) {
 						primKeys.add(primaryKeys.getString(4));
 					}
 
@@ -308,8 +281,7 @@ public class DBEngine
 					ArrayList<String> foreKeys = new ArrayList<String>();
 					ArrayList<ForeKeyCont> foreKeysDesc = new ArrayList<ForeKeyCont>();
 
-					while (foreignKeys.next())
-					{
+					while (foreignKeys.next()) {
 						foreKeys.add(foreignKeys.getString(8));
 						foreKeysDesc.add(new ForeKeyCont(foreignKeys
 								.getString(8), foreignKeys.getString(3),
@@ -317,14 +289,12 @@ public class DBEngine
 					}
 
 					// adding fields
-					while (fields.next())
-					{
+					while (fields.next()) {
 						String fieldName = fields.getString(4);
 						String foreTable = null;
 						String foreColumn = null;
 
-						if (foreKeys.contains(fieldName))
-						{
+						if (foreKeys.contains(fieldName)) {
 							int i = foreKeys.indexOf(fieldName);
 							ForeKeyCont cont = foreKeysDesc.get(i);
 							foreTable = cont.getForeTableName();
@@ -348,8 +318,7 @@ public class DBEngine
 				result.add(struct);
 			}
 			return result;
-		} catch (SQLException e)
-		{
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 
@@ -360,8 +329,7 @@ public class DBEngine
 /**
  * Container for Foreign Key Data, usage only in getStructure()
  */
-class ForeKeyCont
-{
+class ForeKeyCont {
 	private String name;
 
 	private String foreTableName;
@@ -378,25 +346,21 @@ class ForeKeyCont
 	 * @param c
 	 *            Refered column name
 	 */
-	public ForeKeyCont(String n, String t, String c)
-	{
+	public ForeKeyCont(String n, String t, String c) {
 		name = n;
 		foreTableName = t;
 		foreColumnName = c;
 	}
 
-	public String getName()
-	{
+	public String getName() {
 		return name;
 	}
 
-	public String getForeTableName()
-	{
+	public String getForeTableName() {
 		return foreTableName;
 	}
 
-	public String getForeColumnName()
-	{
+	public String getForeColumnName() {
 		return foreColumnName;
 	}
 }
