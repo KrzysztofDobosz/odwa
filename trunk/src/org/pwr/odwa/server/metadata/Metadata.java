@@ -343,11 +343,40 @@ public class Metadata {
             Element root = doc.createElement("metadata");
             doc.appendChild(root);
 
+            Element r_measures = doc.createElement("measures");
+            root.appendChild(r_measures);
+
+            for (UID m_uid : m_types.get(EltType.MDX_MEASURE)) {
+                Measure m_elt = (Measure)m_cache.get(m_uid);
+
+                Element m_node = doc.createElement("measure");
+
+                Element m__uid_node = doc.createElement("uid");
+                Element m_name_node = doc.createElement("name");
+                Element m_desc_node = doc.createElement("desc");
+
+                Text m__uid_data = doc.createTextNode(m_elt.getUID().toString());
+                Text m_name_data = doc.createTextNode(m_elt.getName());
+                Text m_desc_data = doc.createTextNode(m_elt.getDesc());
+
+                m__uid_node.appendChild(m__uid_data);
+                m_name_node.appendChild(m_name_data);
+                m_desc_node.appendChild(m_desc_data);
+
+                m_node.appendChild(m__uid_node);
+                m_node.appendChild(m_name_node);
+                m_node.appendChild(m_desc_node);
+
+                r_measures.appendChild(m_node);
+            }
+
+            Element r_dimensions = doc.createElement("dimensions");
+            root.appendChild(r_dimensions);
+
             for (UID d_uid : m_types.get(EltType.MDX_DIMENSION)) {
                 Dimension d_elt = (Dimension)m_cache.get(d_uid);
 
                 Element d_node = doc.createElement("dimension");
-                root.appendChild(d_node);
 
                 Element d__uid_node = doc.createElement("uid");
                 Element d_name_node = doc.createElement("name");
@@ -457,6 +486,7 @@ public class Metadata {
                 }
 
                 d_node.appendChild(d_hierarchies);
+                r_dimensions.appendChild(d_node);
             }
 
             TransformerFactory trans_factory = TransformerFactory.newInstance();
@@ -597,6 +627,5 @@ public class Metadata {
     public DatabaseInfo getDatabaseInfo() {
         return m_info;
     }
-
 }
 
