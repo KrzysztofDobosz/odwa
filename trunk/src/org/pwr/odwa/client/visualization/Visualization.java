@@ -279,11 +279,46 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		final GridPanel tab1 = new GridPanel();
 		tab1.setTitle("Grid");
 
-		RecordDef recordDef = new RecordDef(new FieldDef[] {
+		result.reset();
+		
+		DBRow row = new DBRow();
+		int rowsInResult = 0;
+		int colsInResult = 0;
+		if ((row = result.fetchRow()) != null) {
+			String firstRow = row.getFieldVal(0).toString();
+			String firstCol = row.getFieldVal(1).toString();
+			rowsInResult++;
+			colsInResult++;
+			while ((row = result.fetchRow()) != null) {
+				if (firstRow.compareTo(row.getFieldVal(0).toString()) == 0) {
+					colsInResult++;
+				} 
+				if (firstCol.compareTo(row.getFieldVal(1).toString()) == 0) {
+					rowsInResult++;
+				}
+			}
+		}
+
+		
+		result.reset(); // Make fetchRow will start from the beginning.
+		
+		GridFilter gf[] = new GridFilter[colsInResult];
+		FieldDef table[] = new FieldDef[colsInResult];
+		
+		table[0] = new StringFieldDef("0");
+		gf[0] = new GridStringFilter("0");
+		for(int i=1;i<=colsInResult; i++) { 
+			table[i] = new FloatFieldDef((String)((Integer)i).toString());
+			gf[i] = new GridNumericFilter((String)((Integer)i).toString());
+		}
+		
+		RecordDef recordDef = new RecordDef(table);
+				
+		/*RecordDef recordDef = new RecordDef(new FieldDef[] {
 				new StringFieldDef("company"), new FloatFieldDef("price"),
 				new FloatFieldDef("change"), new FloatFieldDef("pctChange"),
 				new DateFieldDef("lastChanged", "n/j h:ia"),
-				new StringFieldDef("symbol"), new StringFieldDef("industry") });
+				new StringFieldDef("symbol"), new StringFieldDef("industry") });*/
 		/*
 		 * DBRow row = new DBRow(); int rowsInResult = 0; int colsInResult = 0;
 		 * String CurrentRow = "";
@@ -317,6 +352,7 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		 * new RecordDef(table);
 		 */
 
+		/*// Hard-coded data
 		Object[][] data = new Object[][] {
 				new Object[] { "3m Co", new Double(71.72), new Double(0.02),
 						new Double(0.03), "9/1 12:00am", "MMM", "Manufacturing" },
@@ -346,7 +382,36 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 						"Finance" },
 				new Object[] { "E.I. du Pont de Nemours and Company",
 						new Double(40.48), new Double(0.51), new Double(1.28),
-						"9/1 12:00am", "DD", "Manufacturing" } };
+						"9/1 12:00am", "DD", "Manufacturing" }
+		};*/
+
+		int queryCols = result.getColumnCount();
+		
+		Object data[][] = new Object[rowsInResult][colsInResult];
+		int i=0;
+		int j=0;
+		if ((row = result.fetchRow()) != null) {
+			String CurrentRow = ((String)row.getFieldVal(0));
+			data[i][j] = CurrentRow;
+			j++;
+			data[i][j] = (Integer.parseInt((String)row.getFieldVal(queryCols-1)));
+			j++; // j=2
+			
+			while ((row = result.fetchRow()) != null) {
+				if (CurrentRow.compareTo((String)row.getFieldVal(0)) == 0) {
+					data[i][j] = (Integer.parseInt((String)row.getFieldVal(queryCols-1)));
+					j++;
+				} else {
+					i++;
+					j=0;
+					CurrentRow = ((String)row.getFieldVal(0));
+					data[i][j] = CurrentRow;
+					j++;
+					data[i][j] = (Integer.parseInt((String)row.getFieldVal(queryCols-1)));
+					j++; // j=2
+				}
+			}
+		}
 
 		/*
 		 * 
@@ -366,16 +431,19 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		store.load();
 		tab1.setStore(store);
 
-		BaseColumnConfig[] columns = new BaseColumnConfig[] {
+		/*BaseColumnConfig[] columns = new BaseColumnConfig[] {
 				new RowNumberingColumnConfig(),
 				// column ID is company which is later used in
 				// setAutoExpandColumn
-				new ColumnConfig("Company", "company", 160, true, null,
-						"company"), new ColumnConfig("Price", "price", 35),
-				new ColumnConfig("Change", "change", 45),
-				new ColumnConfig("% Change", "pctChange", 65),
-				new ColumnConfig("Last Updated", "lastChanged", 65),
-				new ColumnConfig("Industry", "industry", 60, true) };
+				new ColumnConfig("Company", "0", 160, true, null, "company"), 
+				new ColumnConfig("Price", "1", 35, true, null, "1")
+		};*/
+
+		BaseColumnConfig columns[] = new BaseColumnConfig[colsInResult+1];
+		columns[0] = new RowNumberingColumnConfig();
+		for (int k=1; k<=colsInResult+1; k++) {
+			columns[k] = new ColumnConfig("A", ((String)((Integer)(k-1)).toString()), 80, true);
+		}
 		/*
 		 * BaseColumnConfig[] columns = new BaseColumnConfig[] { new
 		 * RowNumberingColumnConfig() }; for (int k=0; k<cols; k++) { columns[i]
@@ -397,20 +465,13 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 					}
 				}));
 
-		GridSearchPlugin gridSearch = new GridSearchPlugin(
-				GridSearchPlugin.BOTTOM);
+		GridSearchPlugin gridSearch = new GridSearchPlugin(GridSearchPlugin.BOTTOM);
 		gridSearch.setMode(GridSearchPlugin.LOCAL);
 		tab1.addPlugin(gridSearch);
 
-		GridFilter gf[] = new GridFilter[7];
-		gf[0] = new GridStringFilter("company");
-		gf[1] = new GridNumericFilter("price");
-		gf[2] = new GridNumericFilter("change");
-		gf[3] = new GridNumericFilter("pctChange");
-		gf[4] = new GridDateFilter("lastChanged");
-		gf[5] = new GridStringFilter("symbol");
-		gf[6] = new GridListFilter("industry", new String[] { "Manufacturing",
-				"Finance", "Services", "Computer", "Food", "Retail" });
+//		GridFilter gf[] = new GridFilter[7];
+//		gf[0] = new GridStringFilter("company");
+//		gf[1] = new GridNumericFilter("price");
 
 		GridFilterPlugin gridFilterPlugin = new GridFilterPlugin(gf);
 		gridFilterPlugin.setLocal(true);
@@ -419,8 +480,7 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		bottomToolbar.addButton(new ToolbarButton("Create Report",
 				new ButtonListenerAdapter() {
 					public void onClick(Button button, EventObject e) {
-						ReportStyle style = new ReportStyle(gridIdMenu, cols,
-								rows);
+						ReportStyle style = new ReportStyle(gridIdMenu, cols, rows);
 						System.out.println(style.fetchReportStyle().toString());
 					}
 				}));
@@ -435,8 +495,8 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		tab2.setTitle("Circle chart");
 		tab2.setWMode("transparent");
 		tab2.setStore(store);
-		tab2.setDataField("price");// result.getColumnName(1));
-		tab2.setCategoryField("company");// result.getColumnName(0));
+		tab2.setDataField("1");
+		tab2.setCategoryField("0");
 		tab2.setExpressInstall("js/yui/assets/expressinstall.swf");
 		// tab2.setWidth(500);
 		// tab2.setHeight(400);
@@ -446,11 +506,11 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		tab3.setTitle("Line chart");
 		tab3.setWMode("transparent");
 		tab3.setStore(store);
-		SeriesDefY[] seriesDef = new SeriesDefY[] { new SeriesDefY("price",
-				"price") // result.getColumnName(1), result.getColumnName(1))
+		SeriesDefY[] seriesDef = new SeriesDefY[] {
+				new SeriesDefY("1","1")
 		};
 		tab3.setSeries(seriesDef);
-		tab3.setXField("company");// result.getColumnName(0));
+		tab3.setXField("0");// result.getColumnName(0));
 		tab3.setExpressInstall("js/yui/assets/expressinstall.swf");
 		// tab2.setWidth(500);
 		// tab2.setHeight(400);
@@ -459,8 +519,7 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 
 		Panel tab4 = new Panel();
 		tab4.setTitle("About");
-		tab4
-				.setHtml("SuperbTab ODWA version is the greatest developement of the web.");
+		tab4.setHtml("SuperbTab ODWA version is the greatest developement of the web.");
 		tab4.setAutoScroll(true);
 		tab4.setClosable(true);
 
@@ -469,8 +528,7 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		tabPanel.add(tab3);
 		tabPanel.add(tab4);
 
-		BorderLayoutData centerData = new BorderLayoutData(
-				RegionPosition.CENTER);
+		BorderLayoutData centerData = new BorderLayoutData(RegionPosition.CENTER);
 		centerData.setMargins(3, 0, 3, 3);
 
 		window.add(tabPanel, centerData);
@@ -479,7 +537,6 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 
 	public void onSelect(ColorPalette colorPalette, String color) {
 		System.out.println("#" + color);
-		Ext.get(gridIdMenu.getView().getCell(contextCell[0], contextCell[1]))
-				.setStyle("color", "#" + color);
+		Ext.get(gridIdMenu.getView().getCell(contextCell[0], contextCell[1])).setStyle("color", "#" + color);
 	}
 }

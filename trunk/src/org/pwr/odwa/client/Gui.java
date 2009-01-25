@@ -610,11 +610,10 @@ public class Gui implements EntryPoint
                   out = out.concat("\n");
                   System.out.println();
                }
-               MessageBox.alert(out);
-               display.show((DBResult) result);*/
-            	Visualization vis = new Visualization();
-
-            	vis.show(result);
+               MessageBox.alert(out);*/
+               display.show((DBResult) result);
+               Visualization vis = new Visualization();
+               vis.show(result);
             }
          });
       }
