@@ -81,7 +81,7 @@ public class DBEngine {
 			SQLQuery query = new MySQLQuery();
 
 			Metadata meta = new Metadata();
-			meta.loadMetadata("c:\\workspace\\odwaSVN\\opt\\metadata.xml");
+			meta.loadMetadata("c:\\workspace\\odwa-svn\\opt\\metadata.xml");
 
 			Measure meas = usrQuery.getMeasure();
 			String measUID = meas.getMeasureUid();
