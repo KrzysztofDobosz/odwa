@@ -9,9 +9,24 @@ import com.gwtext.client.widgets.MessageBox;
 import com.gwtext.client.widgets.tree.TreeNode;
 import com.google.gwt.xml.client.XMLParser;
 
+/**
+ * Parser for XML tree structure given by metadata module, creates tree possible
+ * to load into tree panel and display.
+ *
+ *
+ * @author Lukasz Pintal
+ *
+ */
 public class MetaXmlParser
 {
 
+	/**
+	 * Parses XML string and generates gwt-ext tree.
+	 *
+	 *
+	 * @param xmlString string containing XML structure
+	 * @return root node of data view tree
+	 */
 	public TreeNode parse(String xmlString)
 	{
 
@@ -125,8 +140,8 @@ public class MetaXmlParser
 																{
 																	Node member = lmembers.getChildNodes().item(p);
 
-																	TreeNode mbr = memberWithChildren(member);//new TreeNode(mbrName);
-
+																	TreeNode mbr = memberWithChildren(member);// new
+																												// TreeNode(mbrName);
 
 																	level.appendChild(mbr);
 																	level.setExpanded(true);
@@ -159,6 +174,12 @@ public class MetaXmlParser
 		return returnNode;
 	}
 
+	/**
+	 * Creates gwt-ext tree node with children (recursively)
+	 *
+	 * @param node
+	 * @return node with nested children
+	 */
 	private TreeNode memberWithChildren(Node node)
 	{
 
@@ -173,7 +194,6 @@ public class MetaXmlParser
 		finalNode.setAttribute("element", "true");
 		finalNode.setExpanded(false);
 
-
 		for (int i = 0; i < firstLevel.getLength(); i++)
 		{
 			if (firstLevel.item(i).getNodeName().equals("children"))
@@ -183,7 +203,6 @@ public class MetaXmlParser
 				{
 					if (childrenList.item(j).getNodeName().equals("child"))
 					{
-
 
 						TreeNode child = memberWithChildren(childrenList.item(j));
 						finalNode.appendChild(child);
@@ -195,6 +214,14 @@ public class MetaXmlParser
 		return finalNode;
 	}
 
+
+	/**
+	 * Finds named attribute for given node and returns its value
+	 *
+	 * @param name attribute name
+	 * @param node
+	 * @return String containing value of parameter
+	 */
 	private String getAttribute(String name, Node node)
 	{
 		NodeList attributes = node.getChildNodes();

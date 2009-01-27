@@ -64,559 +64,564 @@ import com.gwtext.client.widgets.tree.XMLTreeLoader;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 
 /**
- * Klasa odpowiadajÄ…ca za interakcjÄ™ z uĹĽytkownikiem. Klasa nie udostÄ™pnia
- * ĹĽadnych metod innym moduĹ‚om. Do komunikacji z pozostaĹ‚ymi moduĹ‚ami uĹĽywa
- * publicznych funkcji instancji klas.
+ * Class responsible for interaction with user. Creates users selection and
+ * displays results of a query.
  *
- * @author Ĺ�ukasz Pintal
+ * @author Lukasz Pintal
  * @author Krzysztof Dobosz
  *
  */
 public class Gui implements EntryPoint
 {
-   /**
-    * Interface do komunikacji RPC z silnikiem bazy danych.
-    */
-   private DBEngineServiceAsync dbService;
-   /**
-    * Interface do komunikacji RPC z moduĹ‚em metadanych.
-    */
-   private MetaGUIApiServiceAsync metaService;
-
-   /**
-    * Instancja klasy odpowiedzialnej za wyĹ›wietlanie wynikĂłw zapytania do
-    * hurtowni.
-    */
-   private Visualization display;
-   /**
-    * Aktualny widok metadanych, wybrany przez uĹĽytkownika.
-    */
-   private MetaDataView currentView;
-   /**
-    * Aktualnie wybrane opcje do tworzenia zapytania do hurtowni.
-    */
-   private UserSelection currentSelection = new UserSelection();
-   /**
-    * Aktualny rezultat zapytania do hurtowni.
-    */
-   private DBResult currentDBResult = new DBResult();
-   /**
-    * Nazwa uĹĽytkownika
-    */
-   private String userName;
-
-   private String currentViewXml;
-
-   private final MainPanel panel = new MainPanel();
-
-   private ArrayList<MetaSlot> slotList;
-   private ArrayList<MetaDataView> viewList;
-
-   // private FormPanel viewForm;
-
-   private Label l = new Label("starting");
-   private Label k = new Label("starting");
-
-   /**
-    * Metoda do komunikacji z silnikiem baz danych. WywoĹ‚uje asynchronicznie
-    * metodÄ™ DBEngine.executeQuery(UserSelection), a po uzyskaniu wyniku
-    * wywoĹ‚uje funkcjÄ™ show(int, DBResult) moduĹ‚u Visualization.
-    */
-
-   public void saveReport()
-   {/*
-       * System.out.println("ODWAClient: Gui: saveReport() executed");
-       * //ReportStyle style = display.getReportStyle(); StaticReport sRep = new
-       * StaticReport(currentDBResult, style); try { sRep.save(""); } catch
-       * (Exception exception) { System.err.println("ODWAClient: " + exception); }
-       * DynamicReport dRep = new DynamicReport(currentSelection, style); try {
-       * dRep.save(""); } catch (Exception exception) {
-       * System.err.println("ODWAClient: " + exception); }
-       */
-   }
-
-   public void staticReportLoad()
-   {
-      /*
-       * try { StaticReport report = new StaticReport(""); currentDBResult =
-       * report.getResult(); ReportStyle style = report.getReportStyle();
-       * display.show(currentDBResult, style); } catch (Exception exception) {
-       * System.err.println("ODWAClient: " + exception); }
-       */
-   }
-
-   public void dynamicReportLoad()
-   {/*
-       * try { DynamicReport report = new DynamicReport(""); currentSelection =
-       * report.getUserSelection(); ReportStyle style = report.getReportStyle(); }
-       * catch (Exception exception) { System.err.println("ODWAClient: " +
-       * exception); }
-       */
-   }
-
-
-   /**
-    * Metoda analogiczna do main(). Jest uruchamiana przy starcie programu.
-    * WyĹ›wietla caĹ‚y interface uĹĽytkownika.
-    */
-
-   public void onModuleLoad()
-   {
-      slotList = new ArrayList<MetaSlot>();
-      viewList = new ArrayList<MetaDataView>();
-
-      dbService = (DBEngineServiceAsync) GWT.create(DBEngineService.class);
-      ServiceDefTarget dbEndpoint = (ServiceDefTarget) dbService;
-      String dbRelURL = GWT.getModuleBaseURL() + "DBEngineService";
-      dbEndpoint.setServiceEntryPoint(dbRelURL);
-
-      metaService = (MetaGUIApiServiceAsync) GWT
-            .create(MetaGUIApiService.class);
-      ServiceDefTarget metaEndpoint = (ServiceDefTarget) metaService;
-      String metaRelURL = GWT.getModuleBaseURL() + "MetaGUIApiService";
-      metaEndpoint.setServiceEntryPoint(metaRelURL);
-
-      // MainPanel panel = new MainPanel();
-
-      display = new Visualization();
-
-      // panel.login();
-      panel.getSlots();
-      // createSelection();
-
-      Viewport viewport = new Viewport(panel);
-   }
-
-   class MainPanel extends Panel
-   {
-      private Panel northPanel;
-      private final Panel westPanel;
-      private Panel easthPanel;
-      private Panel centerPanel;
-      private final FormPanel viewForm;
-      private SelectionPanel selectionPanel;
-
-      private final ComboBox slotCB;
-      private final ComboBox viewCB;
-
-      public MainPanel()
-      {
-         setBorder(false);
-         setLayout(new FitLayout());
-
-         Panel borderPanel = new Panel();
-         borderPanel.setLayout(new BorderLayout());
-         selectionPanel = new SelectionPanel();
-
-         northPanel = new Panel();
-         northPanel.setHeight(50);
-         northPanel.setCollapsible(true);
-         northPanel.setLayout(new HorizontalLayout(10));
-         northPanel.setTitle("Open Data Warehouse Analysis Tool");
-
-         westPanel = new Panel();
-         westPanel.setTitle("Settings");
-         westPanel.setCollapsible(true);
-         westPanel.setLayout(new VerticalLayout(15));
-         westPanel.setPaddings(10);
-         westPanel.setWidth(350);
-
-         BorderLayoutData westData = new BorderLayoutData(RegionPosition.WEST);
-         westData.setSplit(true);
-         westData.setMinSize(175);
-         westData.setMaxSize(400);
-         westData.setMargins(new Margins(0, 5, 0, 0));
-
-         Panel buttonPanel = new Panel();
-         buttonPanel.setPaddings(15);
-         buttonPanel.setLayout(new HorizontalLayout(5));
-
-         Button loadButton = new Button("LOAD", new ButtonListenerAdapter()
-         {
-            public void onClick(Button button, EventObject e)
-            {
-            }
-         });
-
-         Button saveButton = new Button("SAVE", new ButtonListenerAdapter()
-         {
-            public void onClick(Button button, EventObject e)
-            {
-            }
-         });
-
-         Button execButton = new Button("EXECUTE", new ButtonListenerAdapter()
-         {
-            public void onClick(Button button, EventObject e)
-            {
-               /*
-                * MessageBox.confirm("Confirm", "This is where yhe report will
-                * appear", new MessageBox.ConfirmCallback() { public void
-                * execute(String btnID) { } });
-                */
-            	UserSelection selection = new UserSelection();
-            	selection.load(selectionPanel.loadSelection());
-               executeQuery(selection);
-               // display.show(new DBResult());
-
-            }
-
-         });
-
-         Button logoffButton = new Button("LOG OFF",
-               new ButtonListenerAdapter()
-               {
-                  public void onClick(Button button, EventObject e)
-                  {
-                  }
-               });
-
-         Button resetButton = new Button("RESET", new ButtonListenerAdapter()
-         {
-            public void onClick(Button button, EventObject e)
-            {
-               selectionPanel.reset();
-            }
-         });
-         Button previewButton = new Button("PREVIEW",
-               new ButtonListenerAdapter()
-               {
-                  public void onClick(Button button, EventObject e)
-                  {
-                     MessageBox
-                           .alert(selectionPanel.loadSelection().toString());
-                  }
-               });
-
-         viewForm = new FormPanel();
-         viewForm.setTitle("Select view");
-         viewForm.setFrame(true);
-         viewForm.setWidth(320);
-
-         slotCB = new ComboBox();
-         viewCB = new ComboBox();
-
-         slotCB.setFieldLabel("Select universe");
-         slotCB.setDisplayField("universe");
-         slotCB.setMode(ComboBox.LOCAL);
-         slotCB.setTriggerAction(ComboBox.ALL);
-         slotCB.setForceSelection(true);
-         slotCB.setValueField("cid");
-         slotCB.setReadOnly(true);
-
-         viewCB.setFieldLabel("Select view");
-         viewCB.setDisplayField("view");
-         viewCB.setValueField("id");
-         viewCB.setMode(ComboBox.LOCAL);
-         viewCB.setTriggerAction(ComboBox.ALL);
-         viewCB.setLinked(false);
-         viewCB.setForceSelection(true);
-         viewCB.setReadOnly(true);
-
-         viewForm.add(slotCB);
-         viewForm.add(viewCB);
-
-         westPanel.add(viewForm);
-
-         Button LoadViewButton = new Button("LOAD VIEW",
-               new ButtonListenerAdapter()
-               {
-                  public void onClick(Button button, EventObject e)
-                  {
-                     loadView(new MetaID(new Long(viewCB.getValue())));
-                     // selectionPanel.setVisible(true);
-                  }
-               });
-
-         westPanel.add(LoadViewButton);
-
-         westPanel.setButtonAlign(Position.CENTER);
-         westPanel.setButtons(new Button[]
-         { loadButton, saveButton, logoffButton });
-
-         centerPanel = new Panel();
-         centerPanel.setTitle("Selection");
-         centerPanel.setCollapsible(true);
-         centerPanel.setButtons(new Button[]
-         { resetButton, previewButton, execButton });
-         centerPanel.setButtonAlign(Position.RIGHT);
-         centerPanel.add(selectionPanel);
-         selectionPanel.setVisible(false);
-
-         borderPanel
-               .add(northPanel, new BorderLayoutData(RegionPosition.NORTH));
-         borderPanel.add(westPanel, westData);
-         borderPanel.add(centerPanel, new BorderLayoutData(
-               RegionPosition.CENTER));
-
-         add(borderPanel);
-
-      }
-
-      public Panel getNorthPanel()
-      {
-         return northPanel;
-      }
-
-      public Panel getWestPanel()
-      {
-         return westPanel;
-      }
-
-      public Panel getEasthPanel()
-      {
-         return easthPanel;
-      }
-
-      public Panel getCenterPanel()
-      {
-         return centerPanel;
-      }
-
-      private void login()
-      {
-         final Panel welcomePanel = new Panel();
-         welcomePanel.setWidth(200);
-         welcomePanel.setFrame(false);
-         northPanel.add(welcomePanel);
-
-         final Window window = new Window();
-         window.setTitle("Log In");
-         window.setClosable(false);
-         window.setWidth(350);
-         window.setHeight(180);
-         window.setPlain(true);
-         window.setModal(true);
-         window.setLayout(new VerticalLayout());
-         window.setPaddings(15);
-         window.setCloseAction(Window.HIDE);
-
-         final FormPanel loginPanel = new FormPanel();
-
-         loginPanel.setWidth(300);
-         loginPanel.setLabelWidth(70);
-         loginPanel.setPaddings(15);
-
-         final TextField login = new TextField("Login", "login", 200);
-         login.setAllowBlank(false);
-         loginPanel.add(login);
-
-         TextField passwd = new TextField("Password", "passwd", 200);
-         passwd.setAllowBlank(false);
-         passwd.setPassword(true);
-         loginPanel.add(passwd);
-
-         Button okButton = new Button("OK", new ButtonListenerAdapter()
-         {
-            public void onClick(Button button, EventObject e)
-            {
-               userName = login.getText();
-               if (userName != "")
-               {
-
-                  welcomePanel.setHtml("welcome, <b>" + userName + "</b>");
-
-                  window.close();
-                  getSlots();
-
-               }
-
-            }
-         });
-         window.setButtons(new Button[]
-         { okButton });
-
-         window.add(loginPanel);
-
-         window.show();
-
-      }
-
-      private void setSlots()
-      {
-
-         final Object[][] universes = new Object[slotList.size()][2];
-
-         for (int i = 0; i < slotList.size(); i++)
-            universes[i] = new Object[]
-            { slotList.get(i).getID().toString(), slotList.get(i).getName() };
-
-         Store universesStore = new SimpleStore(new String[]
-         { "cid", "universe" }, universes);
-
-         universesStore.load();
-
-         slotCB.setStore(universesStore);
-         slotCB.show();
-      }
-
-      private void loadView(MetaID id)
-      {
-         metaService.getDataView(new MetaID(10), new AsyncCallback<String>()
-         {
-            public void onFailure(Throwable caught)
-            {
-               MessageBox.alert("Could not achieve view XML");
-            }
-
-            public void onSuccess(String result)
-            {
-               showView(result);
-
-            }
-         });
-      }
-
-      private void showView(String viewXml)
-      {
-
-         selectionPanel.loadXml(viewXml);
-         selectionPanel.setVisible(true);
-         // selectionPanel.show();
-      }
-
-      private void setViews()
-      {
-         Object[][] views = new Object[viewList.size()][3];
-
-         for (int i = 0; i < viewList.size(); i++)
-            views[i] = new Object[]
-            { viewList.get(i).getID().getID(),
-                  viewList.get(i).getParentSlot().toString(),
-                  viewList.get(i).getName() };
-
-         final Store viewsStore = new SimpleStore(new String[]
-         { "id", "cid", "view" }, views);
-         viewsStore.load();
-
-         viewCB.setStore(viewsStore);
-
-         slotCB.addListener(new ComboBoxListenerAdapter()
-         {
-
-            public void onSelect(ComboBox comboBox, Record record, int index)
-            {
-               viewCB.setValue("");
-               viewsStore.filter("cid", comboBox.getValue());
-            }
-         });
-
-         viewCB.show();
-         slotCB.show();
-
-      }
-
-      public void getSlots()
-      {
-
-         metaService.getSlots(userName,
-               new AsyncCallback<ArrayList<MetaSlot>>()
-               {
-                  public void onFailure(Throwable caught)
-                  {
-                     MessageBox.confirm("Confirm", "Slots are empty!!!!");
-
-                  }
-
-                  public void onSuccess(ArrayList<MetaSlot> result)
-                  {
-
-                     for (MetaSlot slot : result)
-                     {
-                        slotList.add(slot);
-                     }
-
-                     setSlots();
-
-                     for (MetaSlot slot : slotList)
-                     {
-                        getDataViews(slot.getID());
-                     }
-                  }
-               });
-
-      }
-
-      private void showSelectionPanel(MetaID id)
-      {
-
-      }
-
-      /**
-       * Metoda do komunikacji z moduĹ‚em metadanych. WyĹ›wietla otrzymane od
-       * serwera widoki danych dostÄ™pne dla danego slotu.
-       *
-       * @param slot
-       *           wybrany przez uĹĽytkownika slot
-       */
-      public void getDataViews(final MetaID slotId)
-      {
-         System.out.println("ODWAClient: Gui: getDataView() executed");
-
-         final Object[][] views = new Object[viewList.size()][3];
-
-         metaService.getDataViews(slotId,
-               new AsyncCallback<ArrayList<MetaDataView>>()
-               {
-                  public void onFailure(Throwable caught)
-                  {
-                     k.setText("Gui: Getting data views failed.");
-                  }
-
-                  public void onSuccess(ArrayList<MetaDataView> result)
-                  {
-
-                     for (MetaDataView view : result)
-                     {
-                        view.setParentSlot(slotId);
-                        viewList.add(view);
-                     }
-                     setViews();
-
-                  }
-               });
-
-      }
-
-      public void executeQuery(UserSelection selection)
-      {
-         dbService.executeQuery(selection, new AsyncCallback<DBResult>()
-         {
-            public void onFailure(Throwable caught)
-            {
-               MessageBox.alert(caught.getMessage());
-            }
-
-            public void onSuccess(DBResult result)
-            {
-               /*DBRow row;
-               String out = "ARGH";
-               int count = result.getColumnCount();
-               for (int i = 0; i < count; i++)
-               {
-                  out = out.concat(result.getColumnName(i) + " ");
-                  System.out.print(result.getColumnName(i) + " ");
-               }
-               out = out.concat("\n");
-               System.out.println();
-
-               while ((row = result.fetchRow()) != null)
-               {
-                  for (int i = 0; i < count; i++)
-                  {
-                     out = out.concat(row.getFieldVal(i).toString() + " ");
-                     System.out.print(row.getFieldVal(i).toString() + " ");
-                  }
-                  out = out.concat("\n");
-                  System.out.println();
-               }
-               MessageBox.alert(out);*/
-               display.show((DBResult) result);
-               Visualization vis = new Visualization();
-               vis.show(result);
-            }
-         });
-      }
-   }
+	private DBEngineServiceAsync dbService;
+	/**
+	 * Interface for communication via RPC with metadata module.
+	 */
+	private MetaGUIApiServiceAsync metaService;
+	private DBResult currentDBResult = new DBResult();
+	/**
+	 * Users login.
+	 */
+	private String userName;
+
+	/**
+	 * Displayed data warehouse view (marketplace).
+	 */
+	private String currentViewXml;
+
+	/**
+	 * GWT EXT panel responsible for displaying selection composition tools.
+	 */
+	private final MainPanel panel = new MainPanel();
+
+	/**
+	 * Lists of data slots and views, filled when communicating with metadata
+	 * module.
+	 */
+	private ArrayList<MetaSlot> slotList;
+	private ArrayList<MetaDataView> viewList;
+
+	/**
+	 *
+	 */
+
+	public void saveReport()
+	{/*
+		 * System.out.println("ODWAClient: Gui: saveReport() executed");
+		 * //ReportStyle style = display.getReportStyle(); StaticReport sRep =
+		 * new StaticReport(currentDBResult, style); try { sRep.save(""); }
+		 * catch (Exception exception) { System.err.println("ODWAClient: " +
+		 * exception); } DynamicReport dRep = new
+		 * DynamicReport(currentSelection, style); try { dRep.save(""); } catch
+		 * (Exception exception) { System.err.println("ODWAClient: " +
+		 * exception); }
+		 */
+	}
+
+	public void staticReportLoad()
+	{
+		/*
+		 * try { StaticReport report = new StaticReport(""); currentDBResult =
+		 * report.getResult(); ReportStyle style = report.getReportStyle();
+		 * display.show(currentDBResult, style); } catch (Exception exception) {
+		 * System.err.println("ODWAClient: " + exception); }
+		 */
+	}
+
+	public void dynamicReportLoad()
+	{/*
+		 * try { DynamicReport report = new DynamicReport(""); currentSelection =
+		 * report.getUserSelection(); ReportStyle style =
+		 * report.getReportStyle(); } catch (Exception exception) {
+		 * System.err.println("ODWAClient: " + exception); }
+		 */
+	}
+
+	/**
+	 * Analogical to Main() method, starts the program and displays main panel.
+	 */
+	public void onModuleLoad()
+	{
+		slotList = new ArrayList<MetaSlot>();
+		viewList = new ArrayList<MetaDataView>();
+
+		dbService = (DBEngineServiceAsync) GWT.create(DBEngineService.class);
+		ServiceDefTarget dbEndpoint = (ServiceDefTarget) dbService;
+		String dbRelURL = GWT.getModuleBaseURL() + "DBEngineService";
+		dbEndpoint.setServiceEntryPoint(dbRelURL);
+
+		metaService = (MetaGUIApiServiceAsync) GWT.create(MetaGUIApiService.class);
+		ServiceDefTarget metaEndpoint = (ServiceDefTarget) metaService;
+		String metaRelURL = GWT.getModuleBaseURL() + "MetaGUIApiService";
+		metaEndpoint.setServiceEntryPoint(metaRelURL);
+
+		panel.login();
+		//panel.getSlots();
+		// createSelection();
+
+		Viewport viewport = new Viewport(panel);
+	}
+
+	/**
+	 * Class responsible for displaying all tools for loading, crating selection
+	 * and visualisation.
+	 *
+	 * @author Lukasz Pintal
+	 *
+	 */
+	class MainPanel extends Panel
+	{
+		private Panel northPanel;
+		private final Panel westPanel;
+		private Panel easthPanel;
+		private Panel centerPanel;
+		private final FormPanel viewForm;
+		private SelectionPanel selectionPanel;
+
+		private final ComboBox slotCB;
+		private final ComboBox viewCB;
+
+		/**
+		 * Creator of MainPanel, sets parameters for displaying gwt-ext panels,
+		 * makes instances of all subpanels and buttons and displays them.
+		 */
+		public MainPanel()
+		{
+			setBorder(false);
+			setLayout(new FitLayout());
+
+			Panel borderPanel = new Panel();
+			borderPanel.setLayout(new BorderLayout());
+			selectionPanel = new SelectionPanel();
+
+			northPanel = new Panel();
+			northPanel.setHeight(50);
+			northPanel.setCollapsible(true);
+			northPanel.setLayout(new HorizontalLayout(10));
+			northPanel.setTitle("Open Data Warehouse Analysis Tool");
+
+			westPanel = new Panel();
+			westPanel.setTitle("Settings");
+			westPanel.setCollapsible(true);
+			westPanel.setLayout(new VerticalLayout(15));
+			westPanel.setPaddings(10);
+			westPanel.setWidth(350);
+
+			BorderLayoutData westData = new BorderLayoutData(RegionPosition.WEST);
+			westData.setSplit(true);
+			westData.setMinSize(175);
+			westData.setMaxSize(400);
+			westData.setMargins(new Margins(0, 5, 0, 0));
+
+			Panel buttonPanel = new Panel();
+			buttonPanel.setPaddings(15);
+			buttonPanel.setLayout(new HorizontalLayout(5));
+
+			Button loadButton = new Button("LOAD", new ButtonListenerAdapter()
+			{
+				public void onClick(Button button, EventObject e)
+				{
+				}
+			});
+
+			Button saveButton = new Button("SAVE", new ButtonListenerAdapter()
+			{
+				public void onClick(Button button, EventObject e)
+				{
+				}
+			});
+
+			Button execButton = new Button("EXECUTE", new ButtonListenerAdapter()
+			{
+				public void onClick(Button button, EventObject e)
+				{
+
+					UserSelection selection = new UserSelection();
+					selection.load(selectionPanel.loadSelection());
+					executeQuery(selection);
+
+				}
+
+			});
+
+			Button logoffButton = new Button("LOG OFF", new ButtonListenerAdapter()
+			{
+				public void onClick(Button button, EventObject e)
+				{
+				}
+			});
+
+			Button resetButton = new Button("RESET", new ButtonListenerAdapter()
+			{
+				public void onClick(Button button, EventObject e)
+				{
+					selectionPanel.reset();
+				}
+			});
+			Button previewButton = new Button("PREVIEW", new ButtonListenerAdapter()
+			{
+				public void onClick(Button button, EventObject e)
+				{
+					MessageBox.alert(selectionPanel.loadSelection().toString());
+				}
+			});
+
+			viewForm = new FormPanel();
+			viewForm.setTitle("Select view");
+			viewForm.setFrame(true);
+			viewForm.setWidth(320);
+
+			slotCB = new ComboBox();
+			viewCB = new ComboBox();
+
+			slotCB.setFieldLabel("Select universe");
+			slotCB.setDisplayField("universe");
+			slotCB.setMode(ComboBox.LOCAL);
+			slotCB.setTriggerAction(ComboBox.ALL);
+			slotCB.setForceSelection(true);
+			slotCB.setValueField("cid");
+			slotCB.setReadOnly(true);
+
+			viewCB.setFieldLabel("Select view");
+			viewCB.setDisplayField("view");
+			viewCB.setValueField("id");
+			viewCB.setMode(ComboBox.LOCAL);
+			viewCB.setTriggerAction(ComboBox.ALL);
+			viewCB.setLinked(false);
+			viewCB.setForceSelection(true);
+			viewCB.setReadOnly(true);
+
+			viewForm.add(slotCB);
+			viewForm.add(viewCB);
+
+			westPanel.add(viewForm);
+
+			Button LoadViewButton = new Button("LOAD VIEW", new ButtonListenerAdapter()
+			{
+				public void onClick(Button button, EventObject e)
+				{
+					loadView(new MetaID(new Long(viewCB.getValue())));
+				}
+			});
+
+			westPanel.add(LoadViewButton);
+
+			westPanel.setButtonAlign(Position.CENTER);
+			westPanel.setButtons(new Button[]
+			{ loadButton, saveButton, logoffButton });
+
+			centerPanel = new Panel();
+			centerPanel.setTitle("Selection");
+			centerPanel.setCollapsible(true);
+			centerPanel.setButtons(new Button[]
+			{ resetButton, previewButton, execButton });
+			centerPanel.setButtonAlign(Position.RIGHT);
+			centerPanel.add(selectionPanel);
+			selectionPanel.setVisible(false);
+
+			borderPanel.add(northPanel, new BorderLayoutData(RegionPosition.NORTH));
+			borderPanel.add(westPanel, westData);
+			borderPanel.add(centerPanel, new BorderLayoutData(RegionPosition.CENTER));
+
+			add(borderPanel);
+
+		}
+
+		/**
+		 * Returns north panel - the one holding informations and titles.
+		 *
+		 * @return Panel
+		 */
+		public Panel getNorthPanel()
+		{
+			return northPanel;
+		}
+
+		/**
+		 * Returns west panel - with selection of data view.
+		 *
+		 * @return Panel
+		 */
+		public Panel getWestPanel()
+		{
+			return westPanel;
+		}
+
+		/**
+		 * Returns East panel - with menu, not implemented yet.
+		 *
+		 * @return Panel
+		 */
+		public Panel getEasthPanel()
+		{
+			return easthPanel;
+		}
+
+		/**
+		 * Returns center panel - containing data and tools for creating
+		 * selection.
+		 *
+		 * @return Panel
+		 */
+		public Panel getCenterPanel()
+		{
+			return centerPanel;
+		}
+
+		/**
+		 * Logs user, in current version a stub, loads only user name. Disables
+		 * whole main panel untill a username is typed.
+		 */
+		private void login()
+		{
+			final Panel welcomePanel = new Panel();
+			welcomePanel.setWidth(200);
+			welcomePanel.setFrame(false);
+			northPanel.add(welcomePanel);
+
+			final Window window = new Window();
+			window.setTitle("Log In");
+			window.setClosable(false);
+			window.setWidth(350);
+			window.setHeight(180);
+			window.setPlain(true);
+			window.setModal(true);
+			window.setLayout(new VerticalLayout());
+			window.setPaddings(15);
+			window.setCloseAction(Window.HIDE);
+
+			final FormPanel loginPanel = new FormPanel();
+
+			loginPanel.setWidth(300);
+			loginPanel.setLabelWidth(70);
+			loginPanel.setPaddings(15);
+
+			final TextField login = new TextField("Login", "login", 200);
+			login.setAllowBlank(false);
+			loginPanel.add(login);
+
+			TextField passwd = new TextField("Password", "passwd", 200);
+			passwd.setAllowBlank(false);
+			passwd.setPassword(true);
+			loginPanel.add(passwd);
+
+			Button okButton = new Button("OK", new ButtonListenerAdapter()
+			{
+				public void onClick(Button button, EventObject e)
+				{
+					userName = login.getText();
+					if (userName != "")
+					{
+
+						welcomePanel.setHtml("welcome, <b>" + userName + "</b>");
+
+						window.close();
+						getSlots();
+
+					}
+
+				}
+			});
+			window.setButtons(new Button[]
+			{ okButton });
+
+			window.add(loginPanel);
+
+			window.show();
+
+		}
+
+		/**
+		 * Loads data slot list (previously loaded from metadata module) into
+		 * combobox and displays it.
+		 */
+		private void setSlots()
+		{
+
+			final Object[][] universes = new Object[slotList.size()][2];
+
+			for (int i = 0; i < slotList.size(); i++)
+				universes[i] = new Object[]
+				{ slotList.get(i).getID().toString(), slotList.get(i).getName() };
+
+			Store universesStore = new SimpleStore(new String[]
+			{ "cid", "universe" }, universes);
+
+			universesStore.load();
+
+			slotCB.setStore(universesStore);
+			slotCB.show();
+		}
+
+		/**
+		 * Loads data view from metadata module, using MetaGuiApiService
+		 * function
+		 *
+		 * @see getDataView Result (String with XML tree) is displayed via
+		 *      SelectionPanel
+		 *
+		 * @param id
+		 *            a MetaID of data view to achieve
+		 */
+		private void loadView(MetaID id)
+		{
+			metaService.getDataView(new MetaID(10), new AsyncCallback<String>()
+			{
+				public void onFailure(Throwable caught)
+				{
+					MessageBox.alert("Could not achieve view XML");
+				}
+
+				public void onSuccess(String result)
+				{
+					showView(result);
+
+				}
+			});
+		}
+
+		/**
+		 * Displays loaded view (XML tree in a string) via SelectionPanel method
+		 *
+		 * @see loadXml.
+		 *
+		 * @param viewXml
+		 *            String containing XML tree generated by metadata module
+		 */
+		private void showView(String viewXml)
+		{
+			selectionPanel.loadXml(viewXml);
+			selectionPanel.setVisible(true);
+		}
+
+		/**
+		 * Loads data view list for possible slots and displays it using
+		 * combobox.
+		 */
+		private void setViews()
+		{
+			Object[][] views = new Object[viewList.size()][3];
+
+			for (int i = 0; i < viewList.size(); i++)
+				views[i] = new Object[]
+				{ viewList.get(i).getID().getID(), viewList.get(i).getParentSlot().toString(),
+						viewList.get(i).getName() };
+
+			final Store viewsStore = new SimpleStore(new String[]
+			{ "id", "cid", "view" }, views);
+			viewsStore.load();
+
+			viewCB.setStore(viewsStore);
+
+			slotCB.addListener(new ComboBoxListenerAdapter()
+			{
+
+				public void onSelect(ComboBox comboBox, Record record, int index)
+				{
+					viewCB.setValue("");
+					viewsStore.filter("cid", comboBox.getValue());
+				}
+			});
+
+			viewCB.show();
+			slotCB.show();
+
+		}
+
+		/**
+		 * Communicates asynchronously with metadata module and loads data slots
+		 * list aviable for current user.
+		 */
+		public void getSlots()
+		{
+
+			metaService.getSlots(userName, new AsyncCallback<ArrayList<MetaSlot>>()
+			{
+				public void onFailure(Throwable caught)
+				{
+					MessageBox.confirm("Confirm", "Slots are empty!!!!");
+
+				}
+
+				public void onSuccess(ArrayList<MetaSlot> result)
+				{
+
+					for (MetaSlot slot : result)
+					{
+						slotList.add(slot);
+					}
+
+					setSlots();
+
+					for (MetaSlot slot : slotList)
+					{
+						getDataViews(slot.getID());
+					}
+				}
+			});
+
+		}
+
+		/**
+		 * Communicates asynchronously with metadata module and loads data view
+		 * list aviable for current user and selected slot.
+		 *
+		 * @param slot
+		 *            selected slots MetaID
+		 */
+		public void getDataViews(final MetaID slotId)
+		{
+			System.out.println("ODWAClient: Gui: getDataView() executed");
+
+			final Object[][] views = new Object[viewList.size()][3];
+
+			metaService.getDataViews(slotId, new AsyncCallback<ArrayList<MetaDataView>>()
+			{
+				public void onFailure(Throwable caught)
+				{
+					MessageBox.alert("Cannot communicate with metadata!");
+				}
+
+				public void onSuccess(ArrayList<MetaDataView> result)
+				{
+
+					for (MetaDataView view : result)
+					{
+						view.setParentSlot(slotId);
+						viewList.add(view);
+					}
+					setViews();
+
+				}
+			});
+
+		}
+
+		/**
+		 * Method responsible for communicating with database engine. Using
+		 * asynchronous communication, passes current user selection and gets
+		 * result of database query it contained. Result is displayed using
+		 * Visualization class instance.
+		 *
+		 * @param selection
+		 *            current user selection
+		 */
+		public void executeQuery(UserSelection selection)
+		{
+			dbService.executeQuery(selection, new AsyncCallback<DBResult>()
+			{
+				public void onFailure(Throwable caught)
+				{
+					MessageBox.alert(caught.getMessage());
+				}
+
+				public void onSuccess(DBResult result)
+				{
+					Visualization vis = new Visualization();
+					vis.show(result);
+				}
+			});
+		}
+	}
 
 }

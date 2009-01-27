@@ -31,6 +31,14 @@ import com.gwtext.client.widgets.tree.TreePanel;
 import com.gwtext.client.widgets.tree.XMLTreeLoader;
 import com.gwtext.client.widgets.tree.event.TreePanelListenerAdapter;
 
+/**
+ * Class responsible for displaying drag and drop trees used to create user
+ * selection. Also loads and views XML tree prepared by metadata module.
+ *
+ * @author Lukasz Pintal
+ * @author Krzysztof Dobosz
+ *
+ */
 public class SelectionPanel extends Panel
 {
 	private final TreePanel treePanel;
@@ -40,7 +48,10 @@ public class SelectionPanel extends Panel
 	private TreeNode ctxNode;
 	private TreeEditor treeEditor;
 	private MetaXmlParser parser;
-
+	/**
+	 * Creator, sets tree panel parameters, displays all.
+	 *
+	 */
 	public SelectionPanel()
 	{
 
@@ -87,10 +98,8 @@ public class SelectionPanel extends Panel
 				// rowsTreePanel.expandAll();
 			}
 
-			public boolean doBeforeNodeDrop(TreePanel treePanel,
-					TreeNode target, DragData dragData, String point,
-					DragDrop source, TreeNode dropNode,
-					DropNodeCallback dropDropNodeCallback)
+			public boolean doBeforeNodeDrop(TreePanel treePanel, TreeNode target, DragData dragData, String point,
+					DragDrop source, TreeNode dropNode, DropNodeCallback dropDropNodeCallback)
 			{
 				if ("false".equals(target.getAttribute("allowDrop")))
 				{
@@ -109,20 +118,17 @@ public class SelectionPanel extends Panel
 
 				}
 
-				else if (!(dropNode.getAttribute("metaType").equals(target
-						.getAttribute("metaType"))))
+				else if (!(dropNode.getAttribute("metaType").equals(target.getAttribute("metaType"))))
 				{
 
 					return false;
 				}
 
-				else if (target.getDepth() >= 1
-						&& dropNode.getAttribute("metaType")
-								.equals("dimension") && !(target.getAttribute("name").equals("BACKGROUND")))
+				else if (target.getDepth() >= 1 && dropNode.getAttribute("metaType").equals("dimension")
+						&& !(target.getAttribute("name").equals("BACKGROUND")))
 				{
 					if (target.getChildNodes().length != 0)
-						if (!(target.getFirstChild().getAttribute("uid")
-								.substring(0, 2).equals(dropNode.getAttribute(
+						if (!(target.getFirstChild().getAttribute("uid").substring(0, 2).equals(dropNode.getAttribute(
 								"uid").substring(0, 2))))
 							return false;
 				}
@@ -131,7 +137,8 @@ public class SelectionPanel extends Panel
 				copyNode.setAttribute("allowDrag", "false");
 
 				copyNode.setAttribute("allowDrop", "false");
-				//copyNode.setAttribute("element", dropNode.getAttribute("element"));
+				// copyNode.setAttribute("element",
+				// dropNode.getAttribute("element"));
 				/*
 				 * if (target.getDepth() > 1 ||
 				 * dropNode.getAttribute("metaType").equals("measure"))
@@ -165,6 +172,13 @@ public class SelectionPanel extends Panel
 
 	}
 
+	/**
+	 * Tree panel prepared to create selection structure.
+	 *
+	 * @author Lukasz Pintal
+	 * @author Krzysztof Dobosz
+	 *
+	 */
 	class SelectionTreePanel extends TreePanel
 	{
 
@@ -212,21 +226,26 @@ public class SelectionPanel extends Panel
 
 	}
 
+	/**
+	 * Parses XML tree given by metadata module and displays it in tree panel.
+	 *
+	 * @param xmlString data view in XML tree by metadata module
+	 */
 	public void loadXml(String xmlString)
 	{
 
-		//MessageBox.alert(xmlString);
+		// MessageBox.alert(xmlString);
 		TreeNode root = parser.parse(xmlString);
 		TreeNode panelRoot = treePanel.getRootNode();
 		Node[] oldNodes = panelRoot.getChildNodes();
 
-		for(Node node : oldNodes)
+		for (Node node : oldNodes)
 			panelRoot.removeChild(node);
 
-		//Node[] newNodes = root.getChildNodes();
+		// Node[] newNodes = root.getChildNodes();
 
-		//for(Node node : newNodes)
-			panelRoot.appendChild(root);
+		// for(Node node : newNodes)
+		panelRoot.appendChild(root);
 
 		panelRoot.expand();
 
@@ -235,6 +254,12 @@ public class SelectionPanel extends Panel
 		// treePanel.expandAll();
 	}
 
+	/**
+	 * Displays context menu for nodes in selection tree panel.
+	 *
+	 * @param node current node
+	 * @param e event occured (mouse click)
+	 */
 	private void showContextMenu(final TreeNode node, EventObject e)
 	{
 		if (menu == null)
@@ -250,22 +275,21 @@ public class SelectionPanel extends Panel
 			editItem.setId("edit-item");
 			menu.addItem(editItem);
 
-			Item disableItem = new Item("Disable",
-					new BaseItemListenerAdapter()
+			Item disableItem = new Item("Disable", new BaseItemListenerAdapter()
+			{
+				public void onClick(BaseItem item, EventObject e)
+				{
+					ctxNode.disable();
+					ctxNode.cascade(new NodeTraversalCallback()
 					{
-						public void onClick(BaseItem item, EventObject e)
+						public boolean execute(Node node)
 						{
-							ctxNode.disable();
-							ctxNode.cascade(new NodeTraversalCallback()
-							{
-								public boolean execute(Node node)
-								{
-									((TreeNode) node).disable();
-									return true;
-								}
-							});
+							((TreeNode) node).disable();
+							return true;
 						}
 					});
+				}
+			});
 			disableItem.setId("disable-item");
 			menu.addItem(disableItem);
 
@@ -306,28 +330,24 @@ public class SelectionPanel extends Panel
 			removeItem.setId("remove-item");
 			menu.addItem(removeItem);
 
-			Item newFolderItem = new Item("New Axis",
-					new BaseItemListenerAdapter()
+			Item newFolderItem = new Item("New Axis", new BaseItemListenerAdapter()
+			{
+				public void onClick(BaseItem item, EventObject e)
+				{
+					if (ctxNode.getAttribute("metaType").equals("dimension") && ctxNode.getDepth() == 1
+							&& !ctxNode.getAttribute("name").equals("BACKGROUND"))
 					{
-						public void onClick(BaseItem item, EventObject e)
-						{
-							if (ctxNode.getAttribute("metaType").equals(
-									"dimension")
-									&& ctxNode.getDepth() == 1
-									&& !ctxNode.getAttribute("name").equals(
-											"BACKGROUND"))
-							{
-								TreeNode subaxis = new TreeNode("Subaxis");
-								subaxis.setAttribute("multiple", "true");
-								subaxis.setAttribute("allowDrop", "true");
-								subaxis.setAttribute("metaType", "dimension");
-								ctxNode.appendChild(subaxis);
-								ctxNode.expand();
-								// treeEditor.startEdit(subaxis);
-							}
+						TreeNode subaxis = new TreeNode("Subaxis");
+						subaxis.setAttribute("multiple", "true");
+						subaxis.setAttribute("allowDrop", "true");
+						subaxis.setAttribute("metaType", "dimension");
+						ctxNode.appendChild(subaxis);
+						ctxNode.expand();
+						// treeEditor.startEdit(subaxis);
+					}
 
-						}
-					});
+				}
+			});
 			newFolderItem.setId("newAxis-item");
 			menu.addItem(newFolderItem);
 		}
@@ -356,12 +376,15 @@ public class SelectionPanel extends Panel
 		menu.showAt(e.getXY());
 	}
 
+	/**
+	 * Resets both trees (containing data view and selection).
+	 */
 	public void reset()
 	{
 		TreeNode root = rowsTreePanel.getRootNode();
 
 		Node[] rootNodes = root.getChildNodes();
-		for(Node node : rootNodes)
+		for (Node node : rootNodes)
 			root.removeChild(node);
 
 		TreeNode columns = new TreeNode("COLUMNS");
@@ -396,6 +419,11 @@ public class SelectionPanel extends Panel
 
 	}
 
+	/**
+	 * Creates selection container from selection tree generated by user.
+	 *
+	 * @return selectionLoader container for user selection
+	 */
 	public SelectionLoader loadSelection()
 	{
 		SelectionLoader result = new SelectionLoader();
@@ -428,18 +456,17 @@ public class SelectionPanel extends Panel
 						ArrayList<String> rowsUid = new ArrayList<String>();
 						for (Node subrow : subaxis)
 						{
-							if(subrow.getAttribute("element").equals("false"))
-								{
-								String uidMem = subrow.getAttribute("uid")+ ".members";
+							if (subrow.getAttribute("element").equals("false"))
+							{
+								String uidMem = subrow.getAttribute("uid") + ".members";
 								rowsUid.add(uidMem);
-								}
-							else
+							} else
 								rowsUid.add(subrow.getAttribute("uid"));
 						}
 
 						rows.add(rowsUid);
 
-					} else if(row.getAttribute("element").equals("false"))
+					} else if (row.getAttribute("element").equals("false"))
 						singles.add(row.getAttribute("uid") + ".members");
 					else
 						singles.add(row.getAttribute("uid"));
@@ -463,16 +490,15 @@ public class SelectionPanel extends Panel
 						Node[] subaxis = row.getChildNodes();
 						for (Node subrow : subaxis)
 						{
-							if(subrow.getAttribute("element").equals("false"))
+							if (subrow.getAttribute("element").equals("false"))
 							{
-							String uidMem = subrow.getAttribute("uid")+ ".members";
-							colsUid.add(uidMem);
-							}
-						else
-							colsUid.add(subrow.getAttribute("uid"));
+								String uidMem = subrow.getAttribute("uid") + ".members";
+								colsUid.add(uidMem);
+							} else
+								colsUid.add(subrow.getAttribute("uid"));
 						}
 						cols.add(colsUid);
-					} else if(row.getAttribute("element").equals("false"))
+					} else if (row.getAttribute("element").equals("false"))
 						singles.add(row.getAttribute("uid") + ".members");
 					else
 						singles.add(row.getAttribute("uid"));
@@ -489,8 +515,8 @@ public class SelectionPanel extends Panel
 				for (Node row : backNodes)
 				{
 
-					if(row.getAttribute("element").equals("false"))
-						back.add(row.getAttribute("uid")+ ".members");
+					if (row.getAttribute("element").equals("false"))
+						back.add(row.getAttribute("uid") + ".members");
 					else
 						back.add(row.getAttribute("uid"));
 
