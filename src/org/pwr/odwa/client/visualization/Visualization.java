@@ -279,7 +279,7 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		final GridPanel tab1 = new GridPanel();
 		tab1.setTitle("Grid");
 
-		result.reset();
+		//result.reset();
 		
 		DBRow row = new DBRow();
 		int rowsInResult = 0;
@@ -519,7 +519,7 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 
 		Panel tab4 = new Panel();
 		tab4.setTitle("About");
-		tab4.setHtml("SuperbTab ODWA version is the greatest developement of the web.");
+		tab4.setHtml("ODWA Open Data Warehouse Analysis<br>Politechnika Wroclawska 2008 - 2009<br><br><b>Project tutor</b>: Ph.D. Maciej Kiewra<br><b>Database</b>: Mateusz Lis, Maciej Kupczak<br><b>GUI</b>: Krzysztof Dobosz, Lukasz Pintal<br><b>Metadata</b>:Maria Labaziewicz, Mateusz Paprocki<br><b>Reports</b>:Katarzyna Rzerzicha, Michal Brzezinski-Spiczak<br><b>Visualization</b>:Pawel Szoltysek, Wojciech Skorski");
 		tab4.setAutoScroll(true);
 		tab4.setClosable(true);
 
