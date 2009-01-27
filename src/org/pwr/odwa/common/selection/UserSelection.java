@@ -3,11 +3,12 @@ package org.pwr.odwa.common.selection;
 import java.io.Serializable;
 
 /**
- * Klasa komunikacji międzymodułowej przechowująca abstrakcyjne zapytanie
- * użytkownika analogicznie do języka MDX
+ * 
+ * Communication class which contains abstraction user selection (an analogy to
+ * MDX)
  * 
  * @author Katarzyna Rzerzicha
- * @author Michał Brzeziński-Spiczak
+ * @author Michal‚ Brzezinski-Spiczak
  */
 public class UserSelection implements Serializable {
 
@@ -18,119 +19,83 @@ public class UserSelection implements Serializable {
 	private Axis row;
 	private DimensionElSet slice;
 
-	/**
-	 * Konstruktor domyślny
-	 */
 	public UserSelection() {
 	}
 
 	/**
-	 * Konstruktor UserSelection na bazie jego składowych stanowiąca
-	 * złożenie metod typu set
+	 * Get database id
 	 * 
-	 * @param dataBaseid
-	 *            - identyfikator bazy danych
-	 * @param measure
-	 *            - użyta miara {@link Measure}
-	 * @param column
-	 *            - definicja (1) osi zagnieżdżonej {@link Axis}
-	 * @param row
-	 *            - definicja (2) osi zagnieżdżonej {@link Axis}
-	 * @param slice
-	 *            - użyty slice (plaster, cięcie) {@link DimensionElSet}
-	 */
-
-	/**
-	 * Zwraca identyfikator bazy danych
-	 * 
-	 * @return dataBaseId - identyfikator bazy danych
 	 */
 	public String getDataBaseId() {
 		return dataBaseId;
 	}
 
 	/**
-	 * Ustawia identyfikator bazy danych dataBaseId
+	 * Set dataBaseId
 	 * 
-	 * @param dataBaseId
-	 *            - identyfikator bazy danych
 	 */
 	public void setDataBaseId(String dataBaseId) {
 		this.dataBaseId = dataBaseId;
 	}
 
 	/**
-	 * Zwraca wykorzystywaną miarę ({@link null} jeśli członkowie wymiaru
-	 * Miary są umieszczeni na osiach)
+	 * Get {@link {@link Measure} ({@link null} if Measure elements put on
+	 * axis)
 	 * 
-	 * @return measure - uzyta miara
 	 */
 	public Measure getMeasure() {
 		return measure;
 	}
 
 	/**
-	 * Ustawia wybraną przez użytkownika miarę ({@link null} jeśli
-	 * członkowie wymiaru Miary są umieszczeni na osiach)
-	 * 
-	 * @param measure
-	 *            - wybrana przez użytkownika miara
+	 * Set {@link Measure}
 	 */
 	public void setMeasure(Measure measure) {
 		this.measure = measure;
 	}
 
 	/**
-	 * Zwraca (1) oś zagnieżdżoną ({@link Axis})
+	 * Get (1) nested ({@link Axis})
 	 * 
-	 * @return column - (1) oś zagnieżdżona
 	 */
 	public Axis getColumn() {
 		return column;
 	}
 
 	/**
-	 * Ustawia (1) oś zagnieżdżoną {@link Axis}
+	 * Set (1) nested ({@link Axis})
 	 * 
-	 * @param column
 	 */
 	public void setColumn(Axis column) {
 		this.column = column;
 	}
 
 	/**
-	 * Zwraca (2) oś zagnieżdżoną ({@link Axis})
+	 * Get (2) nested ({@link Axis})
 	 * 
-	 * @return row - (2) oś zagnieżdżona
 	 */
 	public Axis getRow() {
 		return row;
 	}
 
 	/**
-	 * Ustawia (2) oś zagnieżdżoną {@link Axis}
+	 * Set (2) nested ({@link Axis})
 	 * 
-	 * @param row
 	 */
 	public void setRow(Axis row) {
 		this.row = row;
 	}
 
 	/**
-	 * Zwraca slice (cięcie, plaster) filtrujący zapytanie użytkownika
+	 * Get slice/background ({@link DimensionElSet}) filtering selection
 	 * 
-	 * @return slice - cięcie, plaster filtrujący zapytanie użytkownika
 	 */
 	public DimensionElSet getSlice() {
 		return slice;
 	}
 
 	/**
-	 * Ustawia slice (cięcie, plaster) jako zbiór ({@link DimensionElSet})
-	 * elementów wymiarów
-	 * 
-	 * @param slice
-	 *            - cięcie, plaster do ustawienia
+	 * Set slice/background ({@link DimensionElSet}) filtering selection
 	 */
 	public void setSlice(DimensionElSet slice) {
 		this.slice = slice;
@@ -207,13 +172,18 @@ public class UserSelection implements Serializable {
 		return selection;
 
 	}
+	
+	/**
+	 * Load {@link UserSelection} from {@link SelectionLoader}
+	 * @param sloader
+	 */
 
 	public void load(SelectionLoader sloader) {
 		Measure m = new Measure();
 		m.setMeasureUid(sloader.getMeasure());
 		setMeasure(m);
 
-		//setDataBaseId(sloader.getDatabaseId());
+		// setDataBaseId(sloader.getDatabaseId());
 
 		Axis col_ = new Axis();
 
@@ -244,7 +214,7 @@ public class UserSelection implements Serializable {
 			col_.addAxisElement(col_el);
 		}
 		setColumn(col_);
-		
+
 		Axis row_ = new Axis();
 		for (int i = 0; i < sloader.getRows().size(); i++) {
 			AxisElement row_el = new AxisElement();
@@ -271,7 +241,7 @@ public class UserSelection implements Serializable {
 			row_.addAxisElement(row_el);
 		}
 		setRow(row_);
-		
+
 		DimensionElSet dimelset = new DimensionElSet();
 		for (int k = 0; k < sloader.getBackground().size(); k++) {
 			DimensionEl dimel = new DimensionEl();

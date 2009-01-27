@@ -2,7 +2,7 @@ package org.pwr.odwa.common.selection;
 
 
 /**
- * Klasa reprezentująca zagnieżdżoną oś zapytania {@link UserSelection}
+ * Class representing nested-axis of {@link UserSelection}
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
  */
@@ -13,45 +13,43 @@ import java.util.ArrayList;
 public class Axis implements Serializable {
 	private static final long serialVersionUID = 1490457996717239587L;
 	private ArrayList<AxisElement> axisElements;
-	/**
-	 * Konstruktor domyślny
-	 */
+
 	public Axis(){
 		axisElements = new ArrayList<AxisElement>();
 	}
 	/**
-	 * Zwraca ilość zagnieżdżonych osi {@link AxisElement} (0 dla pojedynczej osi)
-	 * @return ilość zagnieżdżonych osi {@link AxisElement}
+	 * Returns the amount of AxisElements {@link AxisElement} in nested Axis(0 for not-nested axis)
+	 * @return the amount of AxisElements {@link AxisElement}
 	 */
 	public int getAxisElementAmount() {
 		return axisElements.size();
 	}
 	/**
-	 * Zwraca i-ty element zagnieżdżenia {@link AxisElement}
-	 * @param i - numer osi w kontenerze
-	 * @return axisElement i-ty element osi zagnieżdżonej
+	 * 
+	 * @param i - axis number in container
+	 * @return axisElement i AxisElement of nested Axis
 	 */
 	public AxisElement getAxisElement(int i) {
 		return axisElements.get(i);
 	}
 	/**
-	 * Dodaje pojedyczną oś {@link AxisElement} do osi zagnieżdżonej
-	 * @param axisElement - pojedyncza oś do dodania {@link AxisElement}
+	 * Add {@link AxisElement} to nested Axis
+	 * @param axisElement - single {@link AxisElement} to be added
 	 */
 
 	public void addAxisElement(AxisElement axisElement) {
 		axisElements.add(axisElement);
 	}
 	/**
-	 * Zwraca kontener {@link ArrayList} zagnieżdżeń osi
-	 * @return axisElements - {@link ArrayList} zagnieżdżeń osi
+	 * 
+	 * @return axisElements - {@link ArrayList} of AxisElements (container of Axiselements)
 	 */
 	public ArrayList<AxisElement> getAxisElements() {
 		return axisElements;
 	}
 	/**
-	 * Ustawia kontener {@link ArrayList} zagnieżdżeń osi na podany jako argument
-	 * @param axisElements kontener {@link ArrayList} zagnieżdżeń osi do ustawienia
+	 * Set container {@link ArrayList} of AxisElements as current Axis
+	 * @param axisElements {@link ArrayList} of {@link AxisElement}s
 	 */
 	public void setAxisElements(ArrayList<AxisElement> axisElements) {
 		this.axisElements = axisElements;
