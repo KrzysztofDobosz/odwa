@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 
 /**
- * Klasa-kontener elementów wymiaru
+ * Class - container of dimension member elements
  *
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
@@ -19,45 +19,36 @@ public class DimensionElSet implements Serializable {
 
 	private ArrayList<DimensionEl> dimensionEls;
 
-
-	/**
-	 * Konstrktor domyślny
-	 */
 	public DimensionElSet() {
 		dimensionEls = new ArrayList<DimensionEl>();
 	};
 	/**
-	 * Zwraca ilość elementów w kontenerze
-	 * @return dimensionEl.size();
+	 * Get dimension member elements amount
+	 * 
 	 */
 	public int getDimensionElAmount() {
 		return dimensionEls.size();
 	}
 	/**
-	 * Zwraca i-ty zbiór elementów wymiaru {@link DimensionEl} w kontenerze
-	 * @param i - nr elementu kontenera
-	 * @return dimensionEl - zbiór elementów wymiaru
+	 * Get i {@link DimensionEl} in container
 	 */
 	public DimensionEl getDimensionEl(int i) {
 		return dimensionEls.get(i);
 	}
 	/**
-	 * Dodaje do kontenera zbiór elementów wymiaru
-	 * @param dimensionEl - zbiór elementów wymiaru
+	 * Add {@link DimensionEl} to container
 	 */
 	public void addDimensionEl(DimensionEl dimensionEl) {
 		this.dimensionEls.add(dimensionEl);
 	}
 	/**
-	 * Zwraca kontener {@link ArrayList} zbiorów elementów wymiaru (wymiarów)
-	 * @return dimensionEls - {@link ArrayList} zbiorów elementów wymiaru (wymiarów)
+	 * Get container {@link ArrayList} of {@link DimensionEl}
 	 */
 	public ArrayList<DimensionEl> getDimensionEls() {
 		return dimensionEls;
 	}
 	/**
-	 * Ustawia kontener {@link ArrayList} zbiorów elementów wymiaru (wymiarów)
-	 * @param dimensionEls kontener {@link ArrayList} zbiorów elementów wymiaru (wymiarów)
+	 * Set container {@link ArrayList} of {@link DimensionEl}
 	 */
 	public void setDimensionEls(ArrayList<DimensionEl> dimensionEls) {
 		this.dimensionEls = dimensionEls;

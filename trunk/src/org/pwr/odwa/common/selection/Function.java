@@ -1,18 +1,15 @@
 package org.pwr.odwa.common.selection;
 
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
-
 /**
- * Klasa reprezentująca funkcję nałożoną na zbiór elementów wymiaru (np. headX,
- * toppercent, notempty)
- *
+ * Class representing function defined on dimension member elements set (ie
+ * headX, TopPercent, NotEmpty)
+ * 
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
- *
+ * 
  */
 public class Function implements Serializable {
 	private static final long serialVersionUID = 8987240111613491526L;
@@ -20,18 +17,14 @@ public class Function implements Serializable {
 
 	private ArrayList<Object> parameter;
 
-	/**
-	 * Konstruktor domyślny
-	 */
 	public Function() {
 		functionId = null;
-		
+
 	}
 
 	/**
-	 * Konstruktor na bazie identyfikatora funkcji, bez parametrów
-	 *
-	 * @param id
+	 * Constructor on the base of function id
+	 * 
 	 */
 	public Function(String id) {
 		functionId = id;
@@ -39,10 +32,8 @@ public class Function implements Serializable {
 	}
 
 	/**
-	 * konstruktor na bazie identyfikatora funkcji oraz listy parametrów
-	 *
-	 * @param id
-	 * @param o
+	 * Constructor on the base of function id and {@link ArrayList} of
+	 * parameters
 	 */
 	public Function(String id, ArrayList<Object> o) {
 		functionId = id;
@@ -50,8 +41,8 @@ public class Function implements Serializable {
 	}
 
 	/**
-	 * Zwraca identyfikator funkcji
-	 *
+	 * Get functionId
+	 * 
 	 * @return
 	 */
 	public String getFunctionId() {
@@ -59,29 +50,23 @@ public class Function implements Serializable {
 	}
 
 	/**
-	 * Zwraca listę parametrow funkcji
-	 *
-	 * @return
+	 * Get parameter container ({@link ArrayList})
+	 * 
 	 */
 	public ArrayList<Object> getParameter() {
 		return parameter;
 	}
 
 	/**
-	 * Ustawia identyfikator funkcji na podany jako argument
-	 *
-	 * @param argument
-	 *            do ustawienia
+	 * Set functionId
+	 * 
 	 */
 	public void setFunctionId(String functionId) {
 		this.functionId = functionId;
 	}
 
 	/**
-	 * Ustawia listę parametrow funkcji
-	 *
-	 * @param lista
-	 *            parametrów funkcji do ustawienia
+	 * Set parameter container ({@link ArrayList})
 	 */
 	public void setParameter(ArrayList<Object> parameter) {
 		this.parameter = parameter;

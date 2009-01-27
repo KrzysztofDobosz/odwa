@@ -1,7 +1,11 @@
 package org.pwr.odwa.common.selection;
 
 import java.util.ArrayList;
-
+/**
+ * Class enables transforming interface selection to UserSelection object.
+ * @author Lukasz Pintal
+ *
+ */
 public class SelectionLoader
 {
 	private ArrayList<ArrayList<String>> rows;

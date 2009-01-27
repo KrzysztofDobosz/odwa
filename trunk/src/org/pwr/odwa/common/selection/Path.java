@@ -1,17 +1,14 @@
 package org.pwr.odwa.common.selection;
 
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 
-
 /**
- * Klasa reprezentująca ścieżkę hierarchii wewnątrz wymiaru
- *
+ * Class representing hierarchical path inside dimension
+ * 
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
- *
+ * 
  */
 public class Path implements Serializable {
 
@@ -19,22 +16,21 @@ public class Path implements Serializable {
 
 	private String path;
 
-	/**
-	 * Konstruktor domyślny
-	 */
 	public Path() {
 		path = null;
 	}
-
+  /**
+   * Get path
+   */
 	public String getPath() {
 		return path;
 	}
+	/**
+	 * Set path
+	 */
 
 	public void setPath(String path) {
 		this.path = path;
 	}
-
-	
-
 
 }

@@ -1,17 +1,14 @@
 package org.pwr.odwa.common.selection;
 
-
-
 import java.io.Serializable;
 
-
 /**
- * Klasa reprezentująca zbiór członków wymiaru poprzez ścieżkę hierarchi (
- * {@link Path}) oraz metodę opisu {@link Method}.
- *
+ * Class representing set of dimension memebers by hierarchical {@link Path} and
+ * {@link Method}
+ * 
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
- *
+ * 
  */
 public class DimensionEl implements Serializable {
 
@@ -19,55 +16,38 @@ public class DimensionEl implements Serializable {
 	private Path path;
 	private Method method;
 
-	/**
-	 * Konstruktor domyślny
-	 */
 	public DimensionEl() {
 	}
 
 	/**
-	 * Konstruktor zbioru elementów wymiaru poprzez podane składowych, metoda
-	 * stanowiąca połączenie metod typu set
-	 *
-	 * @param path - ścieżka hierarchiczna ({@link Path})
-	 * @param method - metoda opisu ({@link Method})
-	 */
-	public DimensionEl(Path path, Method method) {
-		setPath(path);
-		setMethod(method);
-	}
-
-	/**
-	 * Zwraca ścieżkę hierarchiczną ({@link Path})
-	 * @return path - ścieżka hierarchiczna ({@link Path})
+	 * Get {@link Path}
+	 * 
 	 */
 	public Path getPath() {
 		return path;
 	}
 
 	/**
-	 * Ustawia ścieżkę hierchiczną na podaną jako argument
-	 * @param path - ściezka hierarchiczna ({@link Path})
-	 *
+	 * Set {@link Path}
+	 * 
 	 */
 	public void setPath(Path path) {
 		this.path = path;
 	}
 
 	/**
-	 * Zwraca metodę opisu( {@link Method})
-	 * @return - metoda opisu ({@link Method})
+	 * Get {@link Method}
+	 *
 	 */
 	public Method getMethod() {
 		return method;
 	}
 
 	/**
-	 * Ustawia metodę opisu ({@link Method})
-	 * @param method - metoda opisu ({@link Method})
+	 * Set {@link Method}
+	 * 
 	 */
 	public void setMethod(Method method) {
 		this.method = method;
 	}
 }
-
