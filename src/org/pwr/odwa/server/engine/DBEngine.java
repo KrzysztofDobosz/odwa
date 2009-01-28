@@ -8,6 +8,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 
 import org.pwr.odwa.common.result.DBRow;
 import org.pwr.odwa.common.result.DBResult;
@@ -102,16 +104,16 @@ public class DBEngine {
 			axis.add(usrQuery.getRow());
 			axis.add(usrQuery.getColumn());
 			for (Axis aAxis : axis) {
+				HashMap<String, ArrayList<String>> whereClausesMap = new HashMap<String, ArrayList<String>>();
 
 				for (int i = 0; i < aAxis.getAxisElementAmount(); i++) {
-					ArrayList<String> whereClauses = new ArrayList<String>();
-
+					
 					AxisElement currEl = aAxis.getAxisElement(i);
 					DimensionElSet dimElSet = currEl.getDimensionElSet();
 					for (int j = 0; j < dimElSet.getDimensionElAmount(); j++) {
 						DimensionEl dimEl = dimElSet.getDimensionEl(j);
 						Method met = dimEl.getMethod();
-						System.out.println(met.getMethodId());
+						//System.out.println(met.getMethodId());
 						String methodId = met.getMethodId();
 						Path path = dimEl.getPath();
 
@@ -136,9 +138,22 @@ public class DBEngine {
 									.getLevel());
 							dimLevel = aLevel.getField();
 							String memberName = aMeta.getItem();
-
-							whereClauses.add(dimTable + "." + dimLevel + "='"
+							
+							String mapKey = dimTable + "." + dimLevel;
+							if(whereClausesMap.containsKey(mapKey))
+							{
+								ArrayList<String> whereClause = whereClausesMap.get(mapKey);
+								whereClause.add(dimTable + "." + dimLevel + "='"
+										+ memberName + "'");
+							}
+							else
+							{
+								ArrayList<String> whereClause = new ArrayList<String>();
+								
+							whereClause.add(dimTable + "." + dimLevel + "='"
 									+ memberName + "'");
+							whereClausesMap.put(mapKey, whereClause);
+							}
 
 						} else // FIXME: HIERARCHY support!
 						{
@@ -161,10 +176,14 @@ public class DBEngine {
 						query.addToGroupByClause(dimTable + "." + dimLevel);
 
 					}
-					if (whereClauses.size() != 0) {
-						query.addToWhereClause(whereClauses,
-								SQLLogicOperator.OR);
-
+					if (whereClausesMap.size() != 0) {
+						Collection<ArrayList<String>> whereCol = whereClausesMap.values();
+						for(ArrayList<String> whereClauses : whereCol)
+						{
+							query.addToWhereClause(whereClauses,
+									SQLLogicOperator.OR);
+						}
+					
 					}
 				}
 
