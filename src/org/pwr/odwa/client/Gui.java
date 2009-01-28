@@ -167,6 +167,7 @@ public class Gui implements EntryPoint
 	 * and visualisation.
 	 *
 	 * @author Lukasz Pintal
+	 * @author Krzysztof Dobosz
 	 *
 	 */
 	class MainPanel extends Panel
@@ -617,6 +618,7 @@ public class Gui implements EntryPoint
 
 				public void onSuccess(DBResult result)
 				{
+					MessageBox.alert("WORKS");
 					Visualization vis = new Visualization();
 					vis.show(result);
 				}

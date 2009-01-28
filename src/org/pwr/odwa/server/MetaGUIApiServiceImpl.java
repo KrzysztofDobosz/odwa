@@ -63,7 +63,7 @@ public class MetaGUIApiServiceImpl extends RemoteServiceServlet implements
 	public String getDataView(MetaID viewId)
 	{
 		Metadata meta = new Metadata();
-		meta.loadMetadata("c:\\workspace\\odwa-svn\\opt\\metadata.xml");
+		meta.loadMetadata(System.getenv("ODWA_METADATA"));
 	    return meta.getMetadataTree();
 	}
 

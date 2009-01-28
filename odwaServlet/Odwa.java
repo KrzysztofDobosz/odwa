@@ -115,8 +115,13 @@ public class Odwa extends HttpServlet {
 
 			try {
 				DBEngine db = new DBEngine();
-				db.connect("jdbc:mysql://localhost/" + baseId, "root", "pass");
-				out.println("<div class=\"form_description\"><h2>Open Data Warehouse Analysis</h2><p>Servlet version of ODWA</p></div>");
+				db
+						.connect("jdbc:mysql://localhost/"
+								+ System.getenv("ODWA_DB_NAME"), System
+								.getenv("ODWA_DB_LOGIN"), System
+								.getenv("ODWA_DB_PASS"));
+				out
+						.println("<div class=\"form_description\"><h2>Open Data Warehouse Analysis</h2><p>Servlet version of ODWA</p></div>");
 				DBResult result = db.executeQuery(selection);
 				db.disconnect();
 
@@ -225,12 +230,15 @@ public class Odwa extends HttpServlet {
 
 				out.println("</tr></table>");
 				out.println("</div><br>");
-				
-				out.println("<br><center><br><a href=\"\">Create new Query</a></center><br><br>");
+
+				out
+						.println("<br><center><br><a href=\"\">Create new Query</a></center><br><br>");
 
 			} catch (Exception e) {
-				out.println("<br><center><br><br>Error in executing selection!<br><br><br>");
-				out.println("<br><br><a href=\"\">Try again</a></center><br><br>");
+				out
+						.println("<br><center><br><br>Error in executing selection!<br><br><br>");
+				out
+						.println("<br><br><a href=\"\">Try again</a></center><br><br>");
 				out.println(e.getMessage());
 			}
 
