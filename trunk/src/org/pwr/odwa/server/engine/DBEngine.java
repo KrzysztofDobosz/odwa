@@ -99,8 +99,8 @@ public class DBEngine {
 			query.addMeasureResField(measure);
 			// ---------------------------------------------------------------------------------------
 			ArrayList<Axis> axis = new ArrayList<Axis>();
-			axis.add(usrQuery.getColumn());
 			axis.add(usrQuery.getRow());
+			axis.add(usrQuery.getColumn());
 			for (Axis aAxis : axis) {
 
 				for (int i = 0; i < aAxis.getAxisElementAmount(); i++) {
