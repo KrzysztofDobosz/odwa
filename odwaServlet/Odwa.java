@@ -9,6 +9,7 @@ import org.pwr.odwa.common.result.DBResult;
 import org.pwr.odwa.common.result.DBRow;
 import org.pwr.odwa.common.selection.*;
 import org.pwr.odwa.server.engine.DBEngine;
+import org.pwr.odwa.server.metadata.Metadata;
 
 /**
  * 
@@ -31,7 +32,9 @@ public class Odwa extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		MetaXmlParserServlet dom = new MetaXmlParserServlet();
-		String xml = dom.parse("metadata.xml");
+		Metadata meta = new Metadata();
+		meta.loadMetadata("metadata.xml");
+		String xml = dom.parse(meta.getMetadataTree());
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 
@@ -45,7 +48,9 @@ public class Odwa extends HttpServlet {
 				.println("<script type=\"text/javascript\" src=\"view.js\"></script>  </head> <body id=\"main_body\" >  ");
 
 		out
-				.println("<div style=\"position: absolute; padding: 20px; top:20px; left:570px; width:140px; height:510px \" id=\"form_container\">");
+				.println("<link rel=\"stylesheet\" type=\"text/css\" href=\"tree.css\" /><script type=\"text/javascript\" src=\"tree.js\"></script>");
+		out
+				.println("<div style=\"position: absolute; padding: 20px; top:20px; left:570px; width:400px; height:510px \" id=\"form_container\">");
 		if (request.getParameter("form_id") == null) {
 			out.println("<b>Datastore structure:<br><br></b>");
 			out.println(xml);
@@ -115,11 +120,7 @@ public class Odwa extends HttpServlet {
 
 			try {
 				DBEngine db = new DBEngine();
-				db
-						.connect("jdbc:mysql://localhost/"
-								+ System.getenv("ODWA_DB_NAME"), System
-								.getenv("ODWA_DB_LOGIN"), System
-								.getenv("ODWA_DB_PASS"));
+				db.connect("jdbc:mysql://localhost/odwa", "root", "pass");
 				out
 						.println("<div class=\"form_description\"><h2>Open Data Warehouse Analysis</h2><p>Servlet version of ODWA</p></div>");
 				DBResult result = db.executeQuery(selection);
