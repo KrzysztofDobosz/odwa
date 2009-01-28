@@ -26,6 +26,19 @@ public class Metadata {
         initMetadata();
     }
 
+    /**
+     * Initializes or clears internal state of this component.
+     *
+     * Using {@link loadMetadata} function it is possible to load
+     * different metadata XMLs, however the internal state must
+     * be reset explicitly by using this function. When creating
+     * new instance of {@link Metadata} class, this function is
+     * being called automatically.
+     * <p>
+     * If not called when needed, will cause in mixing data from
+     * different data warehouse project and can cause data loss
+     * or invalid results if there would be UIDs' collisions.
+     */
     public void initMetadata() {
         m_types = new HashMap<EltType, ArrayList<UID>>();
         m_names = new HashMap<String, ArrayList<UID>>();
@@ -50,6 +63,16 @@ public class Metadata {
         m_info = new DatabaseInfo();
     }
 
+    /**
+     * Load metadata XML from a given location.
+     *
+     * Given a XML file, this function processes the input using
+     * XPath technology and fills a set of data structures to
+     * make data warehouse metadata processing efficient and
+     * access to this data simple for other modules.
+     *
+     * @param xml a valid path to a XML file
+     */
     public void loadMetadata(String xml) {
         try {
             File document = new File(xml);
@@ -333,6 +356,20 @@ public class Metadata {
         }
     }
 
+    /**
+     * Converts metadata structures into XML of tree form.
+     *
+     * As needed by GUI module, this function takes all internal
+     * data * structures and writes them into a XML string, using
+     * DOM technology. The XML is in tree form to make it easy
+     * to display it in tree widgets, which is very different
+     * from the original metadata XML, which uses efficient storage
+     * method by mixing tree-like (for hierarchies) and graph-like
+     * (for parent-children relation) using references (UIDs) for
+     * this purpose.
+     *
+     * @return string containing flat (without whitespace) XML content
+     */
     public String getMetadataTree() {
         try {
             DocumentBuilderFactory doc_factory = DocumentBuilderFactory.newInstance();
@@ -508,6 +545,9 @@ public class Metadata {
         }
     }
 
+    /**
+     * Internal function which updates types cache.
+     */
     private void updateTypes(EltType type, Meta elt) {
         ArrayList<UID> list;
 
@@ -516,6 +556,9 @@ public class Metadata {
         m_types.put(type, list);
     }
 
+    /**
+     * Internal function which updates names cache.
+     */
     private void updateNames(Meta elt) {
         String name = elt.getName();
         ArrayList<UID> list;
@@ -530,14 +573,23 @@ public class Metadata {
         m_names.put(name, list);
     }
 
+    /**
+     * Internal function which updates element cache.
+     */
     private void updateCache(Meta elt) {
         m_cache.put(elt.getUID(), elt);
     }
 
+    /**
+     * Prints serialized metadata cache content.
+     */
     private void dumpCache() {
         System.out.println(m_cache.toString());
     }
 
+    /**
+     * Internal function which enumerates children of a member.
+     */
     private void enumRecChildren(ArrayList<UID> path, UID uid) {
         Member elt = (Member)m_cache.get(uid);
 
@@ -562,6 +614,9 @@ public class Metadata {
         }
     }
 
+    /**
+     * Internal function which enumerates children for all members.
+     */
     private void enumAllChildren() {
         for (UID l_uid : m_types.get(EltType.MDX_LEVEL)) {
             Level l_elt = (Level)m_cache.get(l_uid);
@@ -575,6 +630,9 @@ public class Metadata {
         }
     }
 
+    /**
+     * Internal function which enumerates children of a member (XML version).
+     */
     private Element enumRecChildrenNodes(Document doc, ArrayList<UID> path, UID uid) {
         Member elt = (Member)m_cache.get(uid);
 
@@ -620,10 +678,31 @@ public class Metadata {
         System.out.println(meta.getMetadataTree());
     }
 
+    /**
+     * Returns a complete information set for a given unique ID.
+     *
+     * If you need to use metadata in processed form, i.e. by using classes
+     * which store the information internally and not by XML, this is the
+     * function you should use to get the required information.
+     *
+     * Note that this function returns a {@link Meta} instance which contains
+     * only basic information like the UID itself, the name and the description
+     * of a component being queried. If you need the extended information, you
+     * will need to cast appropriately the resulting instance (this can be done
+     * using <code>type</code> field from {@link Meta} class).
+     *
+     * @param uid the unique ID being queried (note UID -&gt; Meta is a 1-1 map).
+     * @return an instance of {@link Meta} class
+     */
     public Meta getElement(UID uid) {
         return m_cache.get(uid);
     }
 
+    /**
+     * Returns information about database in use.
+     *
+     * @see DatabaseInfo
+     */
     public DatabaseInfo getDatabaseInfo() {
         return m_info;
     }

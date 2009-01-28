@@ -2,6 +2,28 @@ package org.pwr.odwa.server.metadata;
 
 import java.util.ArrayList;
 
+/**
+ * Stores internal information of a level.
+ *
+ * This class is an image of 'level' tag from metadata XML,
+ * giving a complete information set about a single level
+ * in a data warehouse project for a given hierarchy.
+ * <p>
+ * The information includes:
+ * <ul>
+ * <li>field - the name of a field in dimension table to which this level maps</li>
+ * <li>dtype - database dependent type of field in dimension table (to make mysql happy)</li>
+ * <li>default - UID of the default member in this level (usually the first one)</li>
+ * <li>nextlevel - UID of the previous level in the given hierarchy</li>
+ * <li>nextlevel - UID of the next level in the given hierarchy</li>
+ * <li>dimension - UID of a dimension to which this level belongs</li>
+ * <li>hierarchy - UID of a hierarchy to which this level belongs</li>
+ * <li>members - an array of level's member UIDs</li>
+ * </ul>
+ * <p>
+ * This component extends {@link Meta} class inheriting basic meta
+ * element properties from it (unique ID, name and description).
+ */
 public class Level extends Meta {
     protected String m_field;
     protected String m_dtype;

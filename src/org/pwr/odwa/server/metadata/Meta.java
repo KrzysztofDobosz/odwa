@@ -1,5 +1,16 @@
 package org.pwr.odwa.server.metadata;
 
+/**
+ * This is a base class for all metadata elements.
+ *
+ * This class provides a set of basic information about
+ * an metadata element, which includes the unique ID,
+ * user friendly name (non-unique), even more user
+ * friendly description (non-obligatory) and element
+ * type (mostly for internal purpose).
+ *
+ * @see EltType
+ */
 public class Meta {
     protected UID m_uid;
     protected EltType m_type;

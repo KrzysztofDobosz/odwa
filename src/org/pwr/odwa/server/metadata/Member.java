@@ -2,6 +2,27 @@ package org.pwr.odwa.server.metadata;
 
 import java.util.ArrayList;
 
+/**
+ * Stores internal information of a member.
+ *
+ * This class is an image of 'member' tag from metadata XML,
+ * giving a complete information set about a single member
+ * in a data warehouse project for a given level.
+ * <p>
+ * The information includes:
+ * <ul>
+ * <li>item - value in data base table to which this member maps</li>
+ * <li>level - UID of level to which this member belongs</li>
+ * <li>prevmember - UID of the previous member in member's level</li>
+ * <li>nextmember - UID of the next member in member's level</li>
+ * <li>dimension - UID of dimension to which this member belongs</li>
+ * <li>hierarchy - UID of hierarchy to which this member belongs</li>
+ * <li>children - an array of member's children UIDs</li>
+ * </ul>
+ * <p>
+ * This component extends {@link Meta} class inheriting basic meta
+ * element properties from it (unique ID, name and description).
+ */
 public class Member extends Meta {
     protected String m_item;
     protected UID m_level;
