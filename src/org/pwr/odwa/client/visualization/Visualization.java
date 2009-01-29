@@ -389,7 +389,7 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		BaseColumnConfig columns[] = new BaseColumnConfig[colsInResult+1];
 		columns[0] = new RowNumberingColumnConfig();
 		for (int k=1; k<=colsInResult+1; k++) {
-			columns[k] = new ColumnConfig("A", ((String)((Integer)(k-1)).toString()), 80, true);
+			columns[k] = new ColumnConfig("", ((String)((Integer)(k-1)).toString()), 80, true);
 		}
 		
 		ColumnModel columnModel = new ColumnModel(columns);
@@ -450,9 +450,11 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		tab3.setTitle("Line chart");
 		tab3.setWMode("transparent");
 		tab3.setStore(store);
-		SeriesDefY[] seriesDef = new SeriesDefY[] {
-				new SeriesDefY("1","1")
-		};
+
+		SeriesDefY seriesDef[] = new SeriesDefY[colsInResult];
+		for (int k=0; k<colsInResult; k++) {
+			seriesDef[k] = new SeriesDefY(((String)((Integer)(k)).toString()),((String)((Integer)(k)).toString()));
+		}
 		tab3.setSeries(seriesDef);
 		tab3.setXField("0");// result.getColumnName(0));
 		tab3.setExpressInstall("js/yui/assets/expressinstall.swf");
