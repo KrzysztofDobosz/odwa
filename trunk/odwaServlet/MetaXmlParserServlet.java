@@ -74,8 +74,8 @@ public class MetaXmlParserServlet {
 										dimensionsChild);
 
 								result += "____" + name + " " + uid + "<br>";
-								result1 += "\n<li><a>" + name + "</a>(" + uid
-										+ ")\n<ul>";
+								result1 += "\n<li><a>" + name + "</a>-<font size=1>(" + uid
+										+ ")</font>\n<ul>";
 
 								NodeList attributes = dimensionsChild
 										.getChildNodes();
@@ -100,8 +100,8 @@ public class MetaXmlParserServlet {
 														+ " " + hierUid
 														+ "<br>";
 												result1 += "\n<li><a>"
-														+ hierName + "(</a>"
-														+ hierUid + ")\n<ul>";
+														+ hierName + "(</a>-<font size=1>"
+														+ hierUid + ")</font>\n<ul>";
 												for (int m = 0; m < hierChild
 														.getChildNodes()
 														.getLength(); m++) {
@@ -130,9 +130,9 @@ public class MetaXmlParserServlet {
 																	+ "<br>";
 															result1 += "\n<li><a>"
 																	+ levName
-																	+ "</a>("
+																	+ "</a>-<font size=1>("
 																	+ levUid
-																	+ ")";
+																	+ ")</font><ul>";
 
 															for (int o = 0; o < hlevel
 																	.getChildNodes()
@@ -162,7 +162,7 @@ public class MetaXmlParserServlet {
 																	}
 																}
 															}
-															result1 += "\n</li>";
+															result1 += "\n</ul></li>";
 
 														}
 													}
@@ -203,10 +203,12 @@ public class MetaXmlParserServlet {
 			result += "_";
 
 		result += name + " " + uid + "<br>";
-		if (true) //jesli wêze³ ma dzieci dodajemy to:
-			result1 += "\n<ul>\n<li><a>" + name + "</a>(" + uid + ")";
-		else //a jesli jest ju¿ najni¿szym membersem, to:
-			result1 += "\n<li><a>" + name + "</a>(" + uid + ")</li>";
+
+		if (firstLevel.item(3).getChildNodes().getLength()>0)
+			result1 += "\n<li><a>" + name + "</a>-<font size=1>(" + uid + ")</font><ul>";
+		else
+			// a jesli jest ju¿ najni¿szym membersem, to:
+			result1 += "\n<li><a>" + name + "</a>-<font size=1>(" + uid + ")</font></li>";
 		for (int i = 0; i < firstLevel.getLength(); i++) {
 			if (firstLevel.item(i).getNodeName().equals("children")) {
 				NodeList childrenList = firstLevel.item(i).getChildNodes();
@@ -221,7 +223,10 @@ public class MetaXmlParserServlet {
 				}
 			}
 		}
-		if (true) //dodajemy tylko, jesli weze³ ma dzieci...
+		if (firstLevel.item(3).getChildNodes().getLength()>0) // dodajemy
+			// tylko,
+			// jesli
+			// weze³ ma dzieci...
 			result1 += "\n</ul></li>";
 
 		return result1;
@@ -229,7 +234,9 @@ public class MetaXmlParserServlet {
 
 	private String getAttribute(String name, Node node) {
 		NodeList attributes = node.getChildNodes();
+
 		String retStr = "";
+
 		for (int m = 0; m < attributes.getLength(); m++) {
 			if (attributes.item(m).getNodeName().equals(name))
 				retStr = attributes.item(m).getFirstChild().getNodeValue();
