@@ -1,9 +1,5 @@
 #!/bin/bash
-set GWT_HOME=c:\eclipse\gwt
-set GWTEXT_HOME=c:\eclipse\lib
-set TOMCAT_HOME=c:\eclipse\apache-tomcat-6.0.18
-set GWTEXTUX_HOME=c:\eclipse\lib
-set APPDIR=%cd%
+call export
 
 mkdir out
 
