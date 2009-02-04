@@ -22,18 +22,49 @@ public class DBResult implements Serializable
 
    private ArrayList<String> fieldTypes;
 
+   private ArrayList<String> resultRowsNames;
+   
+   private ArrayList<String> resultColsNames;
+   
    private int columnCount;
 
+   public ArrayList<String> getRowNamesInResult() {
+	   return resultRowsNames;
+   }
+   
+   public void setRowNamesInResult(ArrayList<String> a) {
+	   resultRowsNames = a;
+   }
+   
+   public String getRowNamesInResult(int position) {
+	   return resultRowsNames.get(position);
+   }
+   
+   public ArrayList<String> getColNamesInResult() {
+	   return resultColsNames;
+   }
+
+   public String getColNamesInResult(int position) {
+	   System.out.println(resultColsNames.get(position));
+	   return resultColsNames.get(position);
+   }
+   
+   public void setColNamesInResult(ArrayList<String> a) {
+	   resultColsNames = a;
+   }
+   
    public DBResult(){}
 
    public DBResult(ArrayList<DBRow> DBRes, ArrayList<String> colNames,
-         ArrayList<String> fieldTypes, String query)
+         ArrayList<String> fieldTypes, String query, ArrayList<String> resultRowsNames, ArrayList<String> resultColsNames)
    {
       this.query = query;
       this.rows = DBRes;
       this.columnNames = colNames;
       this.fieldTypes = fieldTypes;
       this.columnCount = columnNames.size();
+      this.resultRowsNames = resultRowsNames;
+      this.resultColsNames = resultColsNames;
       next = 0;
    }
 

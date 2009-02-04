@@ -103,6 +103,11 @@ public class DBEngine {
 			ArrayList<Axis> axis = new ArrayList<Axis>();
 			axis.add(usrQuery.getRow());
 			axis.add(usrQuery.getColumn());
+			
+			ArrayList<String> resultRows = new ArrayList<String>();
+			ArrayList<String> resultCols = new ArrayList<String>();
+			int rowscols = 0;
+			
 			for (Axis aAxis : axis) {
 				HashMap<String, ArrayList<String>> whereClausesMap = new HashMap<String, ArrayList<String>>();
 
@@ -122,6 +127,8 @@ public class DBEngine {
 						// Dimension table primary key name in fact table
 						String foreignKeyName = new String();
 						String dimLevel = new String();
+						
+						String memberName = new String();
 
 						if (methodId == null || !methodId.equals("members")) {
 
@@ -137,7 +144,7 @@ public class DBEngine {
 							Level aLevel = (Level) meta.getElement(aMeta
 									.getLevel());
 							dimLevel = aLevel.getField();
-							String memberName = aMeta.getItem();
+							memberName = aMeta.getItem();
 							
 							String mapKey = dimTable + "." + dimLevel;
 							if(whereClausesMap.containsKey(mapKey))
@@ -154,6 +161,15 @@ public class DBEngine {
 									+ memberName + "'");
 							whereClausesMap.put(mapKey, whereClause);
 							}
+							
+							if (rowscols == 0) { // add to rows
+								resultRows.add(memberName);
+								System.out.println(memberName);
+							}
+							else { // add to cols
+								resultCols.add(memberName);
+								System.out.println(memberName);
+							}
 
 						} else // FIXME: HIERARCHY support!
 						{
@@ -167,8 +183,24 @@ public class DBEngine {
 							foreignKeyName = currDim.getForeign();
 							dimLevel = aLevel.getField();
 
+							ArrayList<UID> members = aLevel.getMembers();
+						    for (UID member : members) {
+						        Member lvlMember = (Member)meta.getElement(member);
+						        memberName = lvlMember.getItem();        
+					    
+								if (rowscols == 0) { // add to rows
+									resultRows.add(memberName);
+									System.out.println(memberName);
+								}
+								else { // add to cols
+									resultCols.add(memberName);
+									System.out.println(memberName);
+								}
+						    }
 						}
 						query.addResField(dimTable + "." + dimLevel);
+
+						
 						query.addToFromClause(dimTable,
 								SQLJoinOperator.INNER_JOIN, dimTable + "."
 										+ dimTablePrimaryKey, factTable + "."
@@ -186,7 +218,7 @@ public class DBEngine {
 					
 					}
 				}
-
+				rowscols = 1;
 			}
 
 			DimensionElSet aSlice = usrQuery.getSlice();
@@ -245,7 +277,12 @@ public class DBEngine {
 				}
 
 				DBResult res = new DBResult(rows, colNames, fieldTypes, query
-						.getQuery());
+						.getQuery(), resultRows, resultCols);
+				
+				for (int i = 0; i < res.getColumnCount(); i++) {
+					System.out.println(res.getColumnName(i));
+				}
+				
 				return res;
 			} catch (Exception e) {
 				e.printStackTrace();
