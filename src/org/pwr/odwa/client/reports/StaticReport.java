@@ -6,7 +6,7 @@ import org.pwr.odwa.client.visualization.ReportStyle;
 import org.pwr.odwa.common.result.DBResult;
 
 /**
- * Klasa raportu statycznego rozszerzająca abstrakcyjną klasę {@link Report}
+ * Static report class extends {@link Report}
  *
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
@@ -15,20 +15,13 @@ public class StaticReport extends Report {
 	private static final long serialVersionUID = -4481525925179844309L;
 	private DBResult result;
 
-	/**
-	 * Konstruktor domyślny
-	 */
 	public StaticReport() {
 	}
 
 	/**
-	 * Konstruktor raportu statycznego na bazie rezultatu zapytania do bazy danych
-	 * {@link DBResult} oraz stylu formatowania {@link ReportStyle}.
+	 * Static report constructor based on DBResult (result of selection - {@link DBResult})
+	 * and ReportStyle ({@link ReportStyle}).
 	 *
-	 * @param result
-	 *            - wynik zapytania do bazy danych
-	 * @param format
-	 *            - styl formatowania
 	 */
 	public StaticReport(DBResult result, ReportStyle format) {
 		System.out.println("ODWAClient: StaticReport: constructor executed");
@@ -39,11 +32,8 @@ public class StaticReport extends Report {
 	}
 
 	/**
-	 * Odczyt raportu statycznego z pliku o nazwie (ścieżce) podanej jako
-	 * argument
+	*Read report from file
 	 *
-	 * @param filepath
-	 *            - nazwa/ścieżka do pliku raportu do odczytu
 	 */
 	public StaticReport(String filepath) {
 	   System.out.println("ODWAClient: StaticReport: filepath constructor executed");
@@ -69,7 +59,7 @@ public class StaticReport extends Report {
 	}
 
 	/**
-	 * Zwraca wynik zapytania do bazy danych
+	 * Get DBResult from report
 	 */
 	public DBResult getResult() {
 	   System.out.println("ODWAClient: StaticReport: getResult executed");
@@ -78,10 +68,7 @@ public class StaticReport extends Report {
 	}
 
 	/**
-	 * Ustawia użyte zapytanie do bazy danych {@link DBResult}
-	 *
-	 * @param result
-	 *            - zapytanie do bazy danych
+	* Set DBresult to be saved in the report
 	 */
 	public void setResult(DBResult result) {
 		this.result = result;
