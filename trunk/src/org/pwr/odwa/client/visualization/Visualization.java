@@ -367,7 +367,7 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 				if ((((String)result.getRowNamesInResult(i)).compareTo((String)row.getFieldVal(0))) == 0) {
 					for(j=1; j<=colsInResult; j++) {
 						if ((((String)result.getColNamesInResult(j-1)).compareTo((String)row.getFieldVal(1))) == 0) {
-							data[i][j] = (Integer.parseInt((String)row.getFieldVal(queryCols-1)));
+							data[i][j] = (Float.parseFloat((String)row.getFieldVal(queryCols-1)));
 						}
 					}
 				}
