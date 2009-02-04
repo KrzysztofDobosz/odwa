@@ -33,7 +33,7 @@ public class Odwa extends HttpServlet {
 			throws ServletException, IOException {
 		MetaXmlParserServlet dom = new MetaXmlParserServlet();
 		Metadata meta = new Metadata();
-		meta.loadMetadata("metadata.xml");
+		meta.loadMetadata(System.getenv("ODWA_METADATA"));
 		String xml = dom.parse(meta.getMetadataTree());
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -125,7 +125,7 @@ public class Odwa extends HttpServlet {
 
 			try {
 				DBEngine db = new DBEngine();
-				db.connect("jdbc:mysql://localhost/odwa", "root", "pass");
+				db.connect("jdbc:mysql://localhost/" + System.getenv("ODWA_DB_NAME"), System.getenv("ODWA_DB_LOGIN"), System.getenv("ODWA_DB_PASS"));
 				out
 						.println("<div class=\"form_description\"><h2>Open Data Warehouse Analysis</h2><p>Servlet version of ODWA</p></div>");
 				DBResult result = db.executeQuery(selection);
