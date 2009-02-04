@@ -607,7 +607,7 @@ public class Gui implements EntryPoint
 		 * @param selection
 		 *            current user selection
 		 */
-		public void executeQuery(UserSelection selection)
+		public void executeQuery(final UserSelection selection)
 		{
 			dbService.executeQuery(selection, new AsyncCallback<DBResult>()
 			{
@@ -618,7 +618,6 @@ public class Gui implements EntryPoint
 
 				public void onSuccess(DBResult result)
 				{
-					MessageBox.alert("WORKS");
 					Visualization vis = new Visualization();
 					vis.show(result);
 				}

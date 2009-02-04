@@ -56,6 +56,8 @@ import com.gwtext.client.widgets.chart.yui.SeriesDefY;
 
 import org.pwr.odwa.common.result.DBResult;
 
+import java.util.ArrayList;
+
 /**
  * Visualization class is the output of whole ODWA system.
  * It's main purpose is to generate the grid and charts. Methods show() are 
@@ -237,7 +239,7 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 	 *            CSS styles for the grid.
 	 */
 	public void show(DBResult result, ReportStyle style) {
-		show(result);		
+		show(result, null);		
 		style.applyStyle(currentGridTab);
 	}
 
@@ -271,9 +273,9 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		//result.reset();
 		
 		DBRow row = new DBRow();
-		int rowsInResult = 0;
-		int colsInResult = 0;
-		if ((row = result.fetchRow()) != null) {
+		int rowsInResult = result.getRowNamesInResult().size();
+		int colsInResult = result.getColNamesInResult().size();
+		/*if ((row = result.fetchRow()) != null) {
 			String firstRow = row.getFieldVal(0).toString();
 			String firstCol = row.getFieldVal(1).toString();
 			rowsInResult++;
@@ -286,11 +288,11 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 					rowsInResult++;
 				}
 			}
-		}
+		}*/
 		cols = colsInResult;
 		rows = rowsInResult;
 		
-		result.reset(); // Make fetchRow will start from the beginning.
+		//result.reset(); // Make fetchRow will start from the beginning.
 		
 		GridFilter gf[] = new GridFilter[colsInResult];
 		FieldDef table[] = new FieldDef[colsInResult];
@@ -347,29 +349,33 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 		Object data[][] = new Object[rowsInResult][colsInResult];
 		int i=0;
 		int j=0;
-		if ((row = result.fetchRow()) != null) {
-			String CurrentRow = ((String)row.getFieldVal(0));
-			data[i][j] = CurrentRow;
-			j++;
-			data[i][j] = (Integer.parseInt((String)row.getFieldVal(queryCols-1)));
-			j++; // j=2
-			
-			while ((row = result.fetchRow()) != null) {
-				if (CurrentRow.compareTo((String)row.getFieldVal(0)) == 0) {
-					data[i][j] = (Integer.parseInt((String)row.getFieldVal(queryCols-1)));
-					j++;
-				} else {
-					i++;
-					j=0;
-					CurrentRow = ((String)row.getFieldVal(0));
-					data[i][j] = CurrentRow;
-					j++;
-					data[i][j] = (Integer.parseInt((String)row.getFieldVal(queryCols-1)));
-					j++; // j=2
+		for(i=0; i<rowsInResult; i++) {
+			for(j=0; j<=colsInResult; j++) {
+				if (j==0) {
+					data[i][j] = result.getRowNamesInResult(i);
+				}
+				else {
+					data[i][j] = 0;
 				}
 			}
 		}
-
+		
+		while ((row = result.fetchRow()) != null) {
+			i=0;
+			j=0;
+			for(i=0; i<rowsInResult; i++) {
+				if ((((String)result.getRowNamesInResult(i)).compareTo((String)row.getFieldVal(0))) == 0) {
+					for(j=1; j<=colsInResult; j++) {
+						if ((((String)result.getColNamesInResult(j-1)).compareTo((String)row.getFieldVal(1))) == 0) {
+							data[i][j] = (Integer.parseInt((String)row.getFieldVal(queryCols-1)));
+						}
+					}
+				}
+			}
+		}
+		i=0;
+		j=0;
+		
 		MemoryProxy proxy = new MemoryProxy(data);
 
 		ArrayReader reader = new ArrayReader(recordDef);
@@ -386,10 +392,15 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 				new ColumnConfig("Price", "1", 35, true, null, "1")
 		};*/
 
+		
+		ArrayList<String> columnNames = result.getColNamesInResult();
+		
 		BaseColumnConfig columns[] = new BaseColumnConfig[colsInResult+1];
 		columns[0] = new RowNumberingColumnConfig();
-		for (int k=1; k<=colsInResult+1; k++) {
-			columns[k] = new ColumnConfig("", ((String)((Integer)(k-1)).toString()), 80, true);
+		columns[1] = new ColumnConfig(" ", "0", 80, true);
+//		columns[2] = new ColumnConfig(columnNames.get(0), "1", 80, true);
+		for (int k=2; k<=colsInResult+1; k++) {
+			columns[k] = new ColumnConfig(columnNames.get(k-2), ((String)((Integer)(k-1)).toString()), 80, true);
 		}
 		
 		ColumnModel columnModel = new ColumnModel(columns);
@@ -453,7 +464,7 @@ public class Visualization implements /* EntryPoint, */GridCellListener,
 
 		SeriesDefY seriesDef[] = new SeriesDefY[colsInResult];
 		for (int k=0; k<colsInResult; k++) {
-			seriesDef[k] = new SeriesDefY(((String)((Integer)(k)).toString()),((String)((Integer)(k)).toString()));
+			seriesDef[k] = new SeriesDefY((columnNames.get(k)),((String)((Integer)(k+1)).toString()));
 		}
 		tab3.setSeries(seriesDef);
 		tab3.setXField("0");// result.getColumnName(0));
