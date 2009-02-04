@@ -1,0 +1,12 @@
+org.pwr.odwa.client
+org.pwr.odwa.client.guiUtils
+org.pwr.odwa.client.reports
+org.pwr.odwa.client.visualization
+org.pwr.odwa.common.dbtypes
+org.pwr.odwa.common.metadata
+org.pwr.odwa.common.result
+org.pwr.odwa.common.selection
+org.pwr.odwa.server
+org.pwr.odwa.server.engine
+org.pwr.odwa.server.metadata
+org.pwr.odwa.server.structure
