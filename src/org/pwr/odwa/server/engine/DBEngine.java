@@ -164,11 +164,9 @@ public class DBEngine {
 							
 							if (rowscols == 0) { // add to rows
 								resultRows.add(memberName);
-								System.out.println(memberName);
 							}
 							else { // add to cols
 								resultCols.add(memberName);
-								System.out.println(memberName);
 							}
 
 						} else // FIXME: HIERARCHY support!
@@ -190,11 +188,9 @@ public class DBEngine {
 					    
 								if (rowscols == 0) { // add to rows
 									resultRows.add(memberName);
-									System.out.println(memberName);
 								}
 								else { // add to cols
 									resultCols.add(memberName);
-									System.out.println(memberName);
 								}
 						    }
 						}
@@ -278,10 +274,6 @@ public class DBEngine {
 
 				DBResult res = new DBResult(rows, colNames, fieldTypes, query
 						.getQuery(), resultRows, resultCols);
-				
-				for (int i = 0; i < res.getColumnCount(); i++) {
-					System.out.println(res.getColumnName(i));
-				}
 				
 				return res;
 			} catch (Exception e) {
