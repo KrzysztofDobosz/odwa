@@ -11,6 +11,8 @@ import org.pwr.odwa.common.selection.*;
 import org.pwr.odwa.server.engine.DBEngine;
 import org.pwr.odwa.server.metadata.Metadata;
 
+import java.util.ArrayList;
+
 /**
  * 
  * 
@@ -37,6 +39,7 @@ public class Odwa extends HttpServlet {
 		String xml = dom.parse(meta.getMetadataTree());
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
+		
 
 		out
 				.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
@@ -159,83 +162,64 @@ public class Odwa extends HttpServlet {
 				 */
 
 				DBRow visRow = new DBRow();
-				int rowsInResult = 0;
-				int colsInResult = 0;
-				if ((visRow = result.fetchRow()) != null) {
-					String firstRow = visRow.getFieldVal(0).toString();
-					String firstCol = visRow.getFieldVal(1).toString();
-					rowsInResult++;
-					colsInResult++;
-					while ((visRow = result.fetchRow()) != null) {
-						if (firstRow
-								.compareTo(visRow.getFieldVal(0).toString()) == 0) {
-							colsInResult++;
+				int rowsInResult = result.getRowNamesInResult().size();
+				int colsInResult = result.getColNamesInResult().size();
+				
+				int queryCols = result.getColumnCount();
+				
+				Object data[][] = new Object[rowsInResult][colsInResult+1];
+				int i=0;
+				int j=0;
+				for(i=0; i<rowsInResult; i++) {
+					for(j=0; j<=colsInResult; j++) {
+						if (j==0) {
+							data[i][j] = result.getRowNamesInResult(i);
 						}
-						if (firstCol
-								.compareTo(visRow.getFieldVal(1).toString()) == 0) {
-							rowsInResult++;
+						else {
+							data[i][j] = 0;
 						}
 					}
 				}
 
-				result.reset(); // Make fetchRow start from the beginning.
-
-				int queryCols = result.getColumnCount();
+				while ((visRow = result.fetchRow()) != null) {
+					i=0;
+					j=0;
+					for(i=0; i<rowsInResult; i++) {
+						if ((((String)result.getRowNamesInResult(i)).compareTo((String)visRow.getFieldVal(0))) == 0) {
+							for(j=1; j<=colsInResult; j++) {
+								if ((((String)result.getColNamesInResult(j-1)).compareTo((String)visRow.getFieldVal(1))) == 0) {
+									data[i][j] = (Float.parseFloat((String)visRow.getFieldVal(queryCols-1)));
+								}
+							}
+						}
+					}
+				}
 
 				out.println("<br><br><br><div class=\"result-outer\">");
 				out.println("<table id=\"result-table\"><tr>");
 				out.println("<th>" + " " + "</th>");
 				// display attribute names
-				for (int i = 0; i < colsInResult; i++) {
-					if ((visRow = result.fetchRow()) != null) {
-						out.println("<th>");
-						out.print(visRow.getFieldVal(1).toString());
-						out.println("</th>");
-					}
+				ArrayList<String> columnNames = result.getColNamesInResult();
+				for (i = 0; i < colsInResult; i++) {
+					out.println("<th>");
+					out.print(columnNames.get(i));
+					out.println("</th>");
 				}
 
-				out.println("</tr><tr>");
+				out.println("</tr>");
 
-				result.reset(); // Make fetchRow start from the beginning.
-
-				// display rows
-				int i = 0; // row number
-				int j = 0; // col numer
-				if ((visRow = result.fetchRow()) != null) {
-					String CurrentRow = visRow.getFieldVal(0).toString();
-					out.println("<td>");
-					out.print(CurrentRow);
-					out.println("</td><td>");
-					j++;
-					out.print(visRow.getFieldVal(queryCols - 1).toString());
-					out.println("</td>");
-					j++; // j=2
-					while ((visRow = result.fetchRow()) != null) {
-						if (CurrentRow.compareTo(visRow.getFieldVal(0)
-								.toString()) == 0) {
-							out.println("<td>");
-							out.print(visRow.getFieldVal(queryCols - 1)
-									.toString());
-							out.println("</td>");
-							j++;
-						} else {
-							out.println("</tr><tr><td>");
-							i++;
-							j = 0;
-							CurrentRow = visRow.getFieldVal(0).toString();
-							out.println(CurrentRow);
-							out.println("</td><td>");
-							j++;
-							out.print(visRow.getFieldVal(queryCols - 1)
-									.toString());
-							out.println("</td>");
-							j++; // j=2
-						}
+				for(i=0; i < rowsInResult; i++) {
+					out.println("<tr>");
+					for(j=0; j <=colsInResult; j++) {
+						out.print("<td>");
+						out.print(data[i][j]);
+						out.print("</td>");
 					}
+					out.println("</tr>");
 				}
-
-				out.println("</tr></table>");
+				out.println("</table>");
 				out.println("</div><br>");
+
 
 				out
 						.println("<br><center><br><a href=\"\">Create new Query</a></center><br><br>");
