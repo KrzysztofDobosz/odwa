@@ -1,15 +1,14 @@
 package org.pwr.odwa.common.selection;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Class representing nested-axis of {@link UserSelection}
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
  */
-import java.io.Serializable;
-import java.util.ArrayList;
-
-
 public class Axis implements Serializable {
 	private static final long serialVersionUID = 1490457996717239587L;
 	private ArrayList<AxisElement> axisElements;
@@ -25,7 +24,7 @@ public class Axis implements Serializable {
 		return axisElements.size();
 	}
 	/**
-	 * 
+	 *
 	 * @param i - axis number in container
 	 * @return axisElement i AxisElement of nested Axis
 	 */
@@ -41,7 +40,7 @@ public class Axis implements Serializable {
 		axisElements.add(axisElement);
 	}
 	/**
-	 * 
+	 *
 	 * @return axisElements - {@link ArrayList} of AxisElements (container of Axiselements)
 	 */
 	public ArrayList<AxisElement> getAxisElements() {
@@ -54,4 +53,32 @@ public class Axis implements Serializable {
 	public void setAxisElements(ArrayList<AxisElement> axisElements) {
 		this.axisElements = axisElements;
 	}
+
+    public String toMDX() {
+        switch (axisElements.size()) {
+        case 0:
+            return "";
+        case 1:
+            return axisElements.get(0).toMDX();
+        default:
+            StringBuilder builder = new StringBuilder();
+
+            builder.append("Crossjoin(");
+
+            Iterator iter = axisElements.iterator();
+
+            while (iter.hasNext()) {
+                builder.append(((DimensionEl)iter.next()).toMDX());
+
+                if (iter.hasNext()) {
+                    builder.append(", ");
+                }
+            }
+
+            builder.append(")");
+
+            return builder.toString();
+        }
+    }
 }
+

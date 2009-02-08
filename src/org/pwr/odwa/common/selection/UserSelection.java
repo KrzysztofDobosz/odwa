@@ -3,10 +3,10 @@ package org.pwr.odwa.common.selection;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * Communication class which contains abstraction user selection (an analogy to
  * MDX)
- * 
+ *
  * @author Katarzyna Rzerzicha
  * @author Michal‚ Brzezinski-Spiczak
  */
@@ -24,7 +24,7 @@ public class UserSelection implements Serializable {
 
 	/**
 	 * Get database id
-	 * 
+	 *
 	 */
 	public String getDataBaseId() {
 		return dataBaseId;
@@ -32,7 +32,7 @@ public class UserSelection implements Serializable {
 
 	/**
 	 * Set dataBaseId
-	 * 
+	 *
 	 */
 	public void setDataBaseId(String dataBaseId) {
 		this.dataBaseId = dataBaseId;
@@ -41,7 +41,7 @@ public class UserSelection implements Serializable {
 	/**
 	 * Get {@link {@link Measure} ({@link null} if Measure elements put on
 	 * axis)
-	 * 
+	 *
 	 */
 	public Measure getMeasure() {
 		return measure;
@@ -56,7 +56,7 @@ public class UserSelection implements Serializable {
 
 	/**
 	 * Get (1) nested ({@link Axis})
-	 * 
+	 *
 	 */
 	public Axis getColumn() {
 		return column;
@@ -64,7 +64,7 @@ public class UserSelection implements Serializable {
 
 	/**
 	 * Set (1) nested ({@link Axis})
-	 * 
+	 *
 	 */
 	public void setColumn(Axis column) {
 		this.column = column;
@@ -72,7 +72,7 @@ public class UserSelection implements Serializable {
 
 	/**
 	 * Get (2) nested ({@link Axis})
-	 * 
+	 *
 	 */
 	public Axis getRow() {
 		return row;
@@ -80,7 +80,7 @@ public class UserSelection implements Serializable {
 
 	/**
 	 * Set (2) nested ({@link Axis})
-	 * 
+	 *
 	 */
 	public void setRow(Axis row) {
 		this.row = row;
@@ -88,7 +88,7 @@ public class UserSelection implements Serializable {
 
 	/**
 	 * Get slice/background ({@link DimensionElSet}) filtering selection
-	 * 
+	 *
 	 */
 	public DimensionElSet getSlice() {
 		return slice;
@@ -172,7 +172,7 @@ public class UserSelection implements Serializable {
 		return selection;
 
 	}
-	
+
 	/**
 	 * Load {@link UserSelection} from {@link SelectionLoader}
 	 * @param sloader
@@ -262,4 +262,43 @@ public class UserSelection implements Serializable {
 		}
 		setSlice(dimelset);
 	}
+
+    public String toMDX() {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append("select ");
+
+        if (column != null) {
+            builder.append(column.toMDX() + " on columns");
+
+            if (row != null) {
+                builder.append(", ");
+            }
+        }
+
+        if (row != null) {
+            builder.append(row.toMDX() + " on rows");
+        }
+
+        builder.append(" from [" + dataBaseId + "]");
+
+        if (measure != null && slice != null) {
+            builder.append(" where { ");
+
+            builder.append(measure.toMDX());
+            builder.append(", ");
+            builder.append(slice.toMDX());
+
+            builder.append(" }");
+        } else if (measure != null) {
+            builder.append(" where ");
+            builder.append(measure.toMDX());
+        } else if (measure != null) {
+            builder.append(" where ");
+            builder.append(slice.toMDX());
+        }
+
+        return builder.toString();
+    }
 }
+
