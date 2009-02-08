@@ -1,10 +1,8 @@
 package org.pwr.odwa.common.selection;
 
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
-
+import java.util.Iterator;
 
 /**
  * Class - container of dimension member elements
@@ -24,7 +22,7 @@ public class DimensionElSet implements Serializable {
 	};
 	/**
 	 * Get dimension member elements amount
-	 * 
+	 *
 	 */
 	public int getDimensionElAmount() {
 		return dimensionEls.size();
@@ -53,4 +51,29 @@ public class DimensionElSet implements Serializable {
 	public void setDimensionEls(ArrayList<DimensionEl> dimensionEls) {
 		this.dimensionEls = dimensionEls;
 	}
+
+    public String toMDX() {
+        if (dimensionEls.isEmpty()) {
+            return "{}";
+        } else {
+            StringBuilder builder = new StringBuilder();
+
+            builder.append("{ ");
+
+            Iterator iter = dimensionEls.iterator();
+
+            while (iter.hasNext()) {
+                builder.append(((DimensionEl)iter.next()).toMDX());
+
+                if (iter.hasNext()) {
+                    builder.append(", ");
+                }
+            }
+
+            builder.append(" }");
+
+            return builder.toString();
+        }
+    }
 }
+

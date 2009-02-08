@@ -3,14 +3,14 @@ package org.pwr.odwa.common.selection;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * Class representing description method of dimension members by other members
  * or hierarchy levels (inheritance makes possible to entrance more complex
  * methods and also its combinations
- * 
+ *
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
- * 
+ *
  */
 public class Method implements Serializable {
 
@@ -23,7 +23,7 @@ public class Method implements Serializable {
 
 	/**
 	 * Constructor based on methodId
-	 * 
+	 *
 	 * @param methodId
 	 */
 	public Method(String methodId) {
@@ -43,4 +43,9 @@ public class Method implements Serializable {
 	public String getMethodId() {
 		return methodId;
 	}
+
+    public String toMDX() {
+        return "." + methodId;
+    }
 }
+

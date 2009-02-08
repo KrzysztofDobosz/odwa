@@ -3,14 +3,14 @@ package org.pwr.odwa.common.selection;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * Class representing the measure defined by its ID (measureId) (Inheritance
  * makes possible to use more complex, also nested measures, including
- * user-defined based on exiting 
- * 
+ * user-defined based on exiting
+ *
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
- * 
+ *
  */
 public class Measure implements Serializable {
 
@@ -22,7 +22,7 @@ public class Measure implements Serializable {
 
 	/**
 	 * Constructor based on measureID
-	 * 
+	 *
 	 * @param measureId
 	 */
 	public Measure(String measureId) {
@@ -31,7 +31,7 @@ public class Measure implements Serializable {
 
 	/**
 	 * Get measureId
-	 * 
+	 *
 	 */
 	public String getMeasureUid() {
 		return measureUid;
@@ -43,4 +43,9 @@ public class Measure implements Serializable {
 	public void setMeasureUid(String measureUid) {
 		this.measureUid = measureUid;
 	}
+
+    public String toMDX() {
+        return "[" + measureUid + "]";
+    }
 }
+

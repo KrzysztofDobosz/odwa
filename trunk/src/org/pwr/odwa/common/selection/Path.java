@@ -5,10 +5,10 @@ import java.util.ArrayList;
 
 /**
  * Class representing hierarchical path inside dimension
- * 
+ *
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
- * 
+ *
  */
 public class Path implements Serializable {
 
@@ -33,4 +33,8 @@ public class Path implements Serializable {
 		this.path = path;
 	}
 
+    public String toMDX() {
+        return "[" + path + "]";
+    }
 }
+

@@ -3,10 +3,10 @@ package org.pwr.odwa.common.selection;
 import java.io.Serializable;
 
 /**
- * 
+ *
  * Class representing single level of nested {@link Axis} in
  * {@link UserSelection}
- * 
+ *
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
  */
@@ -21,8 +21,8 @@ public class AxisElement implements Serializable {
 	}
 
 	/**
-	 * Set {@link DimensionElSet} 
-	 * 
+	 * Set {@link DimensionElSet}
+	 *
 	 */
 	public void setDimensionElSet(DimensionElSet dimensionElSet) {
 		this.dimensionElSet = dimensionElSet;
@@ -37,7 +37,7 @@ public class AxisElement implements Serializable {
 
 	/**
 	 * Get {@link DimensionElSet}
-	 * 
+	 *
 	 */
 	public DimensionElSet getDimensionElSet() {
 		return dimensionElSet;
@@ -45,9 +45,18 @@ public class AxisElement implements Serializable {
 
 	/**
 	 * Get {@link Function}
-	 * 
+	 *
 	 */
 	public Function getFunction() {
 		return function;
 	}
+
+    public String toMDX() {
+        if (function != null) {
+            return function.toMDX(dimensionElSet);
+        } else {
+            return dimensionElSet.toMDX();
+        }
+    }
 }
+

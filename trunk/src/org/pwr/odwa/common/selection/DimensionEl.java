@@ -5,10 +5,10 @@ import java.io.Serializable;
 /**
  * Class representing set of dimension memebers by hierarchical {@link Path} and
  * {@link Method}
- * 
+ *
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
- * 
+ *
  */
 public class DimensionEl implements Serializable {
 
@@ -21,7 +21,7 @@ public class DimensionEl implements Serializable {
 
 	/**
 	 * Get {@link Path}
-	 * 
+	 *
 	 */
 	public Path getPath() {
 		return path;
@@ -29,7 +29,7 @@ public class DimensionEl implements Serializable {
 
 	/**
 	 * Set {@link Path}
-	 * 
+	 *
 	 */
 	public void setPath(Path path) {
 		this.path = path;
@@ -45,9 +45,18 @@ public class DimensionEl implements Serializable {
 
 	/**
 	 * Set {@link Method}
-	 * 
+	 *
 	 */
 	public void setMethod(Method method) {
 		this.method = method;
 	}
+
+    public String toMDX() {
+        if (method != null) {
+            return path.toMDX() + method.toMDX();
+        } else {
+            return path.toMDX();
+        }
+    }
 }
+

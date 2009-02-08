@@ -2,14 +2,15 @@ package org.pwr.odwa.common.selection;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Class representing function defined on dimension member elements set (ie
  * headX, TopPercent, NotEmpty)
- * 
+ *
  * @author Katarzyna Rzerzicha
  * @author Michał Brzeziński-Spiczak
- * 
+ *
  */
 public class Function implements Serializable {
 	private static final long serialVersionUID = 8987240111613491526L;
@@ -24,7 +25,7 @@ public class Function implements Serializable {
 
 	/**
 	 * Constructor on the base of function id
-	 * 
+	 *
 	 */
 	public Function(String id) {
 		functionId = id;
@@ -42,7 +43,7 @@ public class Function implements Serializable {
 
 	/**
 	 * Get functionId
-	 * 
+	 *
 	 * @return
 	 */
 	public String getFunctionId() {
@@ -51,7 +52,7 @@ public class Function implements Serializable {
 
 	/**
 	 * Get parameter container ({@link ArrayList})
-	 * 
+	 *
 	 */
 	public ArrayList<Object> getParameter() {
 		return parameter;
@@ -59,7 +60,7 @@ public class Function implements Serializable {
 
 	/**
 	 * Set functionId
-	 * 
+	 *
 	 */
 	public void setFunctionId(String functionId) {
 		this.functionId = functionId;
@@ -72,4 +73,32 @@ public class Function implements Serializable {
 		this.parameter = parameter;
 	}
 
+    public String toMDX(DimensionElSet arg) {
+        StringBuilder builder = new StringBuilder();
+
+        builder.append(functionId + "(");
+
+        if (arg != null) {
+            builder.append(arg.toMDX());
+
+            if (!parameter.isEmpty()) {
+                builder.append(", ");
+            }
+        }
+
+        Iterator iter = parameter.iterator();
+
+        while (iter.hasNext()) {
+            builder.append(iter.next().toString());
+
+            if (iter.hasNext()) {
+                builder.append(", ");
+            }
+        }
+
+        builder.append(")");
+
+        return builder.toString();
+    }
 }
+
