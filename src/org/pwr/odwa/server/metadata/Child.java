@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * This component extends @see Meta class inheriting basic meta
  * element properties from it (unique ID, name and description).
  */
-class Child extends Meta {
+public class Child extends Meta {
     protected ArrayList<UID> m_path;
     protected Member m_member;
 

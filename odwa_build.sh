@@ -53,6 +53,8 @@ javac -cp "$APPDIR/src/org/pwr/odwa/common:$APPDIR/src/org/pwr/odwa/server:$GWT_
 	src/org/pwr/odwa/server/structure/DBStructure.java \
 	src/org/pwr/odwa/server/engine/SQLQuery.java \
 	src/org/pwr/odwa/server/engine/SQLLogicOperator.java \
+	src/org/pwr/odwa/server/engine/WhereClause.java \
+	src/org/pwr/odwa/server/engine/MySQLWhereClause.java \
 	src/org/pwr/odwa/server/engine/SQLJoinOperator.java \
 	src/org/pwr/odwa/server/engine/MySQLQuery.java \
 	src/org/pwr/odwa/server/engine/DBEngine.java \

@@ -12,15 +12,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class DBEngineServiceImpl extends RemoteServiceServlet implements
 		DBEngineService {
 	public DBResult executeQuery(UserSelection userSel) {
-		// FIXME: DO KRZYŚKA: nim poprawisz komunikację, musisz tutaj wywołać
-		// connect() (tak jak rozmawialiśmy)
-		// poniżej example:
-		/*
-		 * 
-		 * DBEngine db = new DBEngine();
-		 * db.connect("jdbc:mysql://localhost/odwa", "odwa", "odwa"); DBResult
-		 * res = db.executeQuery(userSel);
-		 */
+		
 		DBEngine dbEn = new DBEngine();
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
