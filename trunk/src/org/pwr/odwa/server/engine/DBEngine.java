@@ -21,6 +21,7 @@ import org.pwr.odwa.common.selection.Measure;
 import org.pwr.odwa.common.selection.Method;
 import org.pwr.odwa.common.selection.Path;
 import org.pwr.odwa.common.selection.UserSelection;
+import org.pwr.odwa.server.metadata.Child;
 import org.pwr.odwa.server.metadata.Dimension;
 import org.pwr.odwa.server.metadata.Level;
 import org.pwr.odwa.server.metadata.Member;
@@ -35,7 +36,8 @@ import org.pwr.odwa.server.structure.DBTable;
  *
  *
  */
-public class DBEngine {
+public class DBEngine
+{
 	Connection conn;
 
 	/**
@@ -47,12 +49,15 @@ public class DBEngine {
 	 *            user login
 	 * @param password
 	 */
-	public void connect(String url, String user, String password) {
-		try {
+	public void connect(String url, String user, String password)
+	{
+		try
+		{
 			Class.forName("com.mysql.jdbc.Driver");
 			System.out.println(DriverManager.getDrivers());
 			conn = DriverManager.getConnection(url, user, password);
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -60,10 +65,13 @@ public class DBEngine {
 	/**
 	 * Ends connection with database
 	 */
-	public void disconnect() {
-		try {
+	public void disconnect()
+	{
+		try
+		{
 			conn.close();
-		} catch (SQLException e) {
+		} catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
 	}
@@ -76,11 +84,15 @@ public class DBEngine {
 	 *            User Query
 	 * @return Result of User Query
 	 */
-	public DBResult executeQuery(UserSelection usrQuery) {
+	public DBResult executeQuery(UserSelection usrQuery)
+	{
 
-		try {
+		
+		try
+		{
 			// Create MySQL query
 			SQLQuery query = new MySQLQuery();
+			WhereClause finalWhereClause = new MySQLWhereClause();
 
 			Metadata meta = new Metadata();
 			meta.loadMetadata(System.getenv("ODWA_METADATA"));
@@ -103,22 +115,25 @@ public class DBEngine {
 			ArrayList<Axis> axis = new ArrayList<Axis>();
 			axis.add(usrQuery.getRow());
 			axis.add(usrQuery.getColumn());
-			
+
 			ArrayList<String> resultRows = new ArrayList<String>();
 			ArrayList<String> resultCols = new ArrayList<String>();
 			int rowscols = 0;
-			
-			for (Axis aAxis : axis) {
-				HashMap<String, ArrayList<String>> whereClausesMap = new HashMap<String, ArrayList<String>>();
 
-				for (int i = 0; i < aAxis.getAxisElementAmount(); i++) {
-					
+			for (Axis aAxis : axis)
+			{
+				HashMap<String, WhereClause> whereClausesMap = new HashMap<String, WhereClause>();
+
+				for (int i = 0; i < aAxis.getAxisElementAmount(); i++)
+				{
+
 					AxisElement currEl = aAxis.getAxisElement(i);
 					DimensionElSet dimElSet = currEl.getDimensionElSet();
-					for (int j = 0; j < dimElSet.getDimensionElAmount(); j++) {
+					for (int j = 0; j < dimElSet.getDimensionElAmount(); j++)
+					{
 						DimensionEl dimEl = dimElSet.getDimensionEl(j);
 						Method met = dimEl.getMethod();
-						//System.out.println(met.getMethodId());
+						// System.out.println(met.getMethodId());
 						String methodId = met.getMethodId();
 						Path path = dimEl.getPath();
 
@@ -127,76 +142,189 @@ public class DBEngine {
 						// Dimension table primary key name in fact table
 						String foreignKeyName = new String();
 						String dimLevel = new String();
-						
+
 						String memberName = new String();
+						System.out.println(path.getPath());
+						// meta.getElement(uid)
 
-						if (methodId == null || !methodId.equals("members")) {
-
-							Member aMeta = (Member) meta.getElement(new UID(
-									path.getPath()));
-							Dimension currDim = (Dimension) meta
-									.getElement(aMeta.getDimension());
-							dimTable = currDim.getTable();
-							dimTablePrimaryKey = currDim.getPrimary();
-							// Dimension table primary key name in fact table
-							foreignKeyName = currDim.getForeign();
-
-							Level aLevel = (Level) meta.getElement(aMeta
-									.getLevel());
-							dimLevel = aLevel.getField();
-							memberName = aMeta.getItem();
-							
-							String mapKey = dimTable + "." + dimLevel;
-							if(whereClausesMap.containsKey(mapKey))
-							{
-								ArrayList<String> whereClause = whereClausesMap.get(mapKey);
-								whereClause.add(dimTable + "." + dimLevel + "='"
-										+ memberName + "'");
-							}
-							else
-							{
-								ArrayList<String> whereClause = new ArrayList<String>();
-								
-							whereClause.add(dimTable + "." + dimLevel + "='"
-									+ memberName + "'");
-							whereClausesMap.put(mapKey, whereClause);
-							}
-							
-							if (rowscols == 0) { // add to rows
-								resultRows.add(memberName);
-							}
-							else { // add to cols
-								resultCols.add(memberName);
-							}
-
-						} else // FIXME: HIERARCHY support!
+						// check if we have to deal with hierarchy
+						if ((meta.getElement(new UID(path.getPath()))
+								.getClass() == (new Child()).getClass()))
 						{
-							Level aLevel = (Level) meta.getElement(new UID(path
+							//<where clause> start
+							WhereClause whereClause = new MySQLWhereClause();
+							
+							//</where clause>
+							
+							Child aChild = (Child) meta.getElement(new UID(path
 									.getPath()));
-							Dimension currDim = (Dimension) meta
-									.getElement(aLevel.getDimension());
-							dimTable = currDim.getTable();
-							dimTablePrimaryKey = currDim.getPrimary();
-							// Dimension table primary key name in fact table
-							foreignKeyName = currDim.getForeign();
-							dimLevel = aLevel.getField();
+							ArrayList<UID> parentsUIDs = aChild.getPath();
+							
+							//add parents to result clause in select
+							for (UID parentUID : parentsUIDs)
+							{
+								Member parent = (Member) meta
+										.getElement(parentUID);
+								Dimension currDim = (Dimension) meta
+										.getElement(parent.getDimension());
+								dimTable = currDim.getTable();
+								dimTablePrimaryKey = currDim.getPrimary();
+								// Dimension table primary key name in fact
+								// table
+								foreignKeyName = currDim.getForeign();
 
-							ArrayList<UID> members = aLevel.getMembers();
-						    for (UID member : members) {
-						        Member lvlMember = (Member)meta.getElement(member);
-						        memberName = lvlMember.getItem();        
-					    
-								if (rowscols == 0) { // add to rows
+								Level aLevel = (Level) meta.getElement(parent
+										.getLevel());
+								dimLevel = aLevel.getField();
+								memberName = parent.getItem();
+								
+								whereClause.addStr(dimTable + "." + dimLevel + "='" + memberName  + "'", SQLLogicOperator.AND);
+								
+
+								query.addResField(dimTable + "." + dimLevel);
+
+								query.addToFromClause(dimTable,
+										SQLJoinOperator.INNER_JOIN, dimTable
+												+ "." + dimTablePrimaryKey,
+										factTable + "." + foreignKeyName);
+								query.addToGroupByClause(dimTable + "."
+										+ dimLevel);
+								
+								if (rowscols == 0)
+								{ // add to rows
 									resultRows.add(memberName);
-								}
-								else { // add to cols
+								} else
+								{ // add to cols
 									resultCols.add(memberName);
 								}
-						    }
+							}
+							
+							//add current element to select clause
+							Member child = aChild.getMember();
+							
+							Dimension currDim = (Dimension) meta
+									.getElement(child.getDimension());
+							dimTable = currDim.getTable();
+							dimTablePrimaryKey = currDim.getPrimary();
+							// Dimension table primary key name in fact
+							// table							
+							foreignKeyName = currDim.getForeign();
+
+							Level aLevel = (Level) meta.getElement(child
+									.getLevel());
+							dimLevel = aLevel.getField();
+							memberName = child.getItem();
+
+							
+							//where clause
+							System.out.println("220:"+ dimTable + "." + dimLevel
+									+ "='" + memberName );
+							whereClause.addStr(dimTable + "." + dimLevel
+									+ "='" + memberName + "'",SQLLogicOperator.AND);
+							String dimHierarchy = child.getHierarchy().get_uid();
+							String mapKey = dimTable + "." + dimHierarchy;
+							if (whereClausesMap.containsKey(mapKey))
+							{
+								WhereClause aWhereClause = whereClausesMap
+										.get(mapKey);
+								aWhereClause.addWhereClause(whereClause, SQLLogicOperator.OR);
+								System.out.println("229: " + aWhereClause.getClause());
+							} else
+							{
+								System.out.println("232: " + whereClause.getClause());
+								whereClausesMap.put(mapKey, whereClause);
+							}
+							
+							if (rowscols == 0)
+							{ // add to rows
+								resultRows.add(memberName);
+							} else
+							{ // add to cols
+								resultCols.add(memberName);
+							}
+							
+							
+						} else
+						{
+
+							if (methodId == null || !methodId.equals("members"))
+							{
+
+								Member aMeta = (Member) meta
+										.getElement(new UID(path.getPath()));
+
+								Dimension currDim = (Dimension) meta
+										.getElement(aMeta.getDimension());
+								dimTable = currDim.getTable();
+								dimTablePrimaryKey = currDim.getPrimary();
+								// Dimension table primary key name in fact
+								// table
+								foreignKeyName = currDim.getForeign();
+
+								Level aLevel = (Level) meta.getElement(aMeta
+										.getLevel());
+								dimLevel = aLevel.getField();
+								memberName = aMeta.getItem();
+
+								String mapKey = dimTable + "." + dimLevel;
+								if (whereClausesMap.containsKey(mapKey))
+								{
+									WhereClause whereClause = whereClausesMap
+											.get(mapKey);
+									whereClause.addStr(dimTable + "." + dimLevel
+											+ "='" + memberName + "'",SQLLogicOperator.OR);
+									System.out.println("272:" + whereClause.getClause());
+								} else
+								{
+									WhereClause whereClause = new MySQLWhereClause();
+									System.out.println("276:" + whereClause.getClause());
+									
+									whereClause.addStr(dimTable + "." + dimLevel
+											+ "='" + memberName + "'",SQLLogicOperator.OR);
+									whereClausesMap.put(mapKey, whereClause);
+								}
+
+								if (rowscols == 0)
+								{ // add to rows
+									resultRows.add(memberName);
+								} else
+								{ // add to cols
+									resultCols.add(memberName);
+								}
+
+							} else
+							
+							{
+								Level aLevel = (Level) meta.getElement(new UID(
+										path.getPath()));
+								Dimension currDim = (Dimension) meta
+										.getElement(aLevel.getDimension());
+								dimTable = currDim.getTable();
+								dimTablePrimaryKey = currDim.getPrimary();
+								// Dimension table primary key name in fact
+								// table
+								foreignKeyName = currDim.getForeign();
+								dimLevel = aLevel.getField();
+
+								ArrayList<UID> members = aLevel.getMembers();
+								for (UID member : members)
+								{
+									Member lvlMember = (Member) meta
+											.getElement(member);
+									memberName = lvlMember.getItem();
+
+									if (rowscols == 0)
+									{ // add to rows
+										resultRows.add(memberName);
+									} else
+									{ // add to cols
+										resultCols.add(memberName);
+									}
+								}
+							}
 						}
 						query.addResField(dimTable + "." + dimLevel);
 
-						
 						query.addToFromClause(dimTable,
 								SQLJoinOperator.INNER_JOIN, dimTable + "."
 										+ dimTablePrimaryKey, factTable + "."
@@ -204,21 +332,25 @@ public class DBEngine {
 						query.addToGroupByClause(dimTable + "." + dimLevel);
 
 					}
-					if (whereClausesMap.size() != 0) {
-						Collection<ArrayList<String>> whereCol = whereClausesMap.values();
-						for(ArrayList<String> whereClauses : whereCol)
+					if (whereClausesMap.size() != 0)
+					{
+						Collection<WhereClause> whereCol = whereClausesMap
+								.values();
+						for (WhereClause whereClauses : whereCol)
 						{
-							query.addToWhereClause(whereClauses,
+							System.out.println("335: " + whereClauses.getClause());
+							finalWhereClause.addWhereClause(whereClauses,
 									SQLLogicOperator.OR);
 						}
-					
+
 					}
 				}
 				rowscols = 1;
 			}
 
 			DimensionElSet aSlice = usrQuery.getSlice();
-			for (int i = 0; i < aSlice.getDimensionElAmount(); i++) {
+			for (int i = 0; i < aSlice.getDimensionElAmount(); i++)
+			{
 				DimensionEl dimEl = aSlice.getDimensionEl(i);
 				Method met = dimEl.getMethod();
 				System.out.println(met.getMethodId());
@@ -239,11 +371,14 @@ public class DBEngine {
 				query.addToFromClause(dimTable, SQLJoinOperator.INNER_JOIN,
 						dimTable + "." + dimTablePrimaryKey, factTable + "."
 								+ foreignKeyName);
-				query.addToWhereClause(dimTable + "." + dimLevel + "='"
+				finalWhereClause.addStr(dimTable + "." + dimLevel + "='"
 						+ memberName + "'", SQLLogicOperator.AND);
 			}
+			
+			query.addToWhereClause(finalWhereClause);
 
-			try {
+			try
+			{
 
 				System.out.println(query.getQuery());
 				Statement db = conn.createStatement(); // ResultSet result =
@@ -254,32 +389,38 @@ public class DBEngine {
 
 				int columnCount = (result.getMetaData().getColumnCount());
 
-				for (int i = 1; i <= columnCount; i++) {
+				for (int i = 1; i <= columnCount; i++)
+				{
 					colNames.add(result.getMetaData().getColumnName(i));
 					fieldTypes.add(result.getMetaData().getColumnTypeName(i));
 				}
 
 				ArrayList<DBRow> rows = new ArrayList<DBRow>();
 
-				while (result.next()) {
+				while (result.next())
+				{
 					ArrayList<String> rowObjects = new ArrayList<String>();
-					for (int i = 1; i <= columnCount; i++) {
+					for (int i = 1; i <= columnCount; i++)
+					{
 						rowObjects.add(result.getObject(i).toString());
 					}
 					rows.add(new DBRow(rowObjects));
 				}
-				if (rows.size() == 0) {
+				if (rows.size() == 0)
+				{
 					return null;
 				}
 
 				DBResult res = new DBResult(rows, colNames, fieldTypes, query
 						.getQuery(), resultRows, resultCols);
-				
+
 				return res;
-			} catch (Exception e) {
+			} catch (Exception e)
+			{
 				e.printStackTrace();
 			}
-		} catch (Exception e) {
+		} catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 		return null;
@@ -292,22 +433,26 @@ public class DBEngine {
 	 * @return list of structures of all databases visible for logged user. See
 	 *         {@link DBStructure}
 	 */
-	public ArrayList<DBStructure> getDatabases() {
-		try {
+	public ArrayList<DBStructure> getDatabases()
+	{
+		try
+		{
 			DatabaseMetaData meta = conn.getMetaData();
 			ResultSet catalogs = meta.getCatalogs();
 
 			ArrayList<DBStructure> result = new ArrayList<DBStructure>();
 
 			// adding databases
-			while (catalogs.next()) {
+			while (catalogs.next())
+			{
 				String catName = catalogs.getString(1);
 				ResultSet tables = meta.getTables(catName, null, null, null);
 
 				ArrayList<DBTable> dbTables = new ArrayList<DBTable>();
 
 				// adding tables
-				while (tables.next()) {
+				while (tables.next())
+				{
 					String tabName = tables.getString(3);
 					ResultSet fields = meta.getColumns(catName, null, tabName,
 							null);
@@ -319,7 +464,8 @@ public class DBEngine {
 							tabName);
 					ArrayList<String> primKeys = new ArrayList<String>();
 
-					while (primaryKeys.next()) {
+					while (primaryKeys.next())
+					{
 						primKeys.add(primaryKeys.getString(4));
 					}
 
@@ -329,7 +475,8 @@ public class DBEngine {
 					ArrayList<String> foreKeys = new ArrayList<String>();
 					ArrayList<ForeKeyCont> foreKeysDesc = new ArrayList<ForeKeyCont>();
 
-					while (foreignKeys.next()) {
+					while (foreignKeys.next())
+					{
 						foreKeys.add(foreignKeys.getString(8));
 						foreKeysDesc.add(new ForeKeyCont(foreignKeys
 								.getString(8), foreignKeys.getString(3),
@@ -337,12 +484,14 @@ public class DBEngine {
 					}
 
 					// adding fields
-					while (fields.next()) {
+					while (fields.next())
+					{
 						String fieldName = fields.getString(4);
 						String foreTable = null;
 						String foreColumn = null;
 
-						if (foreKeys.contains(fieldName)) {
+						if (foreKeys.contains(fieldName))
+						{
 							int i = foreKeys.indexOf(fieldName);
 							ForeKeyCont cont = foreKeysDesc.get(i);
 							foreTable = cont.getForeTableName();
@@ -366,7 +515,8 @@ public class DBEngine {
 				result.add(struct);
 			}
 			return result;
-		} catch (SQLException e) {
+		} catch (SQLException e)
+		{
 			e.printStackTrace();
 		}
 
@@ -377,7 +527,8 @@ public class DBEngine {
 /**
  * Container for Foreign Key Data, usage only in getStructure()
  */
-class ForeKeyCont {
+class ForeKeyCont
+{
 	private String name;
 
 	private String foreTableName;
@@ -394,21 +545,25 @@ class ForeKeyCont {
 	 * @param c
 	 *            Refered column name
 	 */
-	public ForeKeyCont(String n, String t, String c) {
+	public ForeKeyCont(String n, String t, String c)
+	{
 		name = n;
 		foreTableName = t;
 		foreColumnName = c;
 	}
 
-	public String getName() {
+	public String getName()
+	{
 		return name;
 	}
 
-	public String getForeTableName() {
+	public String getForeTableName()
+	{
 		return foreTableName;
 	}
 
-	public String getForeColumnName() {
+	public String getForeColumnName()
+	{
 		return foreColumnName;
 	}
 }

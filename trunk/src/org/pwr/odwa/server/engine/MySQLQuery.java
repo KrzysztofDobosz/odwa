@@ -10,32 +10,32 @@ public class MySQLQuery implements SQLQuery
 {
 	private StringBuilder fromClause;
 	private ArrayList<String> fromClauses;
-
+	
 	private StringBuilder selectClause;
 	private ArrayList<String> selectClauses;
-
+	
 	private StringBuilder measureSelectClause;
 	private ArrayList<String> measureSelectClauses;
-
+	
 	private StringBuilder groupByClause;
 	private ArrayList<String> groupByClauses;
-
-	private StringBuilder whereClause;
-
+	
+	private MySQLWhereClause whereClause;
+	
 	public MySQLQuery()
 	{
 		fromClause = new StringBuilder();
 		selectClause = new StringBuilder();
 		groupByClause = new StringBuilder();
-		whereClause = new StringBuilder();
+		whereClause = null;
 		fromClauses = new ArrayList<String>();
 		selectClauses = new ArrayList<String>();
 		measureSelectClause = new StringBuilder();
 		measureSelectClauses = new ArrayList<String>();
-
+		
 		groupByClauses = new ArrayList<String>();
 	}
-
+	
 	/**
 	 * Add result field to the query
 	 * 
@@ -53,9 +53,9 @@ public class MySQLQuery implements SQLQuery
 			selectClause.append(" " + field);
 			selectClauses.add(field);
 		}
-
+		
 	}
-
+	
 	/**
 	 * Add measure result field to the query
 	 * 
@@ -73,9 +73,9 @@ public class MySQLQuery implements SQLQuery
 			measureSelectClause.append(" " + field);
 			measureSelectClauses.add(field);
 		}
-
+		
 	}
-
+	
 	/**
 	 * Adds element to GROUP BY clause in the query
 	 * 
@@ -93,74 +93,31 @@ public class MySQLQuery implements SQLQuery
 			groupByClause.append(" " + clause);
 			groupByClauses.add(clause);
 		}
-
+		
 	}
-
+	
 	/**
-	 * Adds first element to WHERE clause in the query. If it's not the first
-	 * element, it is not going to be added, just because then you have to use
-	 * version of this function with operator parameter
+	 * Adds WHERE clause to the query. If clause already exists, it will replace
+	 * it.
 	 * 
 	 * @param clause
-	 *            element
-	 */
-	public void addToWhereClause(String clause)
-	{
-		if (whereClause.length() == 0)
-		{
-			whereClause = new StringBuilder(" " + clause);
-		}
-
-	}
-
-	/**
-	 * Adds elements to WHERE clause (joins all of them with op operator)
-	 * example clauses = [a=b,b=c,c=e],op=and -> query WHERE (a=b and b=c and
-	 * c=e)
+	 *            (MySQLWhereClause, otherwise will throw ClassCastException)
 	 * 
-	 * @param clauses
-	 *            element that is going to be added
-	 * @param op
-	 *            operator (if it is not the first one
 	 */
-	public void addToWhereClause(ArrayList<String> clauses, SQLLogicOperator op)
+	public void addToWhereClause(WhereClause aWhereClause)
+			throws ClassCastException
 	{
-		String clause = "( ";
-		for (int i = 0; i < clauses.size(); i++)
+		try
 		{
-			clause += (i == 0 ? clauses.get(i) : " " + logicOperator(op) + " "
-					+ clauses.get(i));
-		}
-		clause += ")";
-		if (whereClause.length() == 0)
+			whereClause = (MySQLWhereClause) aWhereClause;
+		} catch (ClassCastException e)
 		{
-			whereClause.append(" " + clause);
-		} else
-		{
-			whereClause.append(" " + SQLLogicOperator.AND + " " + clause);
+			e.printStackTrace();
+			throw e;
 		}
 	}
-
-	/**
-	 * Adds element to WHERE clause (if it is first element, operator will be
-	 * ignored)
-	 * 
-	 * @param clause
-	 *            element that is going to be added
-	 * @param op
-	 *            operator (if it is not the first one
-	 */
-	public void addToWhereClause(String clause, SQLLogicOperator op)
-	{
-		if (whereClause.length() == 0)
-		{
-			whereClause.append(" " + clause);
-		} else
-		{
-			whereClause.append(" " + logicOperator(op) + " " + clause);
-		}
-	}
-
+	
+	
 	/**
 	 * Adds FIRST element to the from clause (if it is not the first one, it
 	 * will be ignored, just because you have to use version with join)
@@ -179,7 +136,7 @@ public class MySQLQuery implements SQLQuery
 			fromClauses.add(fromField);
 		}
 	}
-
+	
 	/**
 	 * Adds element to from clause. If it is first one, join operator will be
 	 * ignored.
@@ -210,9 +167,9 @@ public class MySQLQuery implements SQLQuery
 			}
 			fromClauses.add(fromField);
 		}
-
+		
 	}
-
+	
 	private String joinMySQL(SQLJoinOperator op)
 	{
 		switch (op)
@@ -230,19 +187,7 @@ public class MySQLQuery implements SQLQuery
 		}
 		return "";
 	}
-
-	private String logicOperator(SQLLogicOperator op)
-	{
-		switch (op)
-		{
-		case AND:
-			return "AND";
-		case OR:
-			return "OR";
-		}
-		return "";
-	}
-
+	
 	/**
 	 * Returns Mysql query string.
 	 */
@@ -254,8 +199,8 @@ public class MySQLQuery implements SQLQuery
 				+ measureSelectClause.toString()
 				+ " FROM"
 				+ fromClause.toString()
-				+ (whereClause.length() != 0 ? " WHERE"
-						+ whereClause.toString() : "")
+				+ ((whereClause != null && (!whereClause.isEmpty())) ? " WHERE"
+						+ whereClause.getClause() : "")
 				+ (groupByClause.length() != 0 ? " GROUP BY"
 						+ groupByClause.toString() : "");
 	}
