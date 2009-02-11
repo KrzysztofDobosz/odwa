@@ -231,6 +231,8 @@ public class Metadata {
                         hierarchy.setDefault(null);
                     }
 
+                    hierarchy.setDimension(dimension.getUID());
+
                     path = "levels/level";
 
                     NodeList levels = (NodeList)xpath.evaluate(path,

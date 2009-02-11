@@ -49,6 +49,14 @@ public class Meta {
         return m_desc;
     }
 
+    public String getUniqueName(Metadata meta) {
+        return "[" + getName() + "]";
+    }
+
+    public String getKeyUniqueName(Metadata meta) {
+        return getUniqueName(meta);
+    }
+
     public String toString() {
         return "(" + getUID().toString() + ", " +
             getName() + ", " + getDesc() + ")";

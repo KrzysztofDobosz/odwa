@@ -97,5 +97,10 @@ public class Level extends Meta {
     public ArrayList<UID> getMembers() {
         return m_members;
     }
+
+    public String getUniqueName(Metadata meta) {
+        Hierarchy hie = (Hierarchy)meta.getElement(getHierarchy());
+        return hie.getUniqueName(meta) + "." + super.getUniqueName(meta);
+    }
 }
 

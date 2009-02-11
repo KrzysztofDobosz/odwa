@@ -47,5 +47,10 @@ class Hierarchy extends Meta {
     public ArrayList<UID> getLevels() {
         return m_levels;
     }
+
+    public String getUniqueName(Metadata meta) {
+        Dimension dim = (Dimension)meta.getElement(getDimension());
+        return dim.getUniqueName(meta) + "." + super.getUniqueName(meta);
+    }
 }
 

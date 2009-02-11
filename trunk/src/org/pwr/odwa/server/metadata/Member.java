@@ -87,5 +87,15 @@ public class Member extends Meta {
     public ArrayList<UID> getChildren() {
         return m_children;
     }
+
+    public String getUniqueName(Metadata meta) {
+        Level lev = (Level)meta.getElement(getLevel());
+        return lev.getUniqueName(meta) + "." + super.getUniqueName(meta);
+    }
+
+    public String getKeyUniqueName(Metadata meta) {
+        Level lev = (Level)meta.getElement(getLevel());
+        return lev.getUniqueName(meta) + ".&[" + getItem() + "]";
+    }
 }
 

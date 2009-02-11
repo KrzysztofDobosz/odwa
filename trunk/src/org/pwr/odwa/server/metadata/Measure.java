@@ -55,5 +55,9 @@ public class Measure extends Meta {
     public String getFunction() {
         return m_function;
     }
+
+    public String getUniqueName(Metadata meta) {
+        return "[Measures]." + super.getUniqueName(meta);
+    }
 }
 
