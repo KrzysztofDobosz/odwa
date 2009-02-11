@@ -1,6 +1,7 @@
 package org.pwr.odwa.server.metadata;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * Stores internal information of a child.
@@ -46,6 +47,40 @@ public class Child extends Meta {
 
     public ArrayList<UID> getPath() {
         return m_path;
+    }
+
+    public String getUniqueName(Metadata meta) {
+        StringBuilder builder = new StringBuilder();
+
+        Iterator iter = getPath().iterator();
+
+        while (iter.hasNext()) {
+            builder.append("[" + meta.getElement((UID)iter.next()).getName() + "]");
+
+            if (iter.hasNext()) {
+                builder.append(".");
+            }
+        }
+
+        Hierarchy hie = (Hierarchy)meta.getElement(getMember().getHierarchy());
+        return hie.getUniqueName(meta) + "." + builder.toString();
+    }
+
+    public String getKeyUniqueName(Metadata meta) {
+        StringBuilder builder = new StringBuilder();
+
+        Iterator iter = getPath().iterator();
+
+        while (iter.hasNext()) {
+            builder.append("&[" + meta.getElement((UID)iter.next()).getName() + "]");
+
+            if (iter.hasNext()) {
+                builder.append(".");
+            }
+        }
+
+        Hierarchy hie = (Hierarchy)meta.getElement(getMember().getHierarchy());
+        return hie.getUniqueName(meta) + "." + builder.toString();
     }
 }
 
