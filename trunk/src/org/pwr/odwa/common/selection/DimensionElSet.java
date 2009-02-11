@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.pwr.odwa.server.metadata.Metadata;
+
 /**
  * Class - container of dimension member elements
  *
@@ -52,7 +54,7 @@ public class DimensionElSet implements Serializable {
 		this.dimensionEls = dimensionEls;
 	}
 
-    public String toMDX() {
+    public String toMDX(Metadata meta, boolean keys) {
         if (dimensionEls.isEmpty()) {
             return "{}";
         } else {
@@ -63,7 +65,7 @@ public class DimensionElSet implements Serializable {
             Iterator iter = dimensionEls.iterator();
 
             while (iter.hasNext()) {
-                builder.append(((DimensionEl)iter.next()).toMDX());
+                builder.append(((DimensionEl)iter.next()).toMDX(meta, keys));
 
                 if (iter.hasNext()) {
                     builder.append(", ");

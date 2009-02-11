@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.pwr.odwa.server.metadata.Metadata;
+
 /**
  * Class representing nested-axis of {@link UserSelection}
  * @author Katarzyna Rzerzicha
@@ -54,12 +56,12 @@ public class Axis implements Serializable {
 		this.axisElements = axisElements;
 	}
 
-    public String toMDX() {
+    public String toMDX(Metadata meta, boolean keys) {
         switch (axisElements.size()) {
         case 0:
-            return "";
+            return "{}";
         case 1:
-            return axisElements.get(0).toMDX();
+            return axisElements.get(0).toMDX(meta, keys);
         default:
             StringBuilder builder = new StringBuilder();
 
@@ -68,7 +70,7 @@ public class Axis implements Serializable {
             Iterator iter = axisElements.iterator();
 
             while (iter.hasNext()) {
-                builder.append(((DimensionEl)iter.next()).toMDX());
+                builder.append(((DimensionEl)iter.next()).toMDX(meta, keys));
 
                 if (iter.hasNext()) {
                     builder.append(", ");

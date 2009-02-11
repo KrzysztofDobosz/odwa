@@ -2,6 +2,8 @@ package org.pwr.odwa.common.selection;
 
 import java.io.Serializable;
 
+import org.pwr.odwa.server.metadata.Metadata;
+
 /**
  * Class representing set of dimension memebers by hierarchical {@link Path} and
  * {@link Method}
@@ -51,11 +53,11 @@ public class DimensionEl implements Serializable {
 		this.method = method;
 	}
 
-    public String toMDX() {
+    public String toMDX(Metadata meta, boolean keys) {
         if (method != null) {
-            return path.toMDX() + method.toMDX();
+            return path.toMDX(meta, keys) + method.toMDX(meta, keys);
         } else {
-            return path.toMDX();
+            return path.toMDX(meta, keys);
         }
     }
 }
