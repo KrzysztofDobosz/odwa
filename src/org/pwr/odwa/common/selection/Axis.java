@@ -70,7 +70,7 @@ public class Axis implements Serializable {
             Iterator iter = axisElements.iterator();
 
             while (iter.hasNext()) {
-                builder.append(((DimensionEl)iter.next()).toMDX(meta, keys));
+                builder.append(((AxisElement)iter.next()).toMDX(meta, keys));
 
                 if (iter.hasNext()) {
                     builder.append(", ");
