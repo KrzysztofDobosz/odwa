@@ -3,7 +3,12 @@ package org.pwr.odwa.server.engine;
 import java.util.ArrayList;
 
 /**
- * Class responsible for creating MySQL querries.
+ * Class responsible for creating MySQL queries. It handles all basic options,
+ * however there is another class to handle WhereClauses, just because it has to
+ * be capable of executing logic in queries
+ * 
+ * @author Maciek Kupczak macku30@gmail.com
+ * @author Mateusz Lis mateusz.lis@gmail.com
  */
 
 public class MySQLQuery implements SQLQuery
@@ -116,7 +121,6 @@ public class MySQLQuery implements SQLQuery
 			throw e;
 		}
 	}
-	
 	
 	/**
 	 * Adds FIRST element to the from clause (if it is not the first one, it

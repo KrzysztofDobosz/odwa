@@ -30,11 +30,11 @@ public interface WhereClause
 	public void addWhereClause(WhereClause clause, SQLLogicOperator op);
 	
 	/**
-	 * returns SQL string containing WHERE clause
+	 * returns SQL string containing WHERE clause (without the WHERE word itself)
 	 * @return
 	 */
 	public String getClause();
-	
+	 
 	/**
 	 * returns true if where clause is empty
 	 * @return
