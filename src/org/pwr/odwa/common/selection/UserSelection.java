@@ -2,6 +2,8 @@ package org.pwr.odwa.common.selection;
 
 import java.io.Serializable;
 
+import org.pwr.odwa.server.metadata.Metadata;
+
 /**
  *
  * Communication class which contains abstraction user selection (an analogy to
@@ -263,39 +265,60 @@ public class UserSelection implements Serializable {
 		setSlice(dimelset);
 	}
 
-    public String toMDX() {
+    public String toMDX(Metadata meta, boolean keys) {
         StringBuilder builder = new StringBuilder();
 
         builder.append("select ");
 
         if (column != null) {
-            builder.append(column.toMDX() + " on columns");
+            String column_mdx = column.toMDX(meta, keys);
 
-            if (row != null) {
-                builder.append(", ");
+            if (column_mdx.compareTo("{}") != 0) {
+                builder.append(column_mdx + " on columns");
+
+                if (row != null) {
+                    String row_mdx = row.toMDX(meta, keys);
+
+                    if (row_mdx.compareTo("{}") != 0) {
+                        builder.append(", " + row_mdx + " on rows");
+                    }
+                }
+            }
+        } else if (row != null) {
+            String row_mdx = row.toMDX(meta, keys);
+
+            if (row_mdx.compareTo("{}") != 0) {
+                builder.append(row_mdx + " on rows");
             }
         }
 
-        if (row != null) {
-            builder.append(row.toMDX() + " on rows");
+        if (dataBaseId.compareTo("/") == 0) {
+            builder.append(" from [" + "anywhere" + "]");
+        } else {
+            builder.append(" from [" + dataBaseId + "]");
         }
 
-        builder.append(" from [" + dataBaseId + "]");
-
         if (measure != null && slice != null) {
-            builder.append(" where { ");
+            String slice_mdx = slice.toMDX(meta, keys);
 
-            builder.append(measure.toMDX());
-            builder.append(", ");
-            builder.append(slice.toMDX());
+            if (slice_mdx.compareTo("{}") == 0) {
+                builder.append(" where ");
+                builder.append(measure.toMDX(meta, keys));
+            } else {
+                builder.append(" where ( ");
 
-            builder.append(" }");
+                builder.append(measure.toMDX(meta, keys));
+                builder.append(", ");
+                builder.append(slice_mdx);
+
+                builder.append(" )");
+            }
         } else if (measure != null) {
             builder.append(" where ");
-            builder.append(measure.toMDX());
-        } else if (measure != null) {
+            builder.append(measure.toMDX(meta, keys));
+        } else if (slice != null) {
             builder.append(" where ");
-            builder.append(slice.toMDX());
+            builder.append(slice.toMDX(meta, keys));
         }
 
         return builder.toString();

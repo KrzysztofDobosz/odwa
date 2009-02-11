@@ -3,6 +3,9 @@ package org.pwr.odwa.common.selection;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import org.pwr.odwa.server.metadata.Metadata;
+import org.pwr.odwa.server.metadata.UID;
+
 /**
  * Class representing hierarchical path inside dimension
  *
@@ -33,8 +36,12 @@ public class Path implements Serializable {
 		this.path = path;
 	}
 
-    public String toMDX() {
-        return "[" + path + "]";
+    public String toMDX(Metadata meta, boolean keys) {
+        if (keys) {
+            return meta.getElement(new UID(path)).getKeyUniqueName(meta);
+        } else {
+            return meta.getElement(new UID(path)).getUniqueName(meta);
+        }
     }
 }
 

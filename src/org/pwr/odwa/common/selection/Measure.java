@@ -2,6 +2,9 @@ package org.pwr.odwa.common.selection;
 
 import java.io.Serializable;
 
+import org.pwr.odwa.server.metadata.Metadata;
+import org.pwr.odwa.server.metadata.UID;
+
 /**
  *
  * Class representing the measure defined by its ID (measureId) (Inheritance
@@ -44,8 +47,8 @@ public class Measure implements Serializable {
 		this.measureUid = measureUid;
 	}
 
-    public String toMDX() {
-        return "[" + measureUid + "]";
+    public String toMDX(Metadata meta, boolean keys) {
+        return meta.getElement(new UID(measureUid)).getUniqueName(meta);
     }
 }
 

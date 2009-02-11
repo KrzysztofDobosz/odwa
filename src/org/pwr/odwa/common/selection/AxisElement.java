@@ -2,6 +2,8 @@ package org.pwr.odwa.common.selection;
 
 import java.io.Serializable;
 
+import org.pwr.odwa.server.metadata.Metadata;
+
 /**
  *
  * Class representing single level of nested {@link Axis} in
@@ -51,11 +53,11 @@ public class AxisElement implements Serializable {
 		return function;
 	}
 
-    public String toMDX() {
+    public String toMDX(Metadata meta, boolean keys) {
         if (function != null) {
-            return function.toMDX(dimensionElSet);
+            return function.toMDX(meta, keys, dimensionElSet.toMDX(meta, keys));
         } else {
-            return dimensionElSet.toMDX();
+            return dimensionElSet.toMDX(meta, keys);
         }
     }
 }

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.pwr.odwa.server.metadata.Metadata;
+
 /**
  * Class representing function defined on dimension member elements set (ie
  * headX, TopPercent, NotEmpty)
@@ -73,32 +75,42 @@ public class Function implements Serializable {
 		this.parameter = parameter;
 	}
 
-    public String toMDX(DimensionElSet arg) {
-        StringBuilder builder = new StringBuilder();
+    public String toMDX(Metadata meta, boolean keys) {
+        return toMDX(meta, keys, null);
+    }
 
-        builder.append(functionId + "(");
+    public String toMDX(Metadata meta, boolean keys, String arg) {
+        if (functionId == null) {
+            return arg;
+        } else {
+            StringBuilder builder = new StringBuilder();
 
-        if (arg != null) {
-            builder.append(arg.toMDX());
+            builder.append(functionId + "(");
 
-            if (!parameter.isEmpty()) {
-                builder.append(", ");
+            if (arg != null) {
+                builder.append(arg);
             }
-        }
 
-        Iterator iter = parameter.iterator();
+            if (parameter != null) {
+                Iterator iter = parameter.iterator();
 
-        while (iter.hasNext()) {
-            builder.append(iter.next().toString());
+                if (arg != null && iter.hasNext()) {
+                    builder.append(", ");
+                }
 
-            if (iter.hasNext()) {
-                builder.append(", ");
+                while (iter.hasNext()) {
+                    builder.append(iter.next().toString());
+
+                    if (iter.hasNext()) {
+                        builder.append(", ");
+                    }
+                }
             }
+
+            builder.append(")");
+
+            return builder.toString();
         }
-
-        builder.append(")");
-
-        return builder.toString();
     }
 }
 

@@ -2,6 +2,8 @@ package org.pwr.odwa.common.selection;
 
 import java.io.Serializable;
 
+import org.pwr.odwa.server.metadata.Metadata;
+
 /**
  *
  * Class representing description method of dimension members by other members
@@ -44,8 +46,12 @@ public class Method implements Serializable {
 		return methodId;
 	}
 
-    public String toMDX() {
-        return "." + methodId;
+    public String toMDX(Metadata meta, boolean keys) {
+        if (methodId == null) {
+            return "";
+        } else {
+            return "." + methodId;
+        }
     }
 }
 

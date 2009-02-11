@@ -123,6 +123,8 @@ public class Odwa extends HttpServlet {
 			selection.setSlice(readFilter(request));
 
 			// out.println(selection);
+            System.out.println(selection.toMDX(meta, false));
+            System.out.println(selection.toMDX(meta, true));
 
 			// //////////////////////////////////////////////////////////////////////////
 
