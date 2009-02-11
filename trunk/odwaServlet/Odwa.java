@@ -14,14 +14,14 @@ import org.pwr.odwa.server.metadata.Metadata;
 import java.util.ArrayList;
 
 /**
- * 
- * 
+ *
+ *
  * Servlet version of ODWA to execute needs all what every servlet... set paths
  * in odwaServ_build.bat and run to compile http://localhost:8080/odwaServ/odwa
- * 
+ *
  * also put metadata.xml to tomcat bin directory (I don't know why it reads from
  * there...)
- * 
+ *
  * @author Michal Brzezinski-Spiczak
  */
 
@@ -35,11 +35,11 @@ public class Odwa extends HttpServlet {
 			throws ServletException, IOException {
 		MetaXmlParserServlet dom = new MetaXmlParserServlet();
 		Metadata meta = new Metadata();
-		meta.loadMetadata(System.getenv("ODWA_METADATA"));
+		meta.loadMetadata(null);
 		String xml = dom.parse(meta.getMetadataTree());
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
-		
+
 
 		out
 				.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">");
@@ -55,7 +55,7 @@ public class Odwa extends HttpServlet {
 		out
 				.println("<div style=\"position: absolute; padding: 0px; top:20px; left:570px; width:400px; height:550px; overflow: auto \" id=\"form_container\" >");
 		if (request.getParameter("form_id") == null) {
-			
+
 			out.println("<br>&nbsp;&nbsp;&nbsp;<b>Datastore structure:<br><br>&nbsp;</b></div>");
 			out
 			.println("<div style=\"position: absolute; padding: 0px; top:60px; left:570px; width:400px; height:510px; overflow: auto \" id=\"form_container\" >");
@@ -128,9 +128,11 @@ public class Odwa extends HttpServlet {
 
 			try {
 				DBEngine db = new DBEngine();
-				db.connect("jdbc:mysql://localhost/" + System.getenv("ODWA_DB_NAME"), System.getenv("ODWA_DB_LOGIN"), System.getenv("ODWA_DB_PASS"));
-				out
-						.println("<div class=\"form_description\"><h2>Open Data Warehouse Analysis</h2><p>Servlet version of ODWA</p></div>");
+                db.connect("jdbc:mysql://localhost/" +
+                    meta.getSystemOption("ODWA_DB_NAME"),
+                    meta.getSystemOption("ODWA_DB_LOGIN"),
+                    meta.getSystemOption("ODWA_DB_PASS"));
+				out.println("<div class=\"form_description\"><h2>Open Data Warehouse Analysis</h2><p>Servlet version of ODWA</p></div>");
 				DBResult result = db.executeQuery(selection);
 				db.disconnect();
 
@@ -139,13 +141,13 @@ public class Odwa extends HttpServlet {
 				 * result.getColumnCount(); out.println("<br><br>"); for (int i
 				 * = 0; i < count; i++) { out.print(result.getColumnName(i) +
 				 * " "); } out.println("<br>");
-				 * 
-				 * 
+				 *
+				 *
 				 * while ( (row__ = result.fetchRow()) != null) { for (int i =
 				 * 0; i< count; i++) { out.print(row__.getFieldVal(i).toString()
 				 * + " "); } out.println("<br>");
-				 * 
-				 * 
+				 *
+				 *
 				 * }
 				 */
 
@@ -153,20 +155,20 @@ public class Odwa extends HttpServlet {
 				 * Basic example of DBResult: Row | Column | Value
 				 * -----+--------+------- F | PL | 5 F | DE | 6 F | RU | 4 M |
 				 * PL | 8 M | DE | 5 M | RU | 1
-				 * 
-				 * 
+				 *
+				 *
 				 * Table to be shown: | PL | DE | RU ---+----+----+---- F | 5 |
 				 * 6 | 4 M | 8 | 5 | 1
-				 * 
+				 *
 				 * rowsInResult = 2 colsInResult = 3
 				 */
 
 				DBRow visRow = new DBRow();
 				int rowsInResult = result.getRowNamesInResult().size();
 				int colsInResult = result.getColNamesInResult().size();
-				
+
 				int queryCols = result.getColumnCount();
-				
+
 				Object data[][] = new Object[rowsInResult][colsInResult+1];
 				int i=0;
 				int j=0;
@@ -349,3 +351,4 @@ public class Odwa extends HttpServlet {
 		return formString;
 	}
 }
+

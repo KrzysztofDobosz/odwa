@@ -1,5 +1,6 @@
 package org.pwr.odwa.server.metadata;
 
+import java.util.Properties;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -75,6 +76,10 @@ public class Metadata {
      */
     public void loadMetadata(String xml) {
         try {
+            if (xml == null) {
+                xml = getSystemOption("ODWA_METADATA");
+            }
+
             File document = new File(xml);
 
             XPath xpath = XPathFactory.newInstance().newXPath();
@@ -705,6 +710,27 @@ public class Metadata {
      */
     public DatabaseInfo getDatabaseInfo() {
         return m_info;
+    }
+
+    public String getConfigOption(String opt) {
+        try {
+            Properties config = new Properties();
+            config.load(new FileInputStream("/etc/odwa.conf"));
+            return config.getProperty(opt);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getSystemOption(String opt) {
+        String value = System.getenv(opt);
+
+        if (value != null) {
+            return value;
+        } else {
+            return getConfigOption(opt);
+        }
     }
 }
 
