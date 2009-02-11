@@ -6,6 +6,10 @@ package org.pwr.odwa.server.engine;
 import java.util.ArrayList;
 
 /**
+ * Class contains MySQL Where clauses. It is capable of joining any where
+ * clauses in any logic form because it is possible to add whereClause to
+ * another where clause and so on (finally creating algebraic tree)
+ * 
  * @author Maciek Kupczak
  * @author Mateusz Lis
  * 
@@ -49,7 +53,10 @@ public class MySQLWhereClause implements WhereClause
 		}
 		
 	}
-	
+
+	/**
+	 * Returns text of the clause (without WHERE)
+	 */
 	public String getClause()
 	{
 		if (whereClauses != null)
@@ -63,11 +70,8 @@ public class MySQLWhereClause implements WhereClause
 				{
 					whereClause.append(" " + logicOperator(logicOps.get(i))
 							+ " " + whereClauses.get(i).getClause());
-					System.out.println(" asdasdads" + logicOperator(logicOps.get(i))
-							+ " " + whereClauses.get(i).getClause());
 				}
 				whereClause.append(")");
-				System.out.println(whereClause.toString());
 				
 				return whereClause.toString();
 			} else
@@ -77,11 +81,19 @@ public class MySQLWhereClause implements WhereClause
 			return clause;
 	}
 	
+	/**
+	 * Nothing to comment.
+	 */
 	public Boolean isEmpty()
 	{
 		return (clause.length() == 0 && whereClauses.size() == 0);
 	}
 	
+	/**
+	 * translates enum logic operator to string
+	 * @param op
+	 * @return
+	 */
 	private String logicOperator(SQLLogicOperator op)
 	{
 		switch (op)
